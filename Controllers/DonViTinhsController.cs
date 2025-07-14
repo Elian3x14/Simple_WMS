@@ -6,8 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TKS_intern_shared.Data;
-using TKS_intern_shared.Repositories.Interfaces;
+using TKS_intern_server.Data;
+using TKS_intern_server.Repositories.Interfaces;
 using TKS_intern_shared.Models;
 using TKS_intern_shared.ViewModels.DonViTinhs;
 

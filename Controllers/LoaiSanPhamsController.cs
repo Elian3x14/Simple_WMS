@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TKS_intern_server.Repositories.Interfaces;
 using TKS_intern_shared.Models;
 using TKS_intern_shared.ViewModels.LoaiSanPhams;
-using TKS_intern_shared.Repositories.Interfaces;
 
 namespace TKS_intern_shared.Controllers
 {

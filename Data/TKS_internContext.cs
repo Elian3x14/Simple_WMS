@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TKS_intern_shared.Models;
 
-namespace TKS_intern_shared.Data
+namespace TKS_intern_server.Data
 {
     public class TKS_internContext : DbContext
     {
@@ -14,9 +14,11 @@ namespace TKS_intern_shared.Data
         {
         }
 
-        public DbSet<TKS_intern_shared.Models.DonViTinh> DonViTinh { get; set; } = default!;
-        public DbSet<TKS_intern_shared.Models.LoaiSanPham> LoaiSanPham { get; set; } = default!;
-        public DbSet<TKS_intern_shared.Models.SanPham> SanPham { get; set; } = default!;
+        public DbSet<DonViTinh> DonViTinh { get; set; } = default!;
+        public DbSet<LoaiSanPham> LoaiSanPham { get; set; } = default!;
+        public DbSet<SanPham> SanPham { get; set; } = default!;
+
+        public DbSet<NhaCungCap> NhaCungCap { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -99,6 +101,35 @@ namespace TKS_intern_shared.Data
                     .OnDelete(DeleteBehavior.Restrict); // tránh xoá lan truyền
             });
 
+            // Nhà cung cấp
+            modelBuilder.Entity<NhaCungCap>(entity =>
+            {
+                entity.ToTable("tbl_DM_Nha_Cung_Cap");
+
+                entity.Property(e => e.MaNhaCungCap)
+                    .IsRequired()
+                    .HasColumnName("Ma_NCC")
+                    .HasColumnType("varchar(50)");
+
+                entity.Property(e => e.TenNhaCungCap)
+                    .IsRequired()
+                    .HasColumnName("Ten_NCC")
+                    .HasColumnType("varchar(255)");
+
+                entity.HasIndex(e => e.TenNhaCungCap)
+                    .IsUnique(); // Tên nhà cung cấp là duy nhất
+
+                entity.Property(e => e.GhiChu)
+                    .HasColumnName("Ghi_Chu")
+                    .HasColumnType("nvarchar(max)"); // Hoặc tùy theo bạn dùng varchar/nvarchar
+
+                // Optional: cấu hình cột thời gian nếu dùng BaseModel
+                entity.Property(e => e.CreatedAt)
+                    .HasColumnName("Created_At");
+
+                entity.Property(e => e.UpdatedAt)
+                    .HasColumnName("Updated_At");
+            });
             // Cấu hình cho tất cả entity kế thừa từ BaseModel
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {

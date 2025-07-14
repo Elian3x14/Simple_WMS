@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TKS_intern_shared.Data;
+using TKS_intern_server.Data;
 
 #nullable disable
 
-namespace TKS_intern_shared.Migrations
+namespace TKS_intern_server.Migrations
 {
     [DbContext(typeof(TKS_internContext))]
     partial class TKS_internContextModelSnapshot : ModelSnapshot
@@ -99,6 +99,48 @@ namespace TKS_intern_shared.Migrations
                         .IsUnique();
 
                     b.ToTable("tbl_DM_Loai_San_Pham", (string)null);
+                });
+
+            modelBuilder.Entity("TKS_intern_shared.Models.NhaCungCap", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("Created_At")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("GhiChu")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Ghi_Chu");
+
+                    b.Property<string>("MaNhaCungCap")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("Ma_NCC");
+
+                    b.Property<string>("TenNhaCungCap")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("Ten_NCC");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("Updated_At")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenNhaCungCap")
+                        .IsUnique();
+
+                    b.ToTable("tbl_DM_Nha_Cung_Cap", (string)null);
                 });
 
             modelBuilder.Entity("TKS_intern_shared.Models.SanPham", b =>

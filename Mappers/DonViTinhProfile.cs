@@ -3,7 +3,7 @@ using TKS_intern_shared.Models;
 using TKS_intern_shared.ViewModels.DonViTinhs;
 
 
-namespace TKS_intern_shared.Mappers
+namespace TKS_intern_server.Mappers
 {
     public class DonViTinhProfile : Profile
     {

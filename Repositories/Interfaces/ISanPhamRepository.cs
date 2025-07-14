@@ -1,6 +1,6 @@
 ﻿using TKS_intern_shared.Models;
 
-namespace TKS_intern_shared.Repositories.Interfaces
+namespace TKS_intern_server.Repositories.Interfaces
 {
     public interface ISanPhamRepository
     {

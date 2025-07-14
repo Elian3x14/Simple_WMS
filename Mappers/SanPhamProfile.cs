@@ -2,7 +2,7 @@
 using TKS_intern_shared.Models;
 using TKS_intern_shared.ViewModels.SanPhams;
 
-namespace TKS_intern_shared.Mappers
+namespace TKS_intern_server.Mappers
 {
     public class SanPhamProfile : Profile
     {
