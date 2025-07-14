@@ -17,8 +17,8 @@ namespace TKS_intern_server.Data
         public DbSet<DonViTinh> DonViTinh { get; set; } = default!;
         public DbSet<LoaiSanPham> LoaiSanPham { get; set; } = default!;
         public DbSet<SanPham> SanPham { get; set; } = default!;
-
         public DbSet<NhaCungCap> NhaCungCap { get; set; } = default!;
+        public DbSet<Kho> Kho { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -125,14 +125,26 @@ namespace TKS_intern_server.Data
                 entity.Property(e => e.GhiChu)
                     .HasColumnName("Ghi_Chu")
                     .HasColumnType("nvarchar(max)"); // Hoặc tùy theo bạn dùng varchar/nvarchar
-
-                // Optional: cấu hình cột thời gian nếu dùng BaseModel
-                entity.Property(e => e.CreatedAt)
-                    .HasColumnName("Created_At");
-
-                entity.Property(e => e.UpdatedAt)
-                    .HasColumnName("Updated_At");
             });
+
+            // Kho
+            modelBuilder.Entity<Kho>(entity =>
+            {
+                entity.ToTable("tbl_DM_Kho");
+
+                entity.Property(e => e.TenKho)
+                    .IsRequired()
+                    .HasColumnName("Ten_Kho")
+                    .HasColumnType("varchar(255)");
+
+                entity.HasIndex(e => e.TenKho)
+                    .IsUnique(); // Tên kho là duy nhất
+
+                entity.Property(e => e.GhiChu)
+                    .HasColumnName("Ghi_Chu")
+                    .HasColumnType("nvarchar(max)");
+            });
+
             // Cấu hình cho tất cả entity kế thừa từ BaseModel
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
