@@ -1,0 +1,89 @@
+﻿@page "/phieunhapkho/detail/{id:int}"
+@using TKS_intern_client.Services
+@using TKS_intern_shared.ViewModels.ChiTietPhieuNhapKhos
+@using TKS_intern_shared.ViewModels.PhieuNhapKhos
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<h3>Chi tiết Phiếu Nhập Kho</h3>
+
+@if (phieu == null)
+{
+    <p><em>Đang tải dữ liệu...</em></p>
+}
+else
+{
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Thông tin Phiếu</h5>
+            <p><strong>Số Phiếu:</strong> @phieu.SoPhieuNhapKho</p>
+            <p><strong>Kho:</strong> @phieu.Kho?.TenKho</p>
+            <p><strong>Nhà Cung Cấp:</strong> @phieu.NhaCungCap?.TenNhaCungCap</p>
+            <p><strong>Ngày Nhập:</strong> @phieu.NgayNhapKho.ToString("dd/MM/yyyy HH:mm")</p>
+            <p><strong>Ghi Chú:</strong> @phieu.GhiChu</p>
+            <p><strong>Ngày Tạo:</strong> @phieu.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+            <p><strong>Ngày Cập Nhật:</strong> @phieu.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+        </div>
+    </div>
+
+    <h5>Chi tiết Phiếu</h5>
+
+    @if (ChiTietPhieuNhapKhos == null || !ChiTietPhieuNhapKhos.Any())
+    {
+        <p><em>Không có dữ liệu chi tiết.</em></p>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Sản Phẩm</th>
+                    <th>Số Lượng</th>
+                    <th>Đơn Giá</th>
+                    <th>Thành Tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ct in ChiTietPhieuNhapKhos)
+                {
+                    <tr>
+                        <td>@ct.SanPham?.TenSanPham</td>
+                        <td>@ct.SoLuongNhap</td>
+                        <td>@ct.DonGiaNhap.ToString("N0")</td>
+                        <td>@((ct.SoLuongNhap* ct.DonGiaNhap).ToString("N0"))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <button class="btn btn-secondary mt-3" @onclick="Back">Quay lại</button>
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+
+    private PhieuNhapKhoVM? phieu;
+    private List<ChiTietPhieuNhapKhoVM>? ChiTietPhieuNhapKhos = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        phieu = await Api.GetAsync<PhieuNhapKhoVM>($"api/PhieuNhapKhos/{id}");
+        if (phieu == null)
+        {
+            await JS.InvokeVoidAsync("alert", "Không tìm thấy phiếu nhập kho.");
+            Navigation.NavigateTo("/phieunhapkho");
+        }
+        var temp = await Api.GetAsync<List<ChiTietPhieuNhapKhoVM>>($"api/ChiTietPhieuNhapKhos/phieuNhapKho/{id}");
+        if (temp != null)
+        {
+            ChiTietPhieuNhapKhos = temp;
+        }
+    }
+
+    private void Back()
+    {
+        Navigation.NavigateTo("/phieunhapkho");
+    }
+}

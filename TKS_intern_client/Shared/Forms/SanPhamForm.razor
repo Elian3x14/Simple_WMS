@@ -1,0 +1,84 @@
+﻿@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms
+@using TKS_intern_shared.ViewModels.SanPhams
+@using TKS_intern_shared.ViewModels.LoaiSanPhams
+@using TKS_intern_shared.ViewModels.DonViTinhs
+
+<EditForm Model="Model" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">Mã sản phẩm</label>
+        <InputText class="form-control" @bind-Value="Model.MaSanPham" />
+        <ValidationMessage For="@(() => Model.MaSanPham)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Tên sản phẩm</label>
+        <InputText class="form-control" @bind-Value="Model.TenSanPham" />
+        <ValidationMessage For="@(() => Model.TenSanPham)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Loại sản phẩm</label>
+        <InputSelect class="form-select" @bind-Value="Model.LoaiSanPhamId">
+            <option value="">-- Chọn loại sản phẩm --</option>
+            @foreach (var loai in LoaiSanPhamList)
+            {
+                <option value="@loai.Id">@loai.TenLoaiSanPham</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => Model.LoaiSanPhamId)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Đơn vị tính</label>
+        <InputSelect class="form-select" @bind-Value="Model.DonViTinhId">
+            <option value="">-- Chọn đơn vị tính --</option>
+            @foreach (var dvt in DonViTinhList)
+            {
+                <option value="@dvt.Id">@dvt.TenDonViTinh</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="@(() => Model.DonViTinhId)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Ghi chú</label>
+        <InputTextArea class="form-control" @bind-Value="Model.GhiChu" />
+        <ValidationMessage For="@(() => Model.GhiChu)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lưu</button>
+    <button type="button" class="btn btn-secondary ms-2" @onclick="OnCancelClicked">Hủy</button>
+</EditForm>
+
+@code {
+    [Parameter, EditorRequired]
+    public SanPhamSaveVM Model { get; set; } = new();
+
+    [Parameter]
+    public List<LoaiSanPhamVM> LoaiSanPhamList { get; set; } = new();
+
+    [Parameter]
+    public List<DonViTinhVM> DonViTinhList { get; set; } = new();
+
+    [Parameter]
+    public EventCallback OnValidSubmitCallback { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    private async Task OnValidSubmit()
+    {
+        if (OnValidSubmitCallback.HasDelegate)
+            await OnValidSubmitCallback.InvokeAsync();
+    }
+
+    private async Task OnCancelClicked()
+    {
+        if (OnCancel.HasDelegate)
+            await OnCancel.InvokeAsync();
+    }
+}

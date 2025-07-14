@@ -1,0 +1,46 @@
+﻿@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms
+@using TKS_intern_shared.ViewModels.Khos
+
+<EditForm Model="Model" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label class="form-label">Tên kho</label>
+        <InputText class="form-control" @bind-Value="Model.TenKho" />
+        <ValidationMessage For="@(() => Model.TenKho)" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Ghi chú</label>
+        <InputTextArea class="form-control" @bind-Value="Model.GhiChu" />
+        <ValidationMessage For="@(() => Model.GhiChu)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lưu</button>
+    <button type="button" class="btn btn-secondary ms-2" @onclick="OnCancelClicked">Hủy</button>
+</EditForm>
+
+@code {
+    [Parameter, EditorRequired]
+    public KhoSaveVM Model { get; set; } = new();
+
+    [Parameter]
+    public EventCallback OnValidSubmitCallback { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    private async Task OnValidSubmit()
+    {
+        if (OnValidSubmitCallback.HasDelegate)
+            await OnValidSubmitCallback.InvokeAsync();
+    }
+
+    private async Task OnCancelClicked()
+    {
+        if (OnCancel.HasDelegate)
+            await OnCancel.InvokeAsync();
+    }
+}

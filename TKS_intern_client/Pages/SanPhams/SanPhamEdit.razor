@@ -1,0 +1,75 @@
+﻿@page "/sanpham/edit/{id:int}"
+@using TKS_intern_client.Services
+@using TKS_intern_client.Shared.Forms
+@using TKS_intern_shared.ViewModels.SanPhams
+@using TKS_intern_shared.ViewModels.LoaiSanPhams
+@using TKS_intern_shared.ViewModels.DonViTinhs
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<h3>Cập nhật Sản Phẩm</h3>
+
+@if (model == null || loaiSanPhamList == null || donViTinhList == null)
+{
+    <p><em>Đang tải dữ liệu...</em></p>
+}
+else
+{
+    <SanPhamForm Model="model"
+                 LoaiSanPhamList="loaiSanPhamList"
+                 DonViTinhList="donViTinhList"
+                 OnValidSubmitCallback="HandleValidSubmit"
+                 OnCancel="Cancel" />
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+
+    private SanPhamUpdateVM? model;
+    private List<LoaiSanPhamVM>? loaiSanPhamList;
+    private List<DonViTinhVM>? donViTinhList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var existing = await Api.GetAsync<SanPhamVM>($"api/SanPhams/{id}");
+        if (existing is not null)
+        {
+            model = new SanPhamUpdateVM
+            {
+                Id = existing.Id,
+                MaSanPham = existing.MaSanPham,
+                TenSanPham = existing.TenSanPham,
+                LoaiSanPhamId = existing.LoaiSanPhamId,
+                DonViTinhId = existing.DonViTinhId,
+                GhiChu = existing.GhiChu
+            };
+
+            loaiSanPhamList = await Api.GetAsync<List<LoaiSanPhamVM>>("api/LoaiSanPhams");
+            donViTinhList = await Api.GetAsync<List<DonViTinhVM>>("api/DonViTinhs");
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", "Không tìm thấy sản phẩm.");
+            Navigation.NavigateTo("/sanpham");
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await Api.PutAsync($"api/SanPhams/{id}", model);
+        if (response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/sanpham");
+        }
+        else
+        {
+            Console.WriteLine("Cập nhật thất bại: " + response.StatusCode);
+        }
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/sanpham");
+    }
+}

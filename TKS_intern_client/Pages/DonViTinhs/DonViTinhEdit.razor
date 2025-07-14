@@ -1,0 +1,65 @@
+﻿@page "/donvitinh/edit/{id:int}"
+@using TKS_intern_client.Services
+@using TKS_intern_client.Shared
+@using TKS_intern_client.Shared.Forms
+@using TKS_intern_shared.ViewModels.DonViTinhs
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<h3>Cập nhật Đơn Vị Tính</h3>
+
+@if (model == null)
+{
+    <p><em>Đang tải dữ liệu...</em></p>
+}
+else
+{
+    <DonViTinhForm Model="model"
+                   OnValidSubmitCallback="HandleValidSubmit"
+                   OnCancel="Cancel" />
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+
+    private DonViTinhUpdateVM? model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Gọi API để lấy dữ liệu hiện có
+        var existing = await Api.GetAsync<DonViTinhVM>($"api/DonViTinhs/{id}");
+        if (existing is not null)
+        {
+            model = new DonViTinhUpdateVM
+            {
+                Id = existing.Id,
+                TenDonViTinh = existing.TenDonViTinh,
+                GhiChu = existing.GhiChu
+            };
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", "Không tìm thấy đơn vị tính.");
+            Navigation.NavigateTo("/donvitinh");
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await Api.PutAsync($"api/DonViTinhs/{id}", model);
+        if (response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/donvitinh");
+        }
+        else
+        {
+            Console.WriteLine("Cập nhật thất bại: " + response.StatusCode);
+        }
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/donvitinh");
+    }
+}

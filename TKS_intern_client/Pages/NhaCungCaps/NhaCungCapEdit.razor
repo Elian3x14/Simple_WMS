@@ -1,0 +1,64 @@
+﻿@page "/nhacungcap/edit/{id:int}"
+@using TKS_intern_client.Services
+@using TKS_intern_client.Shared.Forms
+@using TKS_intern_shared.ViewModels.NhaCungCaps
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<h3>Cập nhật Nhà Cung Cấp</h3>
+
+@if (model == null)
+{
+    <p><em>Đang tải dữ liệu...</em></p>
+}
+else
+{
+    <NhaCungCapForm Model="model"
+                    OnValidSubmitCallback="HandleValidSubmit"
+                    OnCancel="Cancel" />
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+
+    private NhaCungCapUpdateVM? model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var existing = await Api.GetAsync<NhaCungCapVM>($"api/NhaCungCaps/{id}");
+        if (existing is not null)
+        {
+            model = new NhaCungCapUpdateVM
+            {
+                Id = existing.Id,
+                MaNhaCungCap = existing.MaNhaCungCap,
+                TenNhaCungCap = existing.TenNhaCungCap,
+                GhiChu = existing.GhiChu
+            };
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", "Không tìm thấy nhà cung cấp.");
+            Navigation.NavigateTo("/nhacungcap");
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await Api.PutAsync($"api/NhaCungCaps/{id}", model);
+        if (response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/nhacungcap");
+        }
+        else
+        {
+            Console.WriteLine("Cập nhật thất bại: " + response.StatusCode);
+        }
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/nhacungcap");
+    }
+}

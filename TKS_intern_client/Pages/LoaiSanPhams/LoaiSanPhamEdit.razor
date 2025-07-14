@@ -1,0 +1,65 @@
+﻿@page "/loaisanpham/edit/{id:int}"
+@using TKS_intern_client.Services
+@using TKS_intern_client.Shared.Forms
+@using TKS_intern_shared.ViewModels.LoaiSanPhams
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<h3>Cập nhật Loại Sản Phẩm</h3>
+
+@if (model == null)
+{
+    <p><em>Đang tải dữ liệu...</em></p>
+}
+else
+{
+    <LoaiSanPhamForm Model="model"
+                     OnValidSubmitCallback="HandleValidSubmit"
+                     OnCancel="Cancel" />
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+
+    private LoaiSanPhamUpdateVM? model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Lấy dữ liệu hiện có từ API
+        var existing = await Api.GetAsync<LoaiSanPhamVM>($"api/LoaiSanPhams/{id}");
+        if (existing is not null)
+        {
+            model = new LoaiSanPhamUpdateVM
+            {
+                Id = existing.Id,
+                MaLoaiSanPham = existing.MaLoaiSanPham,
+                TenLoaiSanPham = existing.TenLoaiSanPham,
+                GhiChu = existing.GhiChu
+            };
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", "Không tìm thấy loại sản phẩm.");
+            Navigation.NavigateTo("/loaisanpham");
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await Api.PutAsync($"api/LoaiSanPhams/{id}", model);
+        if (response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/loaisanpham");
+        }
+        else
+        {
+            Console.WriteLine("Cập nhật thất bại: " + response.StatusCode);
+        }
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/loaisanpham");
+    }
+}

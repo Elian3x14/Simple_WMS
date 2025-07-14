@@ -1,6 +1,0 @@
-@TKS_intern_HostAddress = http://localhost:5079
-
-GET {{TKS_intern_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

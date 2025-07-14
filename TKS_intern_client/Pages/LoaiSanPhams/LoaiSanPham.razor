@@ -1,0 +1,91 @@
+﻿@page "/loaisanpham"
+@using TKS_intern_client.Services
+@using TKS_intern_shared.ViewModels.LoaiSanPhams
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Loại Sản Phẩm</PageTitle>
+
+<h1>Danh sách Loại Sản Phẩm</h1>
+
+<button class="btn btn-primary mb-3" @onclick="CreateLoaiSanPham">Thêm mới</button>
+
+@if (loaiSanPhams == null)
+{
+    <p><em>Đang tải...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Mã Loại</th>
+                <th>Tên Loại</th>
+                <th>Ghi Chú</th>
+                <th>Ngày Tạo</th>
+                <th>Ngày Cập Nhật</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in loaiSanPhams)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.MaLoaiSanPham</td>
+                    <td>@item.TenLoaiSanPham</td>
+                    <td>@item.GhiChu</td>
+                    <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@item.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning me-1" @onclick="() => EditLoaiSanPham(item.Id)">Sửa</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteLoaiSanPham(item.Id)">Xóa</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<LoaiSanPhamVM>? loaiSanPhams;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        loaiSanPhams = await Api.GetAsync<List<LoaiSanPhamVM>>("api/LoaiSanPhams");
+    }
+
+    private void CreateLoaiSanPham()
+    {
+        Navigation.NavigateTo("/loaisanpham/create");
+    }
+
+    private void EditLoaiSanPham(int id)
+    {
+        Navigation.NavigateTo($"/loaisanpham/edit/{id}");
+    }
+
+    private async Task DeleteLoaiSanPham(int id)
+    {
+        var confirm = await JS.InvokeAsync<bool>("confirm", $"Bạn có chắc muốn xóa loại sản phẩm ID {id}?");
+        if (confirm)
+        {
+            var response = await Api.DeleteAsync($"api/LoaiSanPhams/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                await LoadData();
+            }
+            else
+            {
+                Console.WriteLine($"Xóa thất bại: {response.StatusCode}");
+            }
+        }
+    }
+}

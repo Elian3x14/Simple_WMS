@@ -1,0 +1,63 @@
+﻿@page "/kho/edit/{id:int}"
+@using TKS_intern_shared.ViewModels.Khos
+@using TKS_intern_client.Services
+@using TKS_intern_client.Shared.Forms
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<h3>Cập nhật Kho</h3>
+
+@if (model == null)
+{
+    <p><em>Đang tải dữ liệu...</em></p>
+}
+else
+{
+    <KhoForm Model="model"
+             OnValidSubmitCallback="HandleValidSubmit"
+             OnCancel="Cancel" />
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+
+    private KhoUpdateVM? model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var existing = await Api.GetAsync<KhoVM>($"api/Khos/{id}");
+        if (existing is not null)
+        {
+            model = new KhoUpdateVM
+            {
+                Id = existing.Id,
+                TenKho = existing.TenKho,
+                GhiChu = existing.GhiChu
+            };
+        }
+        else
+        {
+            await JS.InvokeVoidAsync("alert", "Không tìm thấy kho.");
+            Navigation.NavigateTo("/kho");
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await Api.PutAsync($"api/Khos/{id}", model);
+        if (response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/kho");
+        }
+        else
+        {
+            Console.WriteLine("Cập nhật thất bại: " + response.StatusCode);
+        }
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/kho");
+    }
+}

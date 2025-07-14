@@ -1,0 +1,95 @@
+﻿@page "/donvitinh"
+@using TKS_intern_client.Services
+@using TKS_intern_shared.ViewModels.DonViTinhs
+@inject HttpClient Http
+@inject ApiClient Api
+@inject NavigationManager Navigation
+
+
+<PageTitle>Đơn Vị Tính</PageTitle>
+
+<h1>Danh sách Đơn Vị Tính</h1>
+
+<p>Thành phần này hiển thị dữ liệu từ API.</p>
+
+<button class="btn btn-primary mb-3" @onclick="CreateDonViTinh">Thêm mới</button>
+
+@if (donViTinhs == null)
+{
+    <p><em>Đang tải...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên Đơn Vị Tính</th>
+                <th>Ghi Chú</th>
+                <th>Ngày Tạo</th>
+                <th>Ngày Cập Nhật</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in donViTinhs)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.TenDonViTinh</td>
+                    <td>@item.GhiChu</td>
+                    <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@item.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning me-1" @onclick="() => EditDonViTinh(item.Id)">Sửa</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteDonViTinh(item.Id)">Xóa</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<DonViTinhVM>? donViTinhs;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        donViTinhs = await Api.GetAsync<List<DonViTinhVM>>("api/DonViTinhs");
+    }
+
+
+    private void CreateDonViTinh()
+    {
+        Navigation.NavigateTo("/donvitinh/create");
+    }
+
+    private void EditDonViTinh(int id)
+    {
+        Navigation.NavigateTo($"/donvitinh/edit/{id}");
+    }
+
+    private async Task DeleteDonViTinh(int id)
+    {
+        var confirm = await JS.InvokeAsync<bool>("confirm", $"Bạn có chắc muốn xóa đơn vị tính ID {id}?");
+        if (confirm)
+        {
+            var response = await Http.DeleteAsync($"https://localhost:7016/api/DonViTinhs/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                await LoadData(); // reload lại danh sách
+            }
+            else
+            {
+                Console.WriteLine($"Xóa thất bại với mã lỗi: {response.StatusCode}");
+            }
+        }
+    }
+
+    [Inject] private IJSRuntime JS { get; set; } = default!;
+}

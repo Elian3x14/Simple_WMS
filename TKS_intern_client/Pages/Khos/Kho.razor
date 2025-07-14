@@ -1,0 +1,90 @@
+﻿@page "/kho"
+@using TKS_intern_client.Services
+@using TKS_intern_shared.ViewModels.Khos
+@inject HttpClient Http
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Kho</PageTitle>
+
+<h1>Danh sách Kho</h1>
+
+<button class="btn btn-primary mb-3" @onclick="CreateKho">Thêm mới</button>
+
+@if (khos == null)
+{
+    <p><em>Đang tải...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên Kho</th>
+                <th>Ghi Chú</th>
+                <th>Ngày Tạo</th>
+                <th>Ngày Cập Nhật</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in khos)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.TenKho</td>
+                    <td>@item.GhiChu</td>
+                    <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@item.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning me-1" @onclick="() => EditKho(item.Id)">Sửa</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteKho(item.Id)">Xóa</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<KhoVM>? khos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        khos = await Api.GetAsync<List<KhoVM>>("api/Khos");
+    }
+
+    private void CreateKho()
+    {
+        Navigation.NavigateTo("/kho/create");
+    }
+
+    private void EditKho(int id)
+    {
+        Navigation.NavigateTo($"/kho/edit/{id}");
+    }
+
+    private async Task DeleteKho(int id)
+    {
+        var confirm = await JS.InvokeAsync<bool>("confirm", $"Bạn có chắc muốn xóa kho ID {id}?");
+        if (confirm)
+        {
+            var response = await Http.DeleteAsync($"https://localhost:7016/api/Khos/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                await LoadData();
+            }
+            else
+            {
+                Console.WriteLine($"Xóa thất bại: {response.StatusCode}");
+            }
+        }
+    }
+}

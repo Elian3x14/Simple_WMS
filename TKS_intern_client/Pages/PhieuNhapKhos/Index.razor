@@ -1,0 +1,105 @@
+﻿@page "/phieunhapkho"
+@using TKS_intern_client.Services
+@using TKS_intern_shared.ViewModels.PhieuNhapKhos
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Phiếu Nhập Kho</PageTitle>
+
+<h1>Danh sách Phiếu Nhập Kho</h1>
+
+<button class="btn btn-primary mb-3" @onclick="CreatePhieuNhapKho">Thêm mới</button>
+
+@if (phieuNhapKhoList == null)
+{
+    <p><em>Đang tải dữ liệu...</em></p>
+}
+else if (!phieuNhapKhoList.Any())
+{
+    <p>Không có phiếu nhập kho nào.</p>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Số Phiếu</th>
+                <th>Kho</th>
+                <th>Nhà Cung Cấp</th>
+                <th>Ngày Nhập</th>
+                <th>Ghi chú</th>
+                <th>Ngày Tạo</th>
+                <th>Ngày Cập Nhật</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in phieuNhapKhoList)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.SoPhieuNhapKho</td>
+                    <td>@item.Kho?.TenKho</td>
+                    <td>@item.NhaCungCap?.TenNhaCungCap</td>
+                    <td>@item.NgayNhapKho.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@item.GhiChu</td>
+                    <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@item.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>
+                        <button class="btn btn-sm btn-danger" @onclick="() => DetailPhieuNhapKho(item.Id)">Chi tiết</button>
+                        <button class="btn btn-sm btn-warning me-1" @onclick="() => EditPhieuNhapKho(item.Id)">Sửa</button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => DeletePhieuNhapKho(item.Id)">Xóa</button>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<PhieuNhapKhoVM>? phieuNhapKhoList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        phieuNhapKhoList = await Api.GetAsync<List<PhieuNhapKhoVM>>("api/PhieuNhapKhos");
+    }
+
+    private void CreatePhieuNhapKho()
+    {
+        Navigation.NavigateTo("/phieunhapkho/create");
+    }
+
+    private void EditPhieuNhapKho(int id)
+    {
+        Navigation.NavigateTo($"/phieunhapkho/edit/{id}");
+    }
+    private void DetailPhieuNhapKho(int id)
+    {
+        Navigation.NavigateTo($"/phieunhapkho/detail/{id}");
+    }
+
+    private async Task DeletePhieuNhapKho(int id)
+    {
+        var confirm = await JS.InvokeAsync<bool>("confirm", $"Bạn có chắc muốn xóa phiếu nhập kho ID {id}?");
+        if (confirm)
+        {
+            var response = await Api.DeleteAsync($"api/PhieuNhapKhos/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                await LoadData();
+            }
+            else
+            {
+                Console.WriteLine($"Xóa thất bại: {response.StatusCode}");
+            }
+        }
+    }
+}

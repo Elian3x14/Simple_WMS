@@ -1,0 +1,35 @@
+﻿@page "/donvitinh/create"
+@using TKS_intern_client.Services
+@using TKS_intern_client.Shared
+@using TKS_intern_client.Shared.Forms
+@using TKS_intern_shared.ViewModels.DonViTinhs
+@inject ApiClient Api
+@inject NavigationManager Navigation
+
+<h3>Thêm mới Đơn Vị Tính</h3>
+
+<DonViTinhForm Model="model"
+               OnValidSubmitCallback="HandleValidSubmit"
+               OnCancel="Cancel" />
+
+@code {
+    private DonViTinhSave model = new();
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await Api.PostAsync("api/DonViTinhs", model);
+        if (response.IsSuccessStatusCode)
+        {
+            Navigation.NavigateTo("/donvitinh");
+        }
+        else
+        {
+            Console.WriteLine("Thêm thất bại: " + response.StatusCode);
+        }
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/donvitinh");
+    }
+}
