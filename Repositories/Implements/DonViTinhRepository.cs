@@ -20,29 +20,59 @@ namespace TKS_intern.Repositories.Implements
             return donViTinh;
         }
 
-        public Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var entity = await _context.DonViTinh.FindAsync(id);
+
+            if (entity == null)
+            {
+                return false; // Không tìm thấy -> báo lỗi 404 ở controller
+            }
+
+            _context.DonViTinh.Remove(entity);
+            await _context.SaveChangesAsync();
+
+            return true; // Xóa thành công
         }
+
 
         public Task<bool> ExistsByNameAsync(string name)
         {
             return _context.DonViTinh.AnyAsync(d => d.TenDonViTinh == name);
         }
 
-        public Task<IEnumerable<DonViTinh>> GetAllAsync()
+        public Task<bool> ExistsByNameAsync(string name, int excludeId)
         {
-            throw new NotImplementedException();
+            return _context.DonViTinh
+                .AnyAsync(d => d.TenDonViTinh == name && d.Id != excludeId);
         }
 
-        public Task<DonViTinh?> GetByIdAsync(int id)
+        public async Task<IEnumerable<DonViTinh>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.DonViTinh
+                .OrderByDescending(d => d.UpdatedAt) // Ưu tiên bản ghi gần đây nhất
+                .ToListAsync();
+        }
+        public async Task<DonViTinh?> GetByIdAsync(int id)
+        {
+            return await _context.DonViTinh.FindAsync(id);
         }
 
-        public Task<DonViTinh> UpdateAsync(DonViTinh donViTinh)
+        public async Task<DonViTinh> UpdateAsync(DonViTinh donViTinh)
         {
-            throw new NotImplementedException();
+            var existing = await _context.DonViTinh.FindAsync(donViTinh.Id);
+
+            if (existing == null)
+            {
+                throw new KeyNotFoundException($"Không tìm thấy đơn vị tính với Id = {donViTinh.Id}");
+            }
+
+            _context.Entry(existing).CurrentValues.SetValues(donViTinh);
+
+            await _context.SaveChangesAsync();
+
+            return existing;
         }
+
     }
 }

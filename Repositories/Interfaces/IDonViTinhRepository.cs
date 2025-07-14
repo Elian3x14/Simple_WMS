@@ -11,6 +11,6 @@ namespace TKS_intern.Repositories.Interfaces
         Task<bool> DeleteAsync(int id);
 
         Task<bool> ExistsByNameAsync(string name);
-
+        Task<bool> ExistsByNameAsync(string name, int excludeId);
     }
 }

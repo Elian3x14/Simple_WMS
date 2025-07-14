@@ -9,7 +9,8 @@ namespace TKS_intern.Mappers
         public DonViTinhProfile()
         {
             CreateMap<DonViTinh, DonViTinhVM>().ReverseMap();
-            CreateMap<DonViTinhCreate, DonViTinh>();
+            CreateMap<DonViTinhCreateVM, DonViTinh>();
+            CreateMap<DonViTinhUpdateVM, DonViTinh>();
         }
     }
 }

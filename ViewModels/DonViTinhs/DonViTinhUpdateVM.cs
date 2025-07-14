@@ -2,7 +2,8 @@
 
 namespace TKS_intern.ViewModels.DonViTinhs
 {
-    public class DonViTinhUpdate : DonViTinhSave
+    public class DonViTinhUpdateVM : DonViTinhSave
     {
+        public int Id { get; set; }
     }
 }

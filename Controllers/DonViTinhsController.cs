@@ -32,56 +32,62 @@ namespace TKS_intern.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DonViTinh>>> GetDonViTinh()
         {
-            return await _context.DonViTinh.ToListAsync();
+            var list = await _donViTinhRepository.GetAllAsync();
+            var listMapped = _mapper.Map<IEnumerable<DonViTinhVM>>(list);
+            return Ok(listMapped);
+
         }
 
         // GET: api/DonViTinhs/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<DonViTinh>> GetDonViTinh(int id)
+        public async Task<ActionResult<DonViTinhVM>> GetDonViTinh(int id)
         {
-            var donViTinh = await _context.DonViTinh.FindAsync(id);
+            var donViTinh = await _donViTinhRepository.GetByIdAsync(id);
 
             if (donViTinh == null)
             {
-                return NotFound();
+                return NotFound("Không tìm thấy đơn vị tính.");
             }
-
-            return donViTinh;
+            var donViTinhVm = _mapper.Map<DonViTinhVM>(donViTinh);
+            return donViTinhVm;
         }
 
         // PUT: api/DonViTinhs/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDonViTinh(int id, DonViTinhVM donViTinh)
+        public async Task<IActionResult> PutDonViTinh(int id, DonViTinhUpdateVM vm)
         {
-            if (id != donViTinh.Id)
+            if (id != vm.Id)
             {
-                return BadRequest();
+                return BadRequest(new { message = "Id không khớp với dữ liệu gửi lên." });
             }
 
-            _context.Entry(donViTinh).State = EntityState.Modified;
+            // Kiểm tra trùng tên (loại trừ chính bản ghi đang cập nhật)
+            var isDuplicate = await _donViTinhRepository.ExistsByNameAsync(vm.TenDonViTinh, vm.Id);
+            if (isDuplicate)
+            {
+                return BadRequest(new { message = "Tên đơn vị tính đã tồn tại." });
+            }
+
+            var model = _mapper.Map<DonViTinh>(vm);
 
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!DonViTinhExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+                var updated = await _donViTinhRepository.UpdateAsync(model);
+                var resultVm = _mapper.Map<DonViTinhVM>(updated);
 
-            return NoContent();
+                return Ok(resultVm);
+            }
+            catch (KeyNotFoundException e)
+            {
+                // Trường hợp không tìm thấy bản ghi
+                return NotFound(new { message = e.Message });
+            }
         }
+
 
         // POST: api/DonViTinhs
         [HttpPost]
-        public async Task<ActionResult<DonViTinhVM>> PostDonViTinh(DonViTinhCreate donViTinhVm)
+        public async Task<ActionResult<DonViTinhVM>> PostDonViTinh(DonViTinhCreateVM donViTinhVm)
         {
             // Kiểm tra trùng tên
             var isExisted = await _donViTinhRepository.ExistsByNameAsync(donViTinhVm.TenDonViTinh);
@@ -100,21 +106,13 @@ namespace TKS_intern.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDonViTinh(int id)
         {
-            var donViTinh = await _context.DonViTinh.FindAsync(id);
-            if (donViTinh == null)
+            var result = await _donViTinhRepository.DeleteAsync(id);
+            if (result)
             {
-                return NotFound();
+                return NoContent();
             }
 
-            _context.DonViTinh.Remove(donViTinh);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool DonViTinhExists(int id)
-        {
-            return _context.DonViTinh.Any(e => e.Id == id);
+            return NotFound();
         }
     }
 }

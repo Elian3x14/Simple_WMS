@@ -2,7 +2,7 @@
 
 namespace TKS_intern.ViewModels.DonViTinhs
 {
-    public class DonViTinhCreate : DonViTinhSave
+    public class DonViTinhCreateVM : DonViTinhSave
     {
 
     }
