@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TKS_intern.Data;
-using TKS_intern.Models;
+using TKS_intern_shared.Models;
 using TKS_intern.Repositories.Interfaces;
 
 namespace TKS_intern.Repositories.Implements

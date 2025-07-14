@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TKS_intern.Data;
-using TKS_intern.Models;
 using TKS_intern.Repositories.Interfaces;
-using TKS_intern.ViewModels.DonViTinhs;
+using TKS_intern_shared.Models;
+using TKS_intern_shared.ViewModels.DonViTinhs;
 
 namespace TKS_intern.Controllers
 {
@@ -30,7 +30,7 @@ namespace TKS_intern.Controllers
 
         // GET: api/DonViTinhs
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DonViTinh>>> GetDonViTinh()
+        public async Task<ActionResult<IEnumerable<DonViTinhVM>>> GetDonViTinh()
         {
             var list = await _donViTinhRepository.GetAllAsync();
             var listMapped = _mapper.Map<IEnumerable<DonViTinhVM>>(list);

@@ -1,4 +1,5 @@
-﻿using TKS_intern.Models;
+﻿
+using TKS_intern_shared.Models;
 
 namespace TKS_intern.Repositories.Interfaces
 {

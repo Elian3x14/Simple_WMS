@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using TKS_intern.Models;
-using TKS_intern.ViewModels.DonViTinhs;
+using TKS_intern_shared.Models;
+using TKS_intern_shared.ViewModels.DonViTinhs;
+
 
 namespace TKS_intern.Mappers
 {

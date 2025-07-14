@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using TKS_intern.Models;
+using TKS_intern_shared.Models;
 
 namespace TKS_intern.Data
 {
@@ -14,7 +14,7 @@ namespace TKS_intern.Data
         {
         }
 
-        public DbSet<TKS_intern.Models.DonViTinh> DonViTinh { get; set; } = default!;
+        public DbSet<TKS_intern_shared.Models.DonViTinh> DonViTinh { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
