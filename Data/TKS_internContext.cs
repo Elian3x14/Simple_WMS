@@ -20,6 +20,9 @@ namespace TKS_intern_server.Data
         public DbSet<NhaCungCap> NhaCungCap { get; set; } = default!;
         public DbSet<Kho> Kho { get; set; } = default!;
         public DbSet<KhoUser> KhoUsers { get; set; } = default!;
+        public DbSet<PhieuNhapKho> PhieuNhapKhos { get; set; } = default!;
+
+        public DbSet<ChiTietPhieuNhapKho> ChiTietPhieuNhapKhos { get; set; } = default!;
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -170,6 +173,81 @@ namespace TKS_intern_server.Data
                     .HasForeignKey(e => e.KhoId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
+
+            // Phiếu nhập kho
+            modelBuilder.Entity<PhieuNhapKho>(entity =>
+            {
+                entity.ToTable("tbl_DM_Phieu_Nhap_Kho");
+
+                entity.Property(e => e.SoPhieuNhapKho)
+                    .IsRequired()
+                    .HasColumnName("So_Phieu_Nhap_Kho")
+                    .HasColumnType("varchar(50)");
+
+                entity.HasIndex(e => e.SoPhieuNhapKho).IsUnique();
+
+                entity.Property(e => e.KhoId)
+                    .IsRequired()
+                    .HasColumnName("Kho_ID");
+
+                entity.Property(e => e.NhaCungCapId)
+                    .IsRequired()
+                    .HasColumnName("NCC_ID");
+
+                entity.Property(e => e.NgayNhapKho)
+                    .IsRequired()
+                    .HasColumnName("Ngay_Nhap_Kho");
+
+                entity.Property(e => e.GhiChu)
+                    .HasColumnName("Ghi_Chu")
+                    .HasColumnType("nvarchar(max)");
+
+                entity.HasOne(e => e.Kho)
+                    .WithMany()
+                    .HasForeignKey(e => e.KhoId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.NhaCungCap)
+                    .WithMany()
+                    .HasForeignKey(e => e.NhaCungCapId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // Nhập kho raw data (chi tiết phiếu nhập)
+            modelBuilder.Entity<ChiTietPhieuNhapKho>(entity =>
+            {
+                entity.ToTable("tbl_DM_Nhap_Kho_Raw_Data");
+
+                entity.Property(e => e.PhieuNhapKhoId)
+                    .IsRequired()
+                    .HasColumnName("Nhap_Kho_ID");
+
+                entity.Property(e => e.SanPhamId)
+                    .IsRequired()
+                    .HasColumnName("San_Pham_ID");
+
+                entity.Property(e => e.SoLuongNhap)
+                    .IsRequired()
+                    .HasColumnName("SL_Nhap")
+                    .HasPrecision(18, 2); ;
+
+                entity.Property(e => e.DonGiaNhap)
+                    .IsRequired()
+                    .HasColumnName("Don_Gia_Nhap")
+                    .HasColumnType("decimal(18,2)")
+                    .HasPrecision(18, 2); ;
+
+                entity.HasOne(e => e.PhieuNhapKho)
+                    .WithMany(p => p.ChiTietPhieuNhapKhos)
+                    .HasForeignKey(e => e.PhieuNhapKhoId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(e => e.SanPham)
+                    .WithMany()
+                    .HasForeignKey(e => e.SanPhamId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
 
             // Cấu hình cho tất cả entity kế thừa từ BaseModel
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())

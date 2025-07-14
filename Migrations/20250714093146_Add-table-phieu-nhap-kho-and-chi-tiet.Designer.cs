@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TKS_intern_server.Data;
 
@@ -11,9 +12,11 @@ using TKS_intern_server.Data;
 namespace TKS_intern_server.Migrations
 {
     [DbContext(typeof(TKS_internContext))]
-    partial class TKS_internContextModelSnapshot : ModelSnapshot
+    [Migration("20250714093146_Add-table-phieu-nhap-kho-and-chi-tiet")]
+    partial class Addtablephieunhapkhoandchitiet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,7 +39,6 @@ namespace TKS_intern_server.Migrations
                         .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<decimal>("DonGiaNhap")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("Don_Gia_Nhap");
 
@@ -49,7 +51,6 @@ namespace TKS_intern_server.Migrations
                         .HasColumnName("San_Pham_ID");
 
                     b.Property<decimal>("SoLuongNhap")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)")
                         .HasColumnName("SL_Nhap");
 

@@ -23,6 +23,8 @@ builder.Services.AddScoped<ISanPhamRepository, SanPhamRepository>();
 builder.Services.AddScoped<INhaCungCapRepository, NhaCungCapRepository>();
 builder.Services.AddScoped<IKhoRepository, KhoRepository>();
 builder.Services.AddScoped<IKhoUserRepository, KhoUserRepository>();
+builder.Services.AddScoped<IPhieuNhapKhoRepository, PhieuNhapKhoRepository>();
+
 
 
 
