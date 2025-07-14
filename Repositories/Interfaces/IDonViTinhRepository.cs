@@ -1,7 +1,7 @@
 ﻿
 using TKS_intern_shared.Models;
 
-namespace TKS_intern.Repositories.Interfaces
+namespace TKS_intern_shared.Repositories.Interfaces
 {
     public interface IDonViTinhRepository
     {

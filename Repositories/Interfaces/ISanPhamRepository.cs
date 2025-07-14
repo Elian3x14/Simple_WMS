@@ -2,12 +2,12 @@
 
 namespace TKS_intern_shared.Repositories.Interfaces
 {
-    public interface ILoaiSanPhamRepository
+    public interface ISanPhamRepository
     {
-        Task<IEnumerable<LoaiSanPham>> GetAllAsync();
-        Task<LoaiSanPham?> GetByIdAsync(int id);
-        Task<LoaiSanPham> CreateAsync(LoaiSanPham loaiSanPham);
-        Task<LoaiSanPham> UpdateAsync(LoaiSanPham loaiSanPham);
+        Task<IEnumerable<SanPham>> GetAllAsync();
+        Task<SanPham?> GetByIdAsync(int id);
+        Task<SanPham> CreateAsync(SanPham sanPham);
+        Task<SanPham> UpdateAsync(SanPham sanPham);
         Task<bool> DeleteAsync(int id);
 
         Task<bool> ExistsByMaAsync(string ma);

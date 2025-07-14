@@ -2,7 +2,7 @@
 using TKS_intern_shared.Models;
 using TKS_intern_shared.ViewModels.LoaiSanPhams;
 
-namespace TKS_intern.Mappers
+namespace TKS_intern_shared.Mappers
 {
     public class LoaiSanPhamProfile : Profile
     {

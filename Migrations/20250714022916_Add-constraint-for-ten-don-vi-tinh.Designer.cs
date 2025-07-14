@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using TKS_intern.Data;
+using TKS_intern_shared.Data;
 
 #nullable disable
 
-namespace TKS_intern.Migrations
+namespace TKS_intern_shared.Migrations
 {
     [DbContext(typeof(TKS_internContext))]
     [Migration("20250714022916_Add-constraint-for-ten-don-vi-tinh")]

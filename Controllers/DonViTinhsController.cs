@@ -6,12 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TKS_intern.Data;
-using TKS_intern.Repositories.Interfaces;
+using TKS_intern_shared.Data;
+using TKS_intern_shared.Repositories.Interfaces;
 using TKS_intern_shared.Models;
 using TKS_intern_shared.ViewModels.DonViTinhs;
 
-namespace TKS_intern.Controllers
+namespace TKS_intern_shared.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

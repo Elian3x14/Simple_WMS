@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace TKS_intern.Migrations
+namespace TKS_intern_shared.Migrations
 {
     /// <inheritdoc />
     public partial class AddDonvitinh : Migration

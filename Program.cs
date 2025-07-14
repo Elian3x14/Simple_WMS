@@ -1,19 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TKS_intern.Data;
-using TKS_intern.Repositories.Implements;
-using TKS_intern.Repositories.Interfaces;
-using TKS_intern_server.Repositories.Implements;
-using TKS_intern_server.Repositories.Interfaces;
+using TKS_intern_shared.Data;
+using TKS_intern_shared.Mappers;
+using TKS_intern_shared.Repositories.Implements;
+using TKS_intern_shared.Repositories.Interfaces;
+using TKS_intern_shared.Repositories.Implements;
+using TKS_intern_shared.Repositories.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TKS_internContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TKS_internContext") ?? throw new InvalidOperationException("Connection string 'TKS_internContext' not found.")));
 
 // Add services to the container.
-builder.Services.AddAutoMapper(typeof(Program)); // hoặc typeof(DonViTinhProfile).Assembly
+builder.Services.AddAutoMapper(typeof(DonViTinhProfile));
+builder.Services.AddAutoMapper(typeof(SanPhamProfile));
+builder.Services.AddAutoMapper(typeof(LoaiSanPhamProfile));
+
 
 
 builder.Services.AddScoped<IDonViTinhRepository, DonViTinhRepository>();
 builder.Services.AddScoped<ILoaiSanPhamRepository, LoaiSanPhamRepository>();
+builder.Services.AddScoped<ISanPhamRepository, SanPhamRepository>();
+
 
 
 

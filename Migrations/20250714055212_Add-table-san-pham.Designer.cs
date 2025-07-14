@@ -12,8 +12,8 @@ using TKS_intern_shared.Data;
 namespace TKS_intern_shared.Migrations
 {
     [DbContext(typeof(TKS_internContext))]
-    [Migration("20250714044119_Add-table-loai-san-pham")]
-    partial class Addtableloaisanpham
+    [Migration("20250714055212_Add-table-san-pham")]
+    partial class Addtablesanpham
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -102,6 +102,77 @@ namespace TKS_intern_shared.Migrations
                         .IsUnique();
 
                     b.ToTable("tbl_DM_Loai_San_Pham", (string)null);
+                });
+
+            modelBuilder.Entity("TKS_intern_shared.Models.SanPham", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<int>("DonViTinhId")
+                        .HasColumnType("int")
+                        .HasColumnName("Don_Vi_Tinh_ID");
+
+                    b.Property<string>("GhiChu")
+                        .HasColumnType("nvarchar(500)")
+                        .HasColumnName("Ghi_Chu");
+
+                    b.Property<int>("LoaiSanPhamId")
+                        .HasColumnType("int")
+                        .HasColumnName("Loai_San_Pham_ID");
+
+                    b.Property<string>("MaSanPham")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("Ma_San_Pham");
+
+                    b.Property<string>("TenSanPham")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("Ten_San_Pham");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DonViTinhId");
+
+                    b.HasIndex("LoaiSanPhamId");
+
+                    b.HasIndex("MaSanPham")
+                        .IsUnique();
+
+                    b.ToTable("tbl_DM_San_Pham", (string)null);
+                });
+
+            modelBuilder.Entity("TKS_intern_shared.Models.SanPham", b =>
+                {
+                    b.HasOne("TKS_intern_shared.Models.DonViTinh", "DonViTinh")
+                        .WithMany()
+                        .HasForeignKey("DonViTinhId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TKS_intern_shared.Models.LoaiSanPham", "LoaiSanPham")
+                        .WithMany()
+                        .HasForeignKey("LoaiSanPhamId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DonViTinh");
+
+                    b.Navigation("LoaiSanPham");
                 });
 #pragma warning restore 612, 618
         }

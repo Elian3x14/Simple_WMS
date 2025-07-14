@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TKS_intern.Data;
+using TKS_intern_shared.Data;
 using TKS_intern_shared.Models;
-using TKS_intern_server.Repositories.Interfaces;
+using TKS_intern_shared.Repositories.Interfaces;
 
-namespace TKS_intern_server.Repositories.Implements
+namespace TKS_intern_shared.Repositories.Implements
 {
     public class LoaiSanPhamRepository : ILoaiSanPhamRepository
     {
