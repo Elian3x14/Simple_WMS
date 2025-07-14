@@ -57,7 +57,7 @@ namespace TKS_intern_shared.Repositories.Implements
         {
             return await _context.DonViTinh.FindAsync(id);
         }
-
+            
         public async Task<DonViTinh> UpdateAsync(DonViTinh donViTinh)
         {
             var existing = await _context.DonViTinh.FindAsync(donViTinh.Id);

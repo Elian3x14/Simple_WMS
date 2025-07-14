@@ -19,6 +19,8 @@ namespace TKS_intern_server.Data
         public DbSet<SanPham> SanPham { get; set; } = default!;
         public DbSet<NhaCungCap> NhaCungCap { get; set; } = default!;
         public DbSet<Kho> Kho { get; set; } = default!;
+        public DbSet<KhoUser> KhoUsers { get; set; } = default!;
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -143,6 +145,30 @@ namespace TKS_intern_server.Data
                 entity.Property(e => e.GhiChu)
                     .HasColumnName("Ghi_Chu")
                     .HasColumnType("nvarchar(max)");
+            });
+
+            // Kho - User
+            modelBuilder.Entity<KhoUser>(entity =>
+            {
+                entity.ToTable("tbl_DM_Kho_User");
+
+                entity.Property(e => e.MaDangNhap)
+                    .IsRequired()
+                    .HasColumnName("Ma_Dang_Nhap")
+                    .HasColumnType("varchar(100)");
+
+                entity.Property(e => e.KhoId)
+                    .IsRequired()
+                    .HasColumnName("Kho_ID");
+
+                // Thiết lập khóa chính tổng hợp (composite key)
+                entity.HasKey(e => new { e.MaDangNhap, e.KhoId });
+
+                // Thiết lập khóa ngoại (FK) tới Kho nếu có quan hệ
+                entity.HasOne(e => e.Kho)
+                    .WithMany()
+                    .HasForeignKey(e => e.KhoId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             // Cấu hình cho tất cả entity kế thừa từ BaseModel
