@@ -2,6 +2,8 @@
 using TKS_intern.Data;
 using TKS_intern.Repositories.Implements;
 using TKS_intern.Repositories.Interfaces;
+using TKS_intern_server.Repositories.Implements;
+using TKS_intern_server.Repositories.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TKS_internContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TKS_internContext") ?? throw new InvalidOperationException("Connection string 'TKS_internContext' not found.")));
@@ -11,6 +13,8 @@ builder.Services.AddAutoMapper(typeof(Program)); // hoặc typeof(DonViTinhProfi
 
 
 builder.Services.AddScoped<IDonViTinhRepository, DonViTinhRepository>();
+builder.Services.AddScoped<ILoaiSanPhamRepository, LoaiSanPhamRepository>();
+
 
 
 builder.Services.AddControllers();

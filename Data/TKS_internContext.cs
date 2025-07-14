@@ -15,9 +15,11 @@ namespace TKS_intern.Data
         }
 
         public DbSet<TKS_intern_shared.Models.DonViTinh> DonViTinh { get; set; } = default!;
+        public DbSet<TKS_intern_shared.Models.LoaiSanPham> LoaiSanPham { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Don vi tinh
             modelBuilder.Entity<DonViTinh>(entity =>
             {
                 entity.ToTable("tbl_DM_Don_Vi_Tinh");
@@ -30,6 +32,30 @@ namespace TKS_intern.Data
                 entity.Property(e => e.GhiChu)
                     .HasColumnName("Ghi_Chu");
             });
+            // Loai san pham
+            modelBuilder.Entity<LoaiSanPham>(entity =>
+            {
+                entity.ToTable("tbl_DM_Loai_San_Pham");
+
+                entity.Property(e => e.MaLoaiSanPham)
+                    .IsRequired()
+                    .HasColumnName("Ma_Loai_San_Pham")
+                    .HasColumnType("varchar(50)");
+
+                entity.HasIndex(e => e.MaLoaiSanPham).IsUnique();
+
+                entity.Property(e => e.TenLoaiSanPham)
+                    .IsRequired()
+                    .HasColumnName("Ten_Loai_San_Pham")
+                    .HasColumnType("varchar(255)");
+
+                entity.HasIndex(e => e.TenLoaiSanPham).IsUnique();
+
+                entity.Property(e => e.GhiChu)
+                    .HasColumnName("Ghi_Chu")
+                    .HasColumnType("nvarchar(max)");
+            });
+
 
             // Cấu hình cho tất cả entity kế thừa từ BaseModel
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
