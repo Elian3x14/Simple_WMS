@@ -15,6 +15,7 @@ builder.Services.AddAutoMapper(typeof(LoaiSanPhamProfile));
 builder.Services.AddAutoMapper(typeof(NhaCungCapProfile));
 builder.Services.AddAutoMapper(typeof(KhoProfile));
 builder.Services.AddAutoMapper(typeof(KhoUserProfile));
+builder.Services.AddAutoMapper(typeof(PhieuNhapKhoProfile));
 
 
 builder.Services.AddScoped<IDonViTinhRepository, DonViTinhRepository>();
@@ -24,6 +25,7 @@ builder.Services.AddScoped<INhaCungCapRepository, NhaCungCapRepository>();
 builder.Services.AddScoped<IKhoRepository, KhoRepository>();
 builder.Services.AddScoped<IKhoUserRepository, KhoUserRepository>();
 builder.Services.AddScoped<IPhieuNhapKhoRepository, PhieuNhapKhoRepository>();
+builder.Services.AddScoped<IChiTietPhieuNhapKhoRepository, ChiTietPhieuNhapKhoRepository>();
 
 
 
