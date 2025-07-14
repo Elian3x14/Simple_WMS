@@ -48,6 +48,10 @@ namespace TKS_intern_server.Controllers
             if (await _nhaCungCapRepository.ExistsByNameAsync(vm.TenNhaCungCap))
                 return BadRequest(new { message = "Tên nhà cung cấp đã tồn tại." });
 
+            if (await _nhaCungCapRepository.ExistsByMaAsync(vm.MaNhaCungCap))
+                return BadRequest(new { message = "Mã nhà cung cấp đã tồn tại." });
+
+
             var model = _mapper.Map<NhaCungCap>(vm);
             var created = await _nhaCungCapRepository.CreateAsync(model);
             var result = _mapper.Map<NhaCungCapVM>(created);
@@ -64,6 +68,9 @@ namespace TKS_intern_server.Controllers
 
             if (await _nhaCungCapRepository.ExistsByNameAsync(vm.TenNhaCungCap, vm.Id))
                 return BadRequest(new { message = "Tên nhà cung cấp đã tồn tại." });
+
+            if (await _nhaCungCapRepository.ExistsByMaAsync(vm.MaNhaCungCap, vm.Id))
+                return BadRequest(new { message = "Mã nhà cung cấp đã tồn tại." });
 
             var model = _mapper.Map<NhaCungCap>(vm);
             try

@@ -70,5 +70,18 @@ namespace TKS_intern_server.Repositories.Implements
             return _context.NhaCungCap
                 .AnyAsync(n => n.TenNhaCungCap == name && n.Id != excludeId);
         }
+
+        public Task<bool> ExistsByMaAsync(string maNhaCungCap)
+        {
+            return _context.NhaCungCap
+                .AnyAsync(n => n.MaNhaCungCap == maNhaCungCap);
+        }
+
+        public Task<bool> ExistsByMaAsync(string maNhaCungCap, int excludeId)
+        {
+            return _context.NhaCungCap
+                .AnyAsync(n => n.MaNhaCungCap == maNhaCungCap && n.Id != excludeId);
+        }
+
     }
 }

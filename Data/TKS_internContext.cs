@@ -119,6 +119,9 @@ namespace TKS_intern_server.Data
                 entity.HasIndex(e => e.TenNhaCungCap)
                     .IsUnique(); // Tên nhà cung cấp là duy nhất
 
+                entity.HasIndex(e => e.MaNhaCungCap)
+                    .IsUnique(); // Mã nhà cung cấp là duy nhất
+
                 entity.Property(e => e.GhiChu)
                     .HasColumnName("Ghi_Chu")
                     .HasColumnType("nvarchar(max)"); // Hoặc tùy theo bạn dùng varchar/nvarchar

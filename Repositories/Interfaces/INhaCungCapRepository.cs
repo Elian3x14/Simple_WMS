@@ -9,8 +9,9 @@ namespace TKS_intern_server.Repositories.Interfaces
         Task<NhaCungCap> CreateAsync(NhaCungCap nhaCungCap);
         Task<NhaCungCap> UpdateAsync(NhaCungCap nhaCungCap);
         Task<bool> DeleteAsync(int id);
-
         Task<bool> ExistsByNameAsync(string name);
         Task<bool> ExistsByNameAsync(string name, int excludeId);
+        Task<bool> ExistsByMaAsync(string maNhaCungCap);
+        Task<bool> ExistsByMaAsync(string maNhaCungCap, int excludeId);
     }
 }
