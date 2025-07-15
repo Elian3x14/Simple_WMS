@@ -73,13 +73,18 @@ else
         <ActionColumn Title="Hành động">
             <Template>
                 <Space Size="SpaceSize.Small">
-                    <Button Size="ButtonSize.Small" Type="ButtonType.Link" >
-                        <Icon Type="eye" Theme="IconThemeType.Outline" />
-                    </Button>
-                    <Button Size="ButtonSize.Small" Type="ButtonType.Text">
-                        <Icon Type="edit" Theme="IconThemeType.Outline" />
-                    </Button>
-                    <Button Size="ButtonSize.Small" Type="ButtonType.Text" Danger >
+                    <a href=@($"/phieunhapkho/detail/{context.Id}")>
+                        <Button Size="ButtonSize.Small" Type="ButtonType.Link">
+                            <Icon Type="eye" Theme="IconThemeType.Outline" />
+                        </Button>
+                    </a>
+                    <a href=@($"/phieunhapkho/edit/{context.Id}")>
+                        <Button Size="ButtonSize.Small" Type="ButtonType.Text">
+                            <Icon Type="edit" Theme="IconThemeType.Outline" />
+                        </Button>
+                    </a>
+                    <Button Size="ButtonSize.Small" Type="ButtonType.Text" Danger
+                            OnClick="()=>DeletePhieuNhapKho(context.Id)">
                         <Icon Type="delete" Theme="IconThemeType.Outline" />
                     </Button>
                 </Space>
@@ -90,10 +95,7 @@ else
 
 @code {
     private List<PhieuNhapKhoVM>? phieuNhapKhoList;
-    private List<string> selectedColumns = new()
-    {
-        "SoPhieuNhapKho", "Kho", "NhaCungCap", "NgayNhapKho", "GhiChu", "CreatedAt", "UpdatedAt"
-    };
+    
 
     protected override async Task OnInitializedAsync()
     {
@@ -103,21 +105,6 @@ else
     private async Task LoadData()
     {
         phieuNhapKhoList = await Api.GetAsync<List<PhieuNhapKhoVM>>("api/PhieuNhapKhos");
-    }
-
-    private void CreatePhieuNhapKho()
-    {
-        Navigation.NavigateTo("/phieunhapkho/create");
-    }
-
-    private void EditPhieuNhapKho(int id)
-    {
-        Navigation.NavigateTo($"/phieunhapkho/edit/{id}");
-    }
-
-    private void DetailPhieuNhapKho(int id)
-    {
-        Navigation.NavigateTo($"/phieunhapkho/detail/{id}");
     }
 
     private async Task DeletePhieuNhapKho(int id)
