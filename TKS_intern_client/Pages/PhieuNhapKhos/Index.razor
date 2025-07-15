@@ -7,60 +7,93 @@
 
 <PageTitle>Phiếu Nhập Kho</PageTitle>
 
-<h1>Danh sách Phiếu Nhập Kho</h1>
+<Breadcrumb>
+    <BreadcrumbItem Href="/">Home</BreadcrumbItem>
+    <BreadcrumbItem>Phiếu nhập kho</BreadcrumbItem>
+</Breadcrumb>
 
-<button class="btn btn-primary mb-3" @onclick="CreatePhieuNhapKho">Thêm mới</button>
+<Title Level="3">Danh sách Phiếu Nhập Kho</Title>
+
+<a href="/phieunhapkho/create">
+    <AntDesign.Button Type="ButtonType.Primary" Icon="@IconType.Outline.Plus" class="mb-3">
+        Thêm mới
+    </AntDesign.Button>
+</a>
 
 @if (phieuNhapKhoList == null)
 {
-    <p><em>Đang tải dữ liệu...</em></p>
+    <Spin Tip="Đang tải dữ liệu..." />
 }
 else if (!phieuNhapKhoList.Any())
 {
-    <p>Không có phiếu nhập kho nào.</p>
+    <Empty>
+        <DescriptionTemplate>
+            <span>Customize <a>Description</a></span>
+        </DescriptionTemplate>
+        <ChildContent>
+            <Button Type="ButtonType.Primary">Create Now</Button>
+        </ChildContent>
+    </Empty>
 }
 else
 {
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Số Phiếu</th>
-                <th>Kho</th>
-                <th>Nhà Cung Cấp</th>
-                <th>Ngày Nhập</th>
-                <th>Ghi chú</th>
-                <th>Ngày Tạo</th>
-                <th>Ngày Cập Nhật</th>
-                <th>Hành động</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in phieuNhapKhoList)
-            {
-                <tr>
-                    <td>@item.Id</td>
-                    <td>@item.SoPhieuNhapKho</td>
-                    <td>@item.Kho?.TenKho</td>
-                    <td>@item.NhaCungCap?.TenNhaCungCap</td>
-                    <td>@item.NgayNhapKho.ToString("dd/MM/yyyy HH:mm")</td>
-                    <td>@item.GhiChu</td>
-                    <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
-                    <td>@item.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger" @onclick="() => DetailPhieuNhapKho(item.Id)">Chi tiết</button>
-                        <button class="btn btn-sm btn-warning me-1" @onclick="() => EditPhieuNhapKho(item.Id)">Sửa</button>
-                        <button class="btn btn-sm btn-danger" @onclick="() => DeletePhieuNhapKho(item.Id)">Xóa</button>
+    <Table TItem="PhieuNhapKhoVM" DataSource="phieuNhapKhoList">
+        <PropertyColumn Property="x => x.Id" Title="Sản phẩm">
+            @context.Id
+        </PropertyColumn>
 
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        <PropertyColumn Property="x => x.SoPhieuNhapKho" Title="Số Phiếu" />
+
+        <Column TData="PhieuNhapKhoVM" Title="Kho">
+            <Template>@context.Kho?.TenKho</Template>
+        </Column>
+
+        <Column TData="PhieuNhapKhoVM" Title="Nhà Cung Cấp">
+            <Template>@context.NhaCungCap?.TenNhaCungCap</Template>
+        </Column>
+
+
+        <Column TData="PhieuNhapKhoVM" Title="Ngày Nhập">
+            <Template>@context.NgayNhapKho.ToString("dd/MM/yyyy HH:mm")</Template>
+        </Column>
+
+        <PropertyColumn Property="x => x.GhiChu" Title="Ghi chú" />
+
+
+        <Column TData="PhieuNhapKhoVM" Title="Ngày Tạo">
+            <Template>@context.CreatedAt.ToString("dd/MM/yyyy HH:mm")</Template>
+        </Column>
+
+
+
+        <Column TData="PhieuNhapKhoVM" Title="Ngày Cập Nhật">
+            <Template>@context.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</Template>
+        </Column>
+
+        <ActionColumn Title="Hành động">
+            <Template>
+                <Space Size="SpaceSize.Small">
+                    <Button Size="ButtonSize.Small" Type="ButtonType.Link" >
+                        <Icon Type="eye" Theme="IconThemeType.Outline" />
+                    </Button>
+                    <Button Size="ButtonSize.Small" Type="ButtonType.Text">
+                        <Icon Type="edit" Theme="IconThemeType.Outline" />
+                    </Button>
+                    <Button Size="ButtonSize.Small" Type="ButtonType.Text" Danger >
+                        <Icon Type="delete" Theme="IconThemeType.Outline" />
+                    </Button>
+                </Space>
+            </Template>
+        </ActionColumn>
+    </Table>
 }
 
 @code {
     private List<PhieuNhapKhoVM>? phieuNhapKhoList;
+    private List<string> selectedColumns = new()
+    {
+        "SoPhieuNhapKho", "Kho", "NhaCungCap", "NgayNhapKho", "GhiChu", "CreatedAt", "UpdatedAt"
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -81,6 +114,7 @@ else
     {
         Navigation.NavigateTo($"/phieunhapkho/edit/{id}");
     }
+
     private void DetailPhieuNhapKho(int id)
     {
         Navigation.NavigateTo($"/phieunhapkho/detail/{id}");
