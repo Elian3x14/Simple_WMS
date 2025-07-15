@@ -1,71 +1,90 @@
 ﻿@page "/phieunhapkho/detail/{id:int}"
 @using TKS_intern_client.Services
+@using TKS_intern_client.Shared.Tables
 @using TKS_intern_shared.ViewModels.ChiTietPhieuNhapKhos
 @using TKS_intern_shared.ViewModels.PhieuNhapKhos
 @inject ApiClient Api
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
-<h3>Chi tiết Phiếu Nhập Kho</h3>
+<Breadcrumb>
+    <BreadcrumbItem>Home</BreadcrumbItem>
+    <BreadcrumbItem Href="/phieunhapkho">Phiếu nhập kho</BreadcrumbItem>
+    <BreadcrumbItem>Chi tiết phiếu <Tag Color="TagColor.Lime">@phieu?.SoPhieuNhapKho</Tag></BreadcrumbItem>
+</Breadcrumb>
+
+<PageHeader Title="Chi tiết phiếu nhập kho"
+            SubTitle="Xem thông tin chi tiết"
+            OnBack="Back" />
 
 @if (phieu == null)
 {
-    <p><em>Đang tải dữ liệu...</em></p>
+    <Skeleton Active="true" Title="true" ParagraphRows="4" />
 }
 else
 {
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Thông tin Phiếu</h5>
-            <p><strong>Số Phiếu:</strong> @phieu.SoPhieuNhapKho</p>
-            <p><strong>Kho:</strong> @phieu.Kho?.TenKho</p>
-            <p><strong>Nhà Cung Cấp:</strong> @phieu.NhaCungCap?.TenNhaCungCap</p>
-            <p><strong>Ngày Nhập:</strong> @phieu.NgayNhapKho.ToString("dd/MM/yyyy HH:mm")</p>
-            <p><strong>Ghi Chú:</strong> @phieu.GhiChu</p>
-            <p><strong>Ngày Tạo:</strong> @phieu.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
-            <p><strong>Ngày Cập Nhật:</strong> @phieu.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</p>
-        </div>
-    </div>
+    <Card Title="Thông tin phiếu" Bordered="true" Class="mb-4">
+        <Extra>
+            <a href="@($"/phieunhapkho/edit/{phieu.Id}")">
+                <Button Type="ButtonType.Link">
+                    <Icon Type="edit" Theme="IconThemeType.Outline" /> Chỉnh sửa
+                </Button>
+            </a>
+        </Extra>
+        <Body>
+            <Descriptions Column="2" Bordered="true" Size="DescriptionsSize.Small">
+                <DescriptionsItem Title="Số Phiếu">
+                    @phieu.SoPhieuNhapKho
+                </DescriptionsItem>
+                <DescriptionsItem Title="Kho">
+                    <Tag Color="TagColor.Blue">@phieu.Kho?.TenKho</Tag>
+                </DescriptionsItem>
+                <DescriptionsItem Title="Nhà Cung Cấp">
+                    <Tag Color="TagColor.Lime">@phieu.NhaCungCap?.TenNhaCungCap</Tag>
+                </DescriptionsItem>
+                <DescriptionsItem Title="Ngày Nhập">
+                    @phieu.NgayNhapKho.ToString("dd/MM/yyyy HH:mm")
+                </DescriptionsItem>
+                <DescriptionsItem Title="Ghi Chú">
+                    @phieu.GhiChu
+                </DescriptionsItem>
+                <DescriptionsItem Title="Ngày Tạo">
+                    @phieu.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                </DescriptionsItem>
+                <DescriptionsItem Title="Ngày Cập Nhật">
+                    @phieu.UpdatedAt.ToString("dd/MM/yyyy HH:mm")
+                </DescriptionsItem>
+            </Descriptions>
+        </Body>
+    </Card>
 
-    <h5>Chi tiết Phiếu</h5>
+    <Card Title="Chi tiết sản phẩm" Bordered="true">
+        @if (ChiTietPhieuNhapKhos == null || !ChiTietPhieuNhapKhos.Any())
+        {
+            <Empty>
+                <DescriptionTemplate>
+                    <span>Hiện không có chi tiết phiếu nhập nào.</span>
+                </DescriptionTemplate>
+                <ChildContent>
+                    <Button Type="ButtonType.Primary">Thêm chi tiết</Button>
+                </ChildContent>
+            </Empty>
+        }
+        else
+        {
+            <ChiTietPhieuNhapKhoTable Items="ChiTietPhieuNhapKhos" />
+        }
 
-    @if (ChiTietPhieuNhapKhos == null || !ChiTietPhieuNhapKhos.Any())
-    {
-        <p><em>Không có dữ liệu chi tiết.</em></p>
-    }
-    else
-    {
-        <table class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th>Sản Phẩm</th>
-                    <th>Số Lượng</th>
-                    <th>Đơn Giá</th>
-                    <th>Thành Tiền</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var ct in ChiTietPhieuNhapKhos)
-                {
-                    <tr>
-                        <td>@ct.SanPham?.TenSanPham</td>
-                        <td>@ct.SoLuongNhap</td>
-                        <td>@ct.DonGiaNhap.ToString("N0")</td>
-                        <td>@((ct.SoLuongNhap* ct.DonGiaNhap).ToString("N0"))</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-
-    <button class="btn btn-secondary mt-3" @onclick="Back">Quay lại</button>
+        <Divider />
+        <Button Type="ButtonType.Default" @onclick="Back">Quay lại</Button>
+    </Card>
 }
 
 @code {
     [Parameter] public int id { get; set; }
 
     private PhieuNhapKhoVM? phieu;
-    private List<ChiTietPhieuNhapKhoVM>? ChiTietPhieuNhapKhos = new();
+    private List<ChiTietPhieuNhapKhoVM>? ChiTietPhieuNhapKhos;
 
     protected override async Task OnInitializedAsync()
     {
@@ -74,12 +93,12 @@ else
         {
             await JS.InvokeVoidAsync("alert", "Không tìm thấy phiếu nhập kho.");
             Navigation.NavigateTo("/phieunhapkho");
+            return;
         }
-        var temp = await Api.GetAsync<List<ChiTietPhieuNhapKhoVM>>($"api/ChiTietPhieuNhapKhos/phieuNhapKho/{id}");
-        if (temp != null)
-        {
-            ChiTietPhieuNhapKhos = temp;
-        }
+
+        ChiTietPhieuNhapKhos = await Api.GetAsync<List<ChiTietPhieuNhapKhoVM>>(
+            $"api/ChiTietPhieuNhapKhos/phieuNhapKho/{id}"
+        );
     }
 
     private void Back()

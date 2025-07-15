@@ -1,6 +1,8 @@
 ﻿@page "/phieunhapkho/create"
+@using System.Text.Json
 @using TKS_intern_client.Services
 @using TKS_intern_client.Shared.Forms
+@using TKS_intern_client.Shared.Tables
 @using TKS_intern_shared.ViewModels.PhieuNhapKhos
 @using TKS_intern_shared.ViewModels.Khos
 @using TKS_intern_shared.ViewModels.NhaCungCaps
@@ -46,6 +48,7 @@ else
     else if (currentStep == 2)
     {
         <Card Class="p-4" Bordered="true">
+
             <Title Level="5">Thông tin phiếu nhập kho</Title>
 
             <Descriptions Column="1" Bordered="true" Size="DescriptionsSize.Small">
@@ -69,36 +72,21 @@ else
             </Descriptions>
 
 
-        <Divider Orientation="DividerOrientation.Left">
-            <Title Level="5">Chi tiết sản phẩm</Title>
-        </Divider>
+            <Divider Orientation="DividerOrientation.Left">
+                <Title Level="5">Chi tiết sản phẩm</Title>
+            </Divider>
 
 
-            <Table TItem="ChiTietPhieuNhapKhoSaveVM" DataSource="@chiTietList">
-                <PropertyColumn Property="c => c.SanPhamId" Title="Sản phẩm">
-                    @(context.SanPham != null ? context.SanPham.TenSanPham : "Không xác định")
-                </PropertyColumn>
-
-                <PropertyColumn Property="c => c.SoLuongNhap" Title="Số lượng nhập">
-                    @context.SoLuongNhap
-                </PropertyColumn>
-                <PropertyColumn Property="c => c.DonGiaNhap" Title="Đơn giá nhập">
-                    @context.DonGiaNhap.ToString("N0")
-                </PropertyColumn>
-                <PropertyColumn Property="c => (c.SoLuongNhap * c.DonGiaNhap)" Title="Thành tiền">
-                    @((context.SoLuongNhap * context.DonGiaNhap).ToString("N0"))
-                </PropertyColumn>
-
-            </Table>
+            <ChiTietPhieuNhapKhoSaveTable Items="chiTietList" />
 
 
-    <Divider />
+            <Divider />
 
-    <Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
-        <Button Type="default" Icon="left" OnClick="BackStep">Quay lại</Button>
-        <Button Type="ButtonType.Primary" Icon="save" OnClick="SubmitAll">Xác nhận & Lưu</Button>
-    </Flex>
-</Card>
+            <Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
+                <Button Type="default" Icon="left" OnClick="BackStep">Quay lại</Button>
+                <Button Type="ButtonType.Primary" Icon="save" OnClick="SubmitAll">Xác nhận & Lưu</Button>
+            </Flex>
+        </Card>
     }
 
 }
@@ -109,6 +97,7 @@ else
     private List<KhoVM>? khos;
     private List<NhaCungCapVM>? nhaCungCaps;
     private List<ChiTietPhieuNhapKhoSaveVM> chiTietList = new();
+    private List<ChiTietPhieuNhapKhoVM> ChiTietPhieuNhapKhos = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -128,12 +117,15 @@ else
 
     private async Task SubmitAll()
     {
+        Console.WriteLine("Submitting all data..." + JsonSerializer.Serialize(chiTietList));
         var response = await Api.PostAsync("api/PhieuNhapKhos", model);
         if (!response.IsSuccessStatusCode)
         {
             await JS.InvokeVoidAsync("alert", $"Lỗi: {response.StatusCode}");
             return;
         }
+
+
 
         var createdPhieu = await response.Content.ReadFromJsonAsync<PhieuNhapKhoVM>();
         if (createdPhieu == null)
@@ -142,10 +134,18 @@ else
             return;
         }
 
-        foreach (var item in chiTietList)
+        var responseChiTiet = await Api.PostAsync("api/ChiTietPhieuNhapKhos", chiTietList.Select(ct => new ChiTietPhieuNhapKhoSaveVM
         {
-            item.PhieuNhapKhoId = createdPhieu.Id;
-            await Api.PostAsync("api/ChiTietPhieuNhapKhos", item);
+            PhieuNhapKhoId = createdPhieu.Id,
+            SanPhamId = ct.SanPhamId,
+            SoLuongNhap = ct.SoLuongNhap,
+            DonGiaNhap = ct.DonGiaNhap
+        }).ToList());
+
+        if (!responseChiTiet.IsSuccessStatusCode)
+        {
+            await JS.InvokeVoidAsync("alert", $"Lỗi khi lưu chi tiết phiếu nhập kho: {responseChiTiet.StatusCode}");
+            return;
         }
 
         Navigation.NavigateTo("/phieunhapkho");

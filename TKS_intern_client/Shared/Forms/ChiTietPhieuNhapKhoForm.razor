@@ -1,4 +1,5 @@
 ﻿@using TKS_intern_client.Services
+@using TKS_intern_client.Shared.Tables
 @using TKS_intern_shared.ViewModels.ChiTietPhieuNhapKhos
 @using TKS_intern_shared.ViewModels.SanPhams
 @using Microsoft.AspNetCore.Components
@@ -7,33 +8,7 @@
 <div>
     <ChiTietPhieuNhapKhoInlineForm SanPhams="SanPhams" OnAdd="HandleAddRow" />
 
-    <Table TItem="ChiTietPhieuNhapKhoSaveVM" DataSource="@Items">
-        <PropertyColumn Property="c => c.SanPhamId" Title="Sản phẩm">
-            @(context.SanPham != null ? context.SanPham.TenSanPham : "Không xác định")
-        </PropertyColumn>
-
-        <PropertyColumn Property="c => c.SoLuongNhap" Title="Số lượng nhập">
-            @context.SoLuongNhap
-        </PropertyColumn>
-        <PropertyColumn Property="c => c.DonGiaNhap" Title="Đơn giá nhập">
-            @context.DonGiaNhap.ToString("N0")
-        </PropertyColumn>
-        <PropertyColumn Property="c => (c.SoLuongNhap * c.DonGiaNhap)" Title="Thành tiền">
-            @((context.SoLuongNhap* context.DonGiaNhap).ToString("N0"))
-        </PropertyColumn>
-
-       
-        <ActionColumn Title="Action">
-            <Space Size="SpaceSize.Middle">
-                <SpaceItem>
-                    <Icon Type="edit" Theme="IconThemeType.Outline" />
-                </SpaceItem>
-                <SpaceItem>
-                    <Icon Type="close" Theme="IconThemeType.Outline" />
-                </SpaceItem>
-            </Space>
-        </ActionColumn>
-    </Table>
+    <ChiTietPhieuNhapKhoSaveTable Items="Items" OnEditClicked="EditRow" OnDeleteClicked="DeleteRow" />
 
     <div class="mt-4">
         <AntDesign.Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
@@ -79,8 +54,16 @@
         return Task.CompletedTask;
     }
 
-    private void RemoveRow(ChiTietPhieuNhapKhoSaveVM item)
+    private void EditRow(ChiTietPhieuNhapKhoSaveVM item)
+    {
+        Console.WriteLine($"Editing item: {item.SanPham?.TenSanPham}");
+        // Logic to edit the row can be implemented here
+        // For example, you could open a modal with the item details for editing
+    }
+
+    private void DeleteRow(ChiTietPhieuNhapKhoSaveVM item)
     {
         Items.Remove(item);
     }
+
 }

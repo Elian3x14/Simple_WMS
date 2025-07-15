@@ -50,6 +50,7 @@
     private async Task OnSubmit()
     {
         NewItem.SanPham = SanPhams.FirstOrDefault(sp => sp.Id == NewItem.SanPhamId);
+      
         if (OnAdd.HasDelegate)
         {
             await OnAdd.InvokeAsync(NewItem);

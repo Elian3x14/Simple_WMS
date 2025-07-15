@@ -1,0 +1,30 @@
+﻿@using TKS_intern_shared.ViewModels.ChiTietPhieuNhapKhos
+@using AntDesign
+
+<Table TItem="ChiTietPhieuNhapKhoVM"
+       DataSource="Items"
+       RowKey="x => x.SanPhamId"
+       Bordered="true"
+       Size="TableSize.Small">
+
+    <Column TData="ChiTietPhieuNhapKhoVM" Title="Sản phẩm">
+        <Template>@context.SanPham?.TenSanPham</Template>
+    </Column>
+
+    <Column TData="ChiTietPhieuNhapKhoVM" Title="Số lượng">
+        <Template>@context.SoLuongNhap</Template>
+    </Column>
+
+    <Column TData="ChiTietPhieuNhapKhoVM" Title="Đơn giá">
+        <Template>@context.DonGiaNhap.ToString("N0")</Template>
+    </Column>
+
+    <Column TData="ChiTietPhieuNhapKhoVM" Title="Thành tiền">
+        <Template>@((context.SoLuongNhap * context.DonGiaNhap).ToString("N0"))</Template>
+    </Column>
+
+</Table>
+
+@code {
+    [Parameter] public List<ChiTietPhieuNhapKhoVM> Items { get; set; } = new();
+}

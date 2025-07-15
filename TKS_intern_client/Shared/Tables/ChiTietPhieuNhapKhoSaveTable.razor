@@ -1,0 +1,62 @@
+﻿@using TKS_intern_shared.ViewModels.ChiTietPhieuNhapKhos
+@using AntDesign
+
+<Table TItem="ChiTietPhieuNhapKhoSaveVM"
+       DataSource="Items"
+       RowKey="x => x.SanPhamId"
+       Bordered="true"
+       Size="TableSize.Small">
+
+    <Column TData="ChiTietPhieuNhapKhoSaveVM" Title="Sản phẩm">
+        <Template>@context.SanPham?.TenSanPham</Template>
+    </Column>
+
+    <Column TData="ChiTietPhieuNhapKhoSaveVM" Title="Số lượng">
+        <Template>@context.SoLuongNhap</Template>
+    </Column>
+
+    <Column TData="ChiTietPhieuNhapKhoSaveVM" Title="Đơn giá">
+        <Template>@context.DonGiaNhap.ToString("N0")</Template>
+    </Column>
+
+    <Column TData="ChiTietPhieuNhapKhoSaveVM" Title="Thành tiền">
+        <Template>@((context.SoLuongNhap * context.DonGiaNhap).ToString("N0"))</Template>
+    </Column>
+
+    @if (OnDeleteClicked.HasDelegate || OnEditClicked.HasDelegate)
+    {
+        <ActionColumn Title="Hành động">
+            <Space Size="SpaceSize.Middle">
+                @if (OnEditClicked.HasDelegate)
+                {
+                    <SpaceItem>
+                        <Button Size="ButtonSize.Small"
+                                Icon="edit"
+                                Type="ButtonType.Link"
+                                OnClick="@(() => OnEditClicked.InvokeAsync(context))">
+                        </Button>
+                    </SpaceItem>
+                }
+                @if (OnDeleteClicked.HasDelegate)
+                {
+                    <SpaceItem>
+                        <Button Size="ButtonSize.Small"
+                                Icon="delete"
+                                Type="ButtonType.Primary"
+                                Danger
+                                OnClick="@(() => OnDeleteClicked.InvokeAsync(context))">
+                        </Button>
+                    </SpaceItem>
+                }
+            </Space>
+        </ActionColumn>
+    }
+
+</Table>
+
+@code {
+    [Parameter] public List<ChiTietPhieuNhapKhoSaveVM> Items { get; set; } = new();
+
+    [Parameter] public EventCallback<ChiTietPhieuNhapKhoSaveVM> OnEditClicked { get; set; }
+    [Parameter] public EventCallback<ChiTietPhieuNhapKhoSaveVM> OnDeleteClicked { get; set; }
+}
