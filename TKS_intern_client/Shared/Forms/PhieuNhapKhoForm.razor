@@ -1,28 +1,32 @@
-﻿@using TKS_intern_shared.ViewModels.PhieuNhapKhos
+﻿@using System.Text.Json
+@using TKS_intern_shared.ViewModels.PhieuNhapKhos
 @using TKS_intern_shared.ViewModels.Khos
 @using TKS_intern_shared.ViewModels.NhaCungCaps
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components
 
-<AntDesign.Form TModel="PhieuNhapKhoSaveVM" Model="Model" OnFinish="OnValidSubmit" Layout="FormLayout.Vertical">
+<AntDesign.Form 
+        Model="@Model" 
+        OnFinish="OnValidSubmit"
+        Layout="FormLayout.Vertical"
+        ValidateOnChange="true">
+    <DataAnnotationsValidator />
     <GridRow Gutter="16">
         <GridCol Span="12">
                 <AntDesign.FormItem Label="Số Phiếu Nhập Kho" Required>
                     <Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
-                        <AntDesign.Input @bind-Value="Model.SoPhieuNhapKho" />
+                        <AntDesign.Input @bind-Value="@context.SoPhieuNhapKho" />
                         <AntDesign.Button Type="AntDesign.ButtonType.Primary">
                             Tự động
                         </AntDesign.Button>
                     </Flex>
-                    <ValidationMessage For="@(() => Model.SoPhieuNhapKho)" />
                 </AntDesign.FormItem>
                 
         </GridCol>
 
         <GridCol Span="12">
             <AntDesign.FormItem Label="Ngày Nhập Kho" Required>
-                <AntDesign.DatePicker @bind-Value="Model.NgayNhapKho" Style="width: 100%;" Format="dd/MM/yyyy" />
-                <ValidationMessage For="@(() => Model.NgayNhapKho)" />
+                <AntDesign.DatePicker @bind-Value="context.NgayNhapKho" Style="width: 100%;" Format="dd/MM/yyyy" />
             </AntDesign.FormItem>
         </GridCol>
 
@@ -31,9 +35,8 @@
                 <AntDesign.Select DataSource="NhaCungCaps"
                                   ItemValue="item => item.Id"
                                   ItemLabel="item => item.TenNhaCungCap"
-                                  @bind-Value="Model.NhaCungCapId"
+                                  @bind-Value="context.NhaCungCapId"
                                   Placeholder="Chọn nhà cung cấp" Style="width: 100%;" />
-                <ValidationMessage For="@(() => Model.NhaCungCapId)" />
             </AntDesign.FormItem>
         </GridCol>
 
@@ -42,16 +45,14 @@
                 <AntDesign.Select DataSource="Khos"
                                   ItemValue="item => item.Id"
                                   ItemLabel="item => item.TenKho"
-                                  @bind-Value="Model.KhoId"
+                                  @bind-Value="context.KhoId"
                                   Placeholder="Chọn kho" Style="width: 100%;" />
-                <ValidationMessage For="@(() => Model.KhoId)" />
             </AntDesign.FormItem>
         </GridCol>
 
         <GridCol Span="24">
             <AntDesign.FormItem Label="Ghi Chú">
-                <AntDesign.TextArea @bind-Value="Model.GhiChu" Rows="5" />
-                <ValidationMessage For="@(() => Model.GhiChu)" />
+                <AntDesign.TextArea @bind-Value="context.GhiChu" Rows="5" />
             </AntDesign.FormItem>
         </GridCol>
     </GridRow>
@@ -79,6 +80,7 @@
 
     private async Task OnValidSubmit()
     {
+        Console.WriteLine("Form submitted successfully." + JsonSerializer.Serialize(Model));
         if (OnValidSubmitCallback.HasDelegate)
             await OnValidSubmitCallback.InvokeAsync();
     }

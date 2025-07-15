@@ -9,6 +9,12 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
+<Breadcrumb>
+    <BreadcrumbItem>Home</BreadcrumbItem>
+    <BreadcrumbItem Href="/phieunhapkho">Phiếu nhập kho</BreadcrumbItem>
+    <BreadcrumbItem>Tạo mới</BreadcrumbItem>
+</Breadcrumb>
+
 <h3>Thêm mới Phiếu Nhập Kho</h3>
 
 @if (khos == null || nhaCungCaps == null)
@@ -39,40 +45,60 @@ else
     }
     else if (currentStep == 2)
     {
-        <div class="card p-4">
-            <h5>Thông tin phiếu nhập kho</h5>
-            <ul>
-                <li><strong>Kho:</strong> @khos?.FirstOrDefault(k => k.Id == model.KhoId)?.TenKho</li>
-                <li><strong>Nhà cung cấp:</strong> @nhaCungCaps?.FirstOrDefault(n => n.Id == model.NhaCungCapId)?.TenNhaCungCap</li>
-                <li><strong>Ngày nhập kho:</strong> @model.NgayNhapKho.ToString("dd/MM/yyyy")</li>
-            </ul>
+        <Card Class="p-4" Bordered="true">
+            <Title Level="5">Thông tin phiếu nhập kho</Title>
 
-            <h5 class="mt-4">Chi tiết sản phẩm</h5>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Sản phẩm</th>
-                        <th>Số lượng</th>
-                        <th>Đơn giá</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in chiTietList)
-                    {
-                        <tr>
-                            <td>@item.SanPhamId</td>
-                            <td>@item.SoLuongNhap</td>
-                            <td>@item.DonGiaNhap.ToString("N0")</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            <Descriptions Column="1" Bordered="true" Size="DescriptionsSize.Small">
+                <DescriptionsItem Title="Kho">
+                    <Tag Color="TagColor.Blue">
+                        @khos?.FirstOrDefault(k => k.Id == model.KhoId)?.TenKho
+                    </Tag>
+                </DescriptionsItem>
 
-            <div class="mt-3">
-                <button class="btn btn-secondary me-2" @onclick="BackStep">Quay lại</button>
-                <button class="btn btn-primary" @onclick="SubmitAll">Xác nhận & Lưu</button>
-            </div>
-        </div>
+                <DescriptionsItem Title="Nhà cung cấp">
+                    <Tag Color="TagColor.Lime">
+                        @nhaCungCaps?.FirstOrDefault(n => n.Id == model.NhaCungCapId)?.TenNhaCungCap
+                    </Tag>
+                </DescriptionsItem>
+
+                <DescriptionsItem Title="Ngày nhập kho">
+                    <Tag Color="TagColor.Orange">
+                        @model.NgayNhapKho.ToString("dd/MM/yyyy")
+                    </Tag>
+                </DescriptionsItem>
+            </Descriptions>
+
+
+        <Divider Orientation="DividerOrientation.Left">
+            <Title Level="5">Chi tiết sản phẩm</Title>
+        </Divider>
+
+
+            <Table TItem="ChiTietPhieuNhapKhoSaveVM" DataSource="@chiTietList">
+                <PropertyColumn Property="c => c.SanPhamId" Title="Sản phẩm">
+                    @(context.SanPham != null ? context.SanPham.TenSanPham : "Không xác định")
+                </PropertyColumn>
+
+                <PropertyColumn Property="c => c.SoLuongNhap" Title="Số lượng nhập">
+                    @context.SoLuongNhap
+                </PropertyColumn>
+                <PropertyColumn Property="c => c.DonGiaNhap" Title="Đơn giá nhập">
+                    @context.DonGiaNhap.ToString("N0")
+                </PropertyColumn>
+                <PropertyColumn Property="c => (c.SoLuongNhap * c.DonGiaNhap)" Title="Thành tiền">
+                    @((context.SoLuongNhap * context.DonGiaNhap).ToString("N0"))
+                </PropertyColumn>
+
+            </Table>
+
+
+    <Divider />
+
+    <Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
+        <Button Type="default" Icon="left" OnClick="BackStep">Quay lại</Button>
+        <Button Type="ButtonType.Primary" Icon="save" OnClick="SubmitAll">Xác nhận & Lưu</Button>
+    </Flex>
+</Card>
     }
 
 }

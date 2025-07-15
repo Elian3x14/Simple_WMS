@@ -9,7 +9,7 @@ namespace TKS_intern_shared.ViewModels.PhieuNhapKhos
         [MaxLength(50, ErrorMessage = "Số phiếu nhập kho không được vượt quá 50 ký tự.")]
         public string SoPhieuNhapKho { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Kho là bắt buộc.")]
+        [Required(ErrorMessage = "Kho là bắt buộc.")]   
         [Range(1, int.MaxValue, ErrorMessage = "Kho không hợp lệ.")]
         public int KhoId { get; set; }
 
