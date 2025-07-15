@@ -1,0 +1,86 @@
+﻿@using TKS_intern_client.Services
+@using TKS_intern_shared.ViewModels.ChiTietPhieuNhapKhos
+@using TKS_intern_shared.ViewModels.SanPhams
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms
+
+<div>
+    <ChiTietPhieuNhapKhoInlineForm SanPhams="SanPhams" OnAdd="HandleAddRow" />
+
+    <Table TItem="ChiTietPhieuNhapKhoSaveVM" DataSource="@Items">
+        <PropertyColumn Property="c => c.SanPhamId" Title="Sản phẩm">
+            @(context.SanPham != null ? context.SanPham.TenSanPham : "Không xác định")
+        </PropertyColumn>
+
+        <PropertyColumn Property="c => c.SoLuongNhap" Title="Số lượng nhập">
+            @context.SoLuongNhap
+        </PropertyColumn>
+        <PropertyColumn Property="c => c.DonGiaNhap" Title="Đơn giá nhập">
+            @context.DonGiaNhap.ToString("N0")
+        </PropertyColumn>
+        <PropertyColumn Property="c => (c.SoLuongNhap * c.DonGiaNhap)" Title="Thành tiền">
+            @((context.SoLuongNhap* context.DonGiaNhap).ToString("N0"))
+        </PropertyColumn>
+
+       
+        <ActionColumn Title="Action">
+            <Space Size="SpaceSize.Middle">
+                <SpaceItem>
+                    <Icon Type="edit" Theme="IconThemeType.Outline" />
+                </SpaceItem>
+                <SpaceItem>
+                    <Icon Type="close" Theme="IconThemeType.Outline" />
+                </SpaceItem>
+            </Space>
+        </ActionColumn>
+    </Table>
+
+    <div class="mt-4">
+        <AntDesign.Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
+            <AntDesign.Button Type="ButtonType.Default" OnClick="OnCancelClicked">Hủy</AntDesign.Button>
+            <AntDesign.Button Type="ButtonType.Primary" OnClick="OnValidSubmit">
+                Bước kế tiếp
+                <Icon Type="right" Theme="IconThemeType.Outline" />
+            </AntDesign.Button>
+        </AntDesign.Flex>
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<ChiTietPhieuNhapKhoSaveVM> Items { get; set; } = new();
+    [Parameter] public EventCallback OnValidSubmitCallback { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+
+    private List<SanPhamVM> SanPhams { get; set; } = new();
+
+    [Inject] public ApiClient Api { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        SanPhams = await Api.GetAsync<List<SanPhamVM>>("api/SanPhams") ?? new();
+    }
+
+    private async Task OnValidSubmit()
+    {
+        if (OnValidSubmitCallback.HasDelegate)
+            await OnValidSubmitCallback.InvokeAsync();
+    }
+
+    private async Task OnCancelClicked()
+    {
+        if (OnCancel.HasDelegate)
+            await OnCancel.InvokeAsync();
+    }
+
+    private Task HandleAddRow(ChiTietPhieuNhapKhoSaveVM item)
+    {
+        Items.Add(item);
+        return Task.CompletedTask;
+    }
+
+    private void RemoveRow(ChiTietPhieuNhapKhoSaveVM item)
+    {
+        Items.Remove(item);
+    }
+}

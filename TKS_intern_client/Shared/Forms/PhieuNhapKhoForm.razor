@@ -1,0 +1,91 @@
+﻿@using TKS_intern_shared.ViewModels.PhieuNhapKhos
+@using TKS_intern_shared.ViewModels.Khos
+@using TKS_intern_shared.ViewModels.NhaCungCaps
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components
+
+<AntDesign.Form TModel="PhieuNhapKhoSaveVM" Model="Model" OnFinish="OnValidSubmit" Layout="FormLayout.Vertical">
+    <GridRow Gutter="16">
+        <GridCol Span="12">
+                <AntDesign.FormItem Label="Số Phiếu Nhập Kho" Required>
+                    <Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
+                        <AntDesign.Input @bind-Value="Model.SoPhieuNhapKho" />
+                        <AntDesign.Button Type="AntDesign.ButtonType.Primary">
+                            Tự động
+                        </AntDesign.Button>
+                    </Flex>
+                    <ValidationMessage For="@(() => Model.SoPhieuNhapKho)" />
+                </AntDesign.FormItem>
+                
+        </GridCol>
+
+        <GridCol Span="12">
+            <AntDesign.FormItem Label="Ngày Nhập Kho" Required>
+                <AntDesign.DatePicker @bind-Value="Model.NgayNhapKho" Style="width: 100%;" Format="dd/MM/yyyy" />
+                <ValidationMessage For="@(() => Model.NgayNhapKho)" />
+            </AntDesign.FormItem>
+        </GridCol>
+
+        <GridCol Span="12">
+            <AntDesign.FormItem Label="Nhà Cung Cấp" Required>
+                <AntDesign.Select DataSource="NhaCungCaps"
+                                  ItemValue="item => item.Id"
+                                  ItemLabel="item => item.TenNhaCungCap"
+                                  @bind-Value="Model.NhaCungCapId"
+                                  Placeholder="Chọn nhà cung cấp" Style="width: 100%;" />
+                <ValidationMessage For="@(() => Model.NhaCungCapId)" />
+            </AntDesign.FormItem>
+        </GridCol>
+
+        <GridCol Span="12">
+            <AntDesign.FormItem Label="Kho" Required>
+                <AntDesign.Select DataSource="Khos"
+                                  ItemValue="item => item.Id"
+                                  ItemLabel="item => item.TenKho"
+                                  @bind-Value="Model.KhoId"
+                                  Placeholder="Chọn kho" Style="width: 100%;" />
+                <ValidationMessage For="@(() => Model.KhoId)" />
+            </AntDesign.FormItem>
+        </GridCol>
+
+        <GridCol Span="24">
+            <AntDesign.FormItem Label="Ghi Chú">
+                <AntDesign.TextArea @bind-Value="Model.GhiChu" Rows="5" />
+                <ValidationMessage For="@(() => Model.GhiChu)" />
+            </AntDesign.FormItem>
+        </GridCol>
+    </GridRow>
+
+    <AntDesign.FormItem>
+        <AntDesign.Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
+            <AntDesign.Button Type="AntDesign.ButtonType.Default" OnClick="OnCancelClicked">
+                Hủy
+            </AntDesign.Button>
+            <AntDesign.Button Type="AntDesign.ButtonType.Primary" HtmlType="AntDesign.ButtonHtmlType.Submit">
+                Bước kế tiếp
+                <Icon Type="right" Theme="IconThemeType.Outline" />
+            </AntDesign.Button>
+        </AntDesign.Flex>
+    </AntDesign.FormItem>
+</AntDesign.Form>
+
+@code {
+    [Parameter, EditorRequired] public PhieuNhapKhoSaveVM Model { get; set; } = new();
+    [Parameter, EditorRequired] public List<KhoVM> Khos { get; set; } = new();
+    [Parameter, EditorRequired] public List<NhaCungCapVM> NhaCungCaps { get; set; } = new();
+
+    [Parameter] public EventCallback OnValidSubmitCallback { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    private async Task OnValidSubmit()
+    {
+        if (OnValidSubmitCallback.HasDelegate)
+            await OnValidSubmitCallback.InvokeAsync();
+    }
+
+    private async Task OnCancelClicked()
+    {
+        if (OnCancel.HasDelegate)
+            await OnCancel.InvokeAsync();
+    }
+}

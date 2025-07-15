@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TKS_intern_shared.ViewModels.SanPhams;
 
 namespace TKS_intern_shared.ViewModels.ChiTietPhieuNhapKhos
 {
@@ -9,6 +10,7 @@ namespace TKS_intern_shared.ViewModels.ChiTietPhieuNhapKhos
 
         [Required(ErrorMessage = "SanPhamId là bắt buộc.")]
         public int SanPhamId { get; set; }
+        public SanPhamVM? SanPham { get; set; }
 
         [Required(ErrorMessage = "Số lượng nhập là bắt buộc.")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Số lượng nhập phải lớn hơn 0.")]

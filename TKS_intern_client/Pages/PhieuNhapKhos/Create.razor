@@ -1,0 +1,132 @@
+﻿@page "/phieunhapkho/create"
+@using TKS_intern_client.Services
+@using TKS_intern_client.Shared.Forms
+@using TKS_intern_shared.ViewModels.PhieuNhapKhos
+@using TKS_intern_shared.ViewModels.Khos
+@using TKS_intern_shared.ViewModels.NhaCungCaps
+@using TKS_intern_shared.ViewModels.ChiTietPhieuNhapKhos
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<h3>Thêm mới Phiếu Nhập Kho</h3>
+
+@if (khos == null || nhaCungCaps == null)
+{
+    <p><em>Đang tải dữ liệu...</em></p>
+}
+else
+{
+    <AntDesign.Steps Current="@currentStep" Class="mb-4">
+        <AntDesign.Step Title="Thông tin phiếu nhập kho" />
+        <AntDesign.Step Title="Chi tiết phiếu nhập kho" />
+        <AntDesign.Step Title="Xem lại & Xác nhận" />
+    </AntDesign.Steps>
+
+    @if (currentStep == 0)
+    {
+        <PhieuNhapKhoForm Model="model"
+                          Khos="khos"
+                          NhaCungCaps="nhaCungCaps"
+                          OnValidSubmitCallback="NextStep"
+                          OnCancel="Cancel" />
+    }
+    else if (currentStep == 1)
+    {
+        <ChiTietPhieuNhapKhoForm Items="chiTietList"
+                                 OnValidSubmitCallback="NextStep"
+                                 OnCancel="BackStep" />
+    }
+    else if (currentStep == 2)
+    {
+        <div class="card p-4">
+            <h5>Thông tin phiếu nhập kho</h5>
+            <ul>
+                <li><strong>Kho:</strong> @khos?.FirstOrDefault(k => k.Id == model.KhoId)?.TenKho</li>
+                <li><strong>Nhà cung cấp:</strong> @nhaCungCaps?.FirstOrDefault(n => n.Id == model.NhaCungCapId)?.TenNhaCungCap</li>
+                <li><strong>Ngày nhập kho:</strong> @model.NgayNhapKho.ToString("dd/MM/yyyy")</li>
+            </ul>
+
+            <h5 class="mt-4">Chi tiết sản phẩm</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Đơn giá</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in chiTietList)
+                    {
+                        <tr>
+                            <td>@item.SanPhamId</td>
+                            <td>@item.SoLuongNhap</td>
+                            <td>@item.DonGiaNhap.ToString("N0")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="mt-3">
+                <button class="btn btn-secondary me-2" @onclick="BackStep">Quay lại</button>
+                <button class="btn btn-primary" @onclick="SubmitAll">Xác nhận & Lưu</button>
+            </div>
+        </div>
+    }
+
+}
+
+@code {
+    private int currentStep = 0;
+    private PhieuNhapKhoCreateVM model = new() { NgayNhapKho = DateTime.Now };
+    private List<KhoVM>? khos;
+    private List<NhaCungCapVM>? nhaCungCaps;
+    private List<ChiTietPhieuNhapKhoSaveVM> chiTietList = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        khos = await Api.GetAsync<List<KhoVM>>("api/Khos");
+        nhaCungCaps = await Api.GetAsync<List<NhaCungCapVM>>("api/NhaCungCaps");
+    }
+
+    private void NextStep()
+    {
+        currentStep++;
+    }
+
+    private void BackStep()
+    {
+        currentStep--;
+    }
+
+    private async Task SubmitAll()
+    {
+        var response = await Api.PostAsync("api/PhieuNhapKhos", model);
+        if (!response.IsSuccessStatusCode)
+        {
+            await JS.InvokeVoidAsync("alert", $"Lỗi: {response.StatusCode}");
+            return;
+        }
+
+        var createdPhieu = await response.Content.ReadFromJsonAsync<PhieuNhapKhoVM>();
+        if (createdPhieu == null)
+        {
+            await JS.InvokeVoidAsync("alert", "Không đọc được dữ liệu phiếu vừa tạo");
+            return;
+        }
+
+        foreach (var item in chiTietList)
+        {
+            item.PhieuNhapKhoId = createdPhieu.Id;
+            await Api.PostAsync("api/ChiTietPhieuNhapKhos", item);
+        }
+
+        Navigation.NavigateTo("/phieunhapkho");
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/phieunhapkho");
+    }
+}

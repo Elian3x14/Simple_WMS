@@ -1,0 +1,68 @@
+﻿@using TKS_intern_shared.ViewModels.ChiTietPhieuNhapKhos
+@using TKS_intern_shared.ViewModels.SanPhams
+@using Microsoft.AspNetCore.Components
+
+<AntDesign.Form TModel="ChiTietPhieuNhapKhoSaveVM" Model="NewItem" OnFinish="OnSubmit" Layout="FormLayout.Vertical">
+    <GridRow Gutter="16" Align="RowAlign.Bottom">
+        @* <GridCol Span="8">
+            <AntDesign.FormItem Label="Sản phẩm" Required>
+                <AntDesign.Select TItem="SanPhamVM" TValue="int?"
+                                  DataSource="SanPhams"
+                                  TItemValue="sp => sp.Id"
+                                  ItemLabel="sp => sp.TenSanPham"
+                                  @bind-Value="NewItem.SanPhamId"
+                                  Placeholder="Chọn sản phẩm"
+                                  Style="width: 100%;" />
+                <ValidationMessage For="@(() => NewItem.SanPhamId)" />
+            </AntDesign.FormItem>
+        </GridCol> *@
+
+        @* <GridCol Span="4">
+            <AntDesign.FormItem Label="Số lượng nhập" Required>
+                <AntDesign.InputNumber @bind-Value="NewItem.SoLuongNhap" Min="1" Style="width: 100%;" />
+                <ValidationMessage For="@(() => NewItem.SoLuongNhap)" />
+            </AntDesign.FormItem>
+        </GridCol>
+
+        <GridCol Span="4">
+            <AntDesign.FormItem Label="Đơn giá nhập" Required>
+                <AntDesign.InputNumber @bind-Value="NewItem.DonGiaNhap" Min="0" Style="width: 100%;" />
+                <ValidationMessage For="@(() => NewItem.DonGiaNhap)" />
+            </AntDesign.FormItem>
+        </GridCol> *@
+
+        <GridCol Span="4">
+            <AntDesign.FormItem Label=" " Colon="false">
+                <AntDesign.Button Type="ButtonType.Primary" HtmlType="ButtonHtmlType.Submit" Block>
+                    Thêm
+                </AntDesign.Button>
+            </AntDesign.FormItem>
+        </GridCol>
+    </GridRow>
+</AntDesign.Form>
+
+@code {
+    [Parameter] public List<SanPhamVM> SanPhams { get; set; } = new();
+    [Parameter] public EventCallback<ChiTietPhieuNhapKhoSaveVM> OnAdd { get; set; }
+
+    public ChiTietPhieuNhapKhoSaveVM NewItem = new()
+    {
+        SoLuongNhap = 1,
+        DonGiaNhap = 0
+    };
+
+    private async Task OnSubmit()
+    {
+        if (OnAdd.HasDelegate)
+        {
+            await OnAdd.InvokeAsync(NewItem);
+        }
+
+        // Reset lại form
+        NewItem = new ChiTietPhieuNhapKhoSaveVM
+        {
+            SoLuongNhap = 1,
+            DonGiaNhap = 0
+        };
+    }
+}
