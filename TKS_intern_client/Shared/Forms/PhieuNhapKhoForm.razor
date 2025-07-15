@@ -16,7 +16,8 @@
                 <AntDesign.FormItem Label="Số Phiếu Nhập Kho" Required>
                     <Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
                         <AntDesign.Input @bind-Value="@context.SoPhieuNhapKho" />
-                        <AntDesign.Button Type="AntDesign.ButtonType.Primary">
+                        <AntDesign.Button Type="AntDesign.ButtonType.Primary"
+                                      OnClick="GenerateCode">
                             Tự động
                         </AntDesign.Button>
                     </Flex>
@@ -89,5 +90,9 @@
     {
         if (OnCancel.HasDelegate)
             await OnCancel.InvokeAsync();
+    }
+    private void GenerateCode()
+    {
+        Model.SoPhieuNhapKho = "PNK" + DateTime.Now.ToString("yyyyMMddHHmmss");
     }
 }
