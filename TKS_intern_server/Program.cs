@@ -16,6 +16,8 @@ builder.Services.AddAutoMapper(typeof(NhaCungCapProfile));
 builder.Services.AddAutoMapper(typeof(KhoProfile));
 builder.Services.AddAutoMapper(typeof(KhoUserProfile));
 builder.Services.AddAutoMapper(typeof(PhieuNhapKhoProfile));
+builder.Services.AddAutoMapper(typeof(ChiTietPhieuXuatKhoProfile).Assembly);
+
 
 
 builder.Services.AddScoped<IDonViTinhRepository, DonViTinhRepository>();
