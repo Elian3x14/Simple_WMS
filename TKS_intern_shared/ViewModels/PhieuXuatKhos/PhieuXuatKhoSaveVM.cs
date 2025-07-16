@@ -13,10 +13,6 @@ namespace TKS_intern_shared.ViewModels.PhieuXuatKhos
         [Range(1, int.MaxValue, ErrorMessage = "Kho không hợp lệ.")]
         public int KhoId { get; set; }
 
-        [Required(ErrorMessage = "Nhà cung cấp là bắt buộc.")]
-        [Range(1, int.MaxValue, ErrorMessage = "Nhà cung cấp không hợp lệ.")]
-        public int NhaCungCapId { get; set; }
-
         [Required(ErrorMessage = "Ngày xuất kho là bắt buộc.")]
         [DataType(DataType.Date, ErrorMessage = "Ngày xuất kho không hợp lệ.")]
         public DateTime NgayXuatKho { get; set; }

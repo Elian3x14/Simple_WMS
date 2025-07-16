@@ -1,11 +1,10 @@
-﻿@* @page "/phieuxuatkho/create"
+﻿@page "/phieuxuatkho/create"
 @using System.Text.Json
 @using TKS_intern_client.Services
 @using TKS_intern_client.Shared.Forms
 @using TKS_intern_client.Shared.Tables
 @using TKS_intern_shared.ViewModels.PhieuXuatKhos
 @using TKS_intern_shared.ViewModels.Khos
-@using TKS_intern_shared.ViewModels.KhachHangs
 @using TKS_intern_shared.ViewModels.ChiTietPhieuXuatKhos
 @inject ApiClient Api
 @inject NavigationManager Navigation
@@ -19,7 +18,7 @@
 
 <h3>Thêm mới Phiếu Xuất Kho</h3>
 
-@if (khos == null || khachHangs == null)
+@if (khos == null)
 {
     <p><em>Đang tải dữ liệu...</em></p>
 }
@@ -35,15 +34,15 @@ else
     {
         <PhieuXuatKhoForm Model="model"
                           Khos="khos"
-                          KhachHangs="khachHangs"
                           OnValidSubmitCallback="NextStep"
                           OnCancel="Cancel" />
     }
     else if (currentStep == 1)
     {
-        <ChiTietPhieuXuatKhoForm Items="chiTietList"
+        @* <ChiTietPhieuXuatKhoForm Items="chiTietList"
                                  OnValidSubmitCallback="NextStep"
-                                 OnCancel="BackStep" />
+                                 OnCancel="BackStep" /> *@
+                                 <h1>abc</h1>
     }
     else if (currentStep == 2)
     {
@@ -74,7 +73,7 @@ else
                 <Title Level="5">Chi tiết sản phẩm</Title>
             </Divider>
 
-            <ChiTietPhieuXuatKhoSaveTable Items="chiTietList" />
+            @* <ChiTietPhieuXuatKhoSaveTable Items="chiTietList" /> *@
 
             <Divider />
 
@@ -85,10 +84,13 @@ else
         </Card>
     }
 }
-
 @code {
     private int currentStep = 0;
-    private PhieuXuatKhoCreateVM model = new() { NgayXuatKho = DateTime.Now };
+    private PhieuXuatKhoCreateVM model = new()
+    {
+        NgayXuatKho = DateTime.Now
+    };
+
     private List<KhoVM>? khos;
     private List<ChiTietPhieuXuatKhoSaveVM> chiTietList = new();
 
@@ -127,10 +129,11 @@ else
 
         if (!responseChiTiet.IsSuccessStatusCode)
         {
-            await JS.InvokeVoidAsync("alert", $"Lỗi khi lưu chi tsiết: {responseChiTiet.StatusCode}");
+            await JS.InvokeVoidAsync("alert", $"Lỗi khi lưu chi tiết: {responseChiTiet.StatusCode}");
             return;
         }
 
         Navigation.NavigateTo("/phieuxuatkho");
     }
-} *@
+}
+

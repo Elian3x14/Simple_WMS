@@ -12,8 +12,6 @@ namespace TKS_intern_shared.Models
 
         public required int KhoId { get; set; }
         public Kho? Kho { get; set; }
-        public required int NhaCungCapId { get; set; }
-        public NhaCungCap? NhaCungCap { get; set; }
         public required DateTime NgayXuatKho { get; set; }
         public required string? GhiChu { get; set; }
 

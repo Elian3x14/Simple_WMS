@@ -1,0 +1,88 @@
+﻿@using System.Text.Json
+@using TKS_intern_shared.ViewModels.PhieuXuatKhos
+@using TKS_intern_shared.ViewModels.Khos
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms
+
+<AntDesign.Form Model="@Model"
+                OnFinish="OnValidSubmit"
+                Layout="FormLayout.Vertical"
+                ValidateOnChange="true">
+    <DataAnnotationsValidator />
+    <GridRow Gutter="16">
+        <GridCol Span="12">
+            <AntDesign.FormItem Label="Số Phiếu Xuất Kho" Required>
+                <Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
+                    <AntDesign.Input @bind-Value="Model.SoPhieuXuatKho" />
+                    <AntDesign.Button Type="AntDesign.ButtonType.Primary"
+                                      OnClick="GenerateCode">
+                        Tự động
+                    </AntDesign.Button>
+                </Flex>
+            </AntDesign.FormItem>
+        </GridCol>
+
+        <GridCol Span="12">
+            <AntDesign.FormItem Label="Ngày Xuất Kho" Required>
+                <AntDesign.DatePicker @bind-Value="Model.NgayXuatKho"
+                                      Style="width: 100%;"
+                                      Format="dd/MM/yyyy" />
+            </AntDesign.FormItem>
+        </GridCol>
+
+        <GridCol Span="24">
+            <AntDesign.FormItem Label="Kho" Required>
+                <AntDesign.Select DataSource="Khos"
+                                  ItemValue="item => item.Id"
+                                  ItemLabel="item => item.TenKho"
+                                  @bind-Value="Model.KhoId"
+                                  Placeholder="Chọn kho"
+                                  Style="width: 100%;" />
+            </AntDesign.FormItem>
+        </GridCol>
+
+        <GridCol Span="24">
+            <AntDesign.FormItem Label="Ghi chú">
+                <AntDesign.TextArea @bind-Value="Model.GhiChu" Rows="5" />
+            </AntDesign.FormItem>
+        </GridCol>
+    </GridRow>
+
+    <AntDesign.FormItem>
+        <AntDesign.Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
+            <AntDesign.Button Type="AntDesign.ButtonType.Default" OnClick="OnCancelClicked">
+                Hủy
+            </AntDesign.Button>
+            <AntDesign.Button Type="AntDesign.ButtonType.Primary" HtmlType="AntDesign.ButtonHtmlType.Submit">
+                Bước kế tiếp
+                <Icon Type="right" Theme="IconThemeType.Outline" />
+            </AntDesign.Button>
+        </AntDesign.Flex>
+    </AntDesign.FormItem>
+</AntDesign.Form>
+
+@code {
+    [Parameter, EditorRequired] public PhieuXuatKhoSaveVM Model { get; set; } = new();
+    [Parameter, EditorRequired] public List<KhoVM> Khos { get; set; } = new();
+
+    [Parameter] public EventCallback OnValidSubmitCallback { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    private async Task OnValidSubmit()
+    {
+        Console.WriteLine("Form submitted successfully: " + JsonSerializer.Serialize(Model));
+        if (OnValidSubmitCallback.HasDelegate)
+            await OnValidSubmitCallback.InvokeAsync();
+    }
+
+    private async Task OnCancelClicked()
+    {
+        if (OnCancel.HasDelegate)
+            await OnCancel.InvokeAsync();
+    }
+
+    private void GenerateCode()
+    {
+        Model.SoPhieuXuatKho = "PXK" + DateTime.Now.ToString("yyyyMMddHHmmss");
+    }
+}

@@ -57,9 +57,6 @@ namespace TKS_intern_server.Controllers
             if (await _khoRepository.GetByIdAsync(vm.KhoId) == null)
                 return BadRequest(new { message = "Kho không tồn tại." });
 
-            if (await _nhaCungCapRepository.GetByIdAsync(vm.NhaCungCapId) == null)
-                return BadRequest(new { message = "Nhà cung cấp không tồn tại." });
-
             var model = _mapper.Map<PhieuXuatKho>(vm);
             var created = await _repository.CreateAsync(model);
             var createdVm = _mapper.Map<PhieuXuatKhoVM>(created);

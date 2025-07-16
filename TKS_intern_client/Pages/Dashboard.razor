@@ -1,0 +1,112 @@
+﻿@page "/dashboard"
+@using AntDesign
+
+@inject NavigationManager NavigationManager
+
+         
+
+@code {
+    // Dữ liệu thống kê
+    private int totalProducts = 1245;
+    private int totalWarehouses = 8;
+    private int todayReceipts = 42;
+    private int todayShipments = 38;
+    
+    // Dữ liệu biểu đồ hoạt động
+    private List<DailyActivity> dailyActivities = new List<DailyActivity>
+    {
+        new DailyActivity { date = "01/01", type = "Nhập kho", value = 10 },
+        new DailyActivity { date = "01/01", type = "Xuất kho", value = 7 },
+        new DailyActivity { date = "02/01", type = "Nhập kho", value = 15 },
+        new DailyActivity { date = "02/01", type = "Xuất kho", value = 12 },
+        new DailyActivity { date = "03/01", type = "Nhập kho", value = 8 },
+        new DailyActivity { date = "03/01", type = "Xuất kho", value = 10 },
+        new DailyActivity { date = "04/01", type = "Nhập kho", value = 20 },
+        new DailyActivity { date = "04/01", type = "Xuất kho", value = 18 },
+        new DailyActivity { date = "05/01", type = "Nhập kho", value = 12 },
+        new DailyActivity { date = "05/01", type = "Xuất kho", value = 9 },
+        new DailyActivity { date = "06/01", type = "Nhập kho", value = 25 },
+        new DailyActivity { date = "06/01", type = "Xuất kho", value = 22 },
+        new DailyActivity { date = "07/01", type = "Nhập kho", value = 18 },
+        new DailyActivity { date = "07/01", type = "Xuất kho", value = 15 }
+    };
+    
+    // Dữ liệu loại sản phẩm
+    private List<ProductCategory> productCategories = new List<ProductCategory>
+    {
+        new ProductCategory { name = "Điện tử", value = 35 },
+        new ProductCategory { name = "Gia dụng", value = 25 },
+        new ProductCategory { name = "Thực phẩm", value = 20 },
+        new ProductCategory { name = "Văn phòng phẩm", value = 15 },
+        new ProductCategory { name = "Khác", value = 5 }
+    };
+    
+    // Thông báo
+    private List<Notification> notifications = new List<Notification>
+    {
+        new Notification { 
+            Title = "Hàng sắp hết", 
+            Description = "Sản phẩm A123 sắp hết hàng, chỉ còn 5 sản phẩm trong kho" 
+        },
+        new Notification { 
+            Title = "Đơn hàng mới", 
+            Description = "Đơn hàng #4567 vừa được tạo, cần chuẩn bị xuất kho" 
+        },
+        new Notification { 
+            Title = "Kiểm kê định kỳ", 
+            Description = "Lịch kiểm kê kho chính vào ngày 15/01/2023" 
+        }
+    };
+    
+    // Hoạt động gần đây
+    private List<Activity> recentActivities = new List<Activity>
+    {
+        new Activity { 
+            Description = "Nhập kho 50 sản phẩm A123 từ NCC XYZ", 
+            Time = "10 phút trước", 
+            Color = "green" 
+        },
+        new Activity { 
+            Description = "Xuất kho đơn hàng #4567 cho khách hàng ABC", 
+            Time = "1 giờ trước", 
+            Color = "blue" 
+        },
+        new Activity { 
+            Description = "Chuyển 20 sản phẩm B456 từ kho A sang kho B", 
+            Time = "3 giờ trước", 
+            Color = "orange" 
+        },
+        new Activity { 
+            Description = "Cập nhật thông tin sản phẩm C789", 
+            Time = "Hôm qua", 
+            Color = "gray" 
+        }
+    };
+    
+    // Các lớp dữ liệu
+    private class DailyActivity
+    {
+        public string date { get; set; }
+        public string type { get; set; }
+        public int value { get; set; }
+    }
+    
+    private class ProductCategory
+    {
+        public string name { get; set; }
+        public int value { get; set; }
+    }
+    
+    private class Notification
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+    }
+    
+    private class Activity
+    {
+        public string Description { get; set; }
+        public string Time { get; set; }
+        public string Color { get; set; }
+    }
+}

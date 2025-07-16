@@ -1,8 +1,750 @@
 ﻿@page "/"
+@using AntDesign
+@layout EmptyLayout;
 
-<PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+@inject NavigationManager NavigationManager
+<style>
+    /* Landing Page Styles */
+    .landing-layout {
+        min-height: 100vh;
+    }
 
-Welcome to your new app.
-<Button Type="ButtonType.Primary">Hello World!</Button> 
+    .landing-header {
+        background: #001529;
+        padding: 0 50px;
+        height: 64px;
+        line-height: 64px;
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+    }
+
+        .logo h1 {
+            color: white;
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .logo .tagline {
+            color: rgba(255, 255, 255, 0.65);
+            margin-left: 16px;
+            font-size: 14px;
+        }
+
+    .nav-menu {
+        line-height: 62px;
+        border-bottom: none;
+    }
+
+    .header-actions {
+        margin-left: 16px;
+    }
+
+        .header-actions button:not(:last-child) {
+            margin-right: 8px;
+        }
+
+    /* Hero Section */
+    .hero-section {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 80px 0;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .hero-content {
+        flex: 1;
+        padding-right: 24px;
+    }
+
+        .hero-content h2 {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: #1f1f1f;
+        }
+
+    .hero-description {
+        font-size: 18px;
+        color: #666;
+        margin-bottom: 32px;
+    }
+
+    .hero-actions button:not(:last-child) {
+        margin-right: 16px;
+    }
+
+    .hero-image {
+        flex: 1;
+        text-align: center;
+    }
+
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+    /* Sections common */
+    .section {
+        padding: 80px 0;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 36px;
+        margin-bottom: 16px;
+        color: #1f1f1f;
+    }
+
+    .section-subtitle {
+        text-align: center;
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 48px;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Features */
+    .feature-card {
+        text-align: center;
+        padding: 24px;
+        height: 100%;
+        transition: all 0.3s;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+    .feature-icon {
+        margin-bottom: 16px;
+        color: #1890ff;
+    }
+
+    .feature-card h3 {
+        font-size: 18px;
+        margin-bottom: 16px;
+    }
+
+    /* Benefits */
+    .benefits-grid {
+        align-items: center;
+    }
+
+    .benefit-item {
+        margin-bottom: 24px;
+    }
+
+        .benefit-item h3 {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+        }
+
+            .benefit-item h3 i {
+                margin-right: 8px;
+            }
+
+    .benefits-image {
+        width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Pricing */
+    .pricing-card {
+        text-align: center;
+        transition: all 0.3s;
+        position: relative;
+    }
+
+        .pricing-card.featured {
+            border: 1px solid #1890ff;
+        }
+
+    .pricing-badge {
+        position: absolute;
+        top: -12px;
+        right: 20px;
+        background: #1890ff;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+    }
+
+    .pricing-header {
+        padding: 16px;
+    }
+
+        .pricing-header h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+    .price {
+        font-size: 32px;
+        font-weight: bold;
+        color: #1890ff;
+    }
+
+        .price small {
+            font-size: 16px;
+            font-weight: normal;
+            color: #666;
+        }
+
+    .pricing-features {
+        list-style: none;
+        padding: 0;
+        margin: 24px 0;
+        text-align: left;
+    }
+
+        .pricing-features li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+            .pricing-features li i {
+                margin-right: 8px;
+            }
+
+                .pricing-features li i.anticon-check {
+                    color: #52c41a;
+                }
+
+                .pricing-features li i.anticon-close {
+                    color: #f5222d;
+                }
+
+    /* Testimonials */
+    .testimonial-item {
+        padding: 0 24px;
+    }
+
+    .testimonial-content {
+        background: #f9f9f9;
+        padding: 24px;
+        border-radius: 8px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+        .testimonial-content p {
+            font-size: 16px;
+            font-style: italic;
+            margin-bottom: 24px;
+        }
+
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+    }
+
+    .author-info {
+        margin-left: 16px;
+    }
+
+        .author-info strong {
+            display: block;
+            font-size: 16px;
+        }
+
+        .author-info span {
+            font-size: 14px;
+            color: #666;
+        }
+
+    /* Contact */
+    .contact-info h3 {
+        display: flex;
+        align-items: center;
+        font-size: 20px;
+        margin-bottom: 24px;
+    }
+
+        .contact-info h3 i {
+            margin-right: 8px;
+            color: #1890ff;
+        }
+
+    .contact-info p {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+        font-size: 16px;
+    }
+
+        .contact-info p i {
+            margin-right: 8px;
+            color: #1890ff;
+        }
+
+    /* Footer */
+    .landing-footer {
+        background: #f0f2f5;
+        padding: 48px 0 0;
+    }
+
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .footer-about {
+        flex: 1;
+        min-width: 250px;
+        margin-bottom: 24px;
+    }
+
+        .footer-about h3 {
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+
+    .social-links {
+        margin-top: 16px;
+    }
+
+        .social-links a {
+            margin-right: 16px;
+            color: #666;
+            font-size: 20px;
+        }
+
+            .social-links a:hover {
+                color: #1890ff;
+            }
+
+    .footer-links {
+        min-width: 150px;
+        margin-bottom: 24px;
+    }
+
+        .footer-links h4 {
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .footer-links ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 8px;
+        }
+
+        .footer-links a {
+            color: #666;
+        }
+
+            .footer-links a:hover {
+                color: #1890ff;
+            }
+
+    .footer-newsletter {
+        min-width: 250px;
+        margin-bottom: 24px;
+    }
+
+        .footer-newsletter h4 {
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .footer-newsletter p {
+            color: #666;
+            margin-bottom: 16px;
+        }
+
+    .footer-copyright {
+        text-align: center;
+        padding: 16px 0;
+        color: #666;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .hero-section
+
+    {
+        flex-direction: column;
+        padding: 40px 0;
+    }
+
+    .hero-content {
+        padding-right: 0;
+        margin-bottom: 32px;
+        text-align: center;
+    }
+
+        .hero-content h2 {
+            font-size: 36px;
+        }
+
+    .section {
+        padding: 40px 0;
+    }
+
+    .section-title {
+        font-size: 28px;
+    }
+
+    }
+</style>
+
+<Layout Class="landing-layout">
+
+    <Header Class="landing-header">
+        <div class="header-content">
+            <div class="logo">
+                <h1>Tiên Khanh - WMS</h1>
+                <span class="tagline">Giải pháp quản lý kho thông minh</span>
+            </div>
+            <Menu Mode="MenuMode.Horizontal" Theme="MenuTheme.Dark" Class="nav-menu" @bind-SelectedKeys="@currentMenu">
+                <MenuItem Key="features">Tính năng</MenuItem>
+                <MenuItem Key="benefits">Lợi ích</MenuItem>
+                <MenuItem Key="pricing">Bảng giá</MenuItem>
+                <MenuItem Key="contact">Liên hệ</MenuItem>
+            </Menu>
+            <div class="header-actions">
+                <a href="/dashboard">
+                    <Button Type="ButtonType.Primary">Đăng nhập</Button>
+                </a>
+                <Button>Đăng ký</Button>
+            </div>
+        </div>
+    </Header>
+
+    <Content Class="landing-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h2>Quản lý kho hàng chuyên nghiệp</h2>
+                <p class="hero-description">
+                    Hệ thống WMS giúp doanh nghiệp quản lý kho hàng hiệu quả, tiết kiệm thời gian và chi phí
+                </p>
+                <div class="hero-actions">
+                    <Button Type="ButtonType.Primary" Size="ButtonSize.Large">Dùng thử miễn phí</Button>
+                    <Button Size="ButtonSize.Large">Xem demo</Button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://cdn.dribbble.com/userupload/3491009/file/original-cb0844334443bd6669ac5545d9bfedd8.jpg?resize=1504x1128&vertical=center" alt="Giao diện Tiên Khanh WMS" />
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="section features-section">
+            <h2 class="section-title">Tính năng nổi bật</h2>
+            <p class="section-subtitle">Những tính năng giúp quản lý kho của bạn hiệu quả hơn</p>
+            
+            <Row Gutter="16" Class="features-grid">
+                <Col Span="8" Xs="24" Sm="12" Md="8">
+                    <Card Class="feature-card">
+                        <div class="feature-icon">
+                            <Icon Type="inbox" Theme="IconThemeType.Outline" Style="font-size: 48px;" />
+                        </div>
+                        <h3>Quản lý tồn kho</h3>
+                        <p>Theo dõi chính xác số lượng hàng tồn kho theo thời gian thực</p>
+                    </Card>
+                </Col>
+                <Col Span="8" Xs="24" Sm="12" Md="8">
+                    <Card Class="feature-card">
+                        <div class="feature-icon">
+                            <Icon Type="barcode" Theme="IconThemeType.Outline" Style="font-size: 48px;" />
+                        </div>
+                        <h3>Quét mã vạch</h3>
+                        <p>Hỗ trợ quét mã vạch để nhập/xuất kho nhanh chóng</p>
+                    </Card>
+                </Col>
+                <Col Span="8" Xs="24" Sm="12" Md="8">
+                    <Card Class="feature-card">
+                        <div class="feature-icon">
+                            <Icon Type="line-chart" Theme="IconThemeType.Outline" Style="font-size: 48px;" />
+                        </div>
+                        <h3>Báo cáo thông minh</h3>
+                        <p>Tự động tạo báo cáo tồn kho, xuất nhập tồn theo nhiều tiêu chí</p>
+                    </Card>
+                </Col>
+                <Col Span="8" Xs="24" Sm="12" Md="8">
+                    <Card Class="feature-card">
+                        <div class="feature-icon">
+                            <Icon Type="team" Theme="IconThemeType.Outline" Style="font-size: 48px;" />
+                        </div>
+                        <h3>Phân quyền đa cấp</h3>
+                        <p>Phân quyền chi tiết cho từng nhân viên, từng chức năng</p>
+                    </Card>
+                </Col>
+                <Col Span="8" Xs="24" Sm="12" Md="8">
+                    <Card Class="feature-card">
+                        <div class="feature-icon">
+                            <Icon Type="sync" Theme="IconThemeType.Outline" Style="font-size: 48px;" />
+                        </div>
+                        <h3>Đồng bộ đa nền tảng</h3>
+                        <p>Làm việc mọi lúc mọi nơi trên cả web và mobile</p>
+                    </Card>
+                </Col>
+                <Col Span="8" Xs="24" Sm="12" Md="8">
+                    <Card Class="feature-card">
+                        <div class="feature-icon">
+                            <Icon Type="alert" Theme="IconThemeType.Outline" Style="font-size: 48px;" />
+                        </div>
+                        <h3>Cảnh báo tự động</h3>
+                        <p>Cảnh báo khi hàng hóa sắp hết hạn, sắp hết hàng</p>
+                    </Card>
+                </Col>
+            </Row>
+        </section>
+
+        <!-- Benefits Section -->
+        <section id="benefits" class="section benefits-section">
+            <h2 class="section-title">Lợi ích khi sử dụng</h2>
+            <p class="section-subtitle">Tiên Khanh - WMS mang lại những giá trị gì cho doanh nghiệp của bạn</p>
+            
+            <Row Gutter="16" Class="benefits-grid">
+                <Col Span="12" Xs="24" Sm="24" Md="12">
+                    <div class="benefit-item">
+                        <h3><Icon Type="check-circle" Theme="IconThemeType.Fill" Style="color: #52c41a;" /> Giảm chi phí quản lý</h3>
+                        <p>Tối ưu hóa quy trình quản lý kho, giảm thiểu nhân sự và thời gian kiểm kê</p>
+                    </div>
+                    <div class="benefit-item">
+                        <h3><Icon Type="check-circle" Theme="IconThemeType.Fill" Style="color: #52c41a;" /> Tăng độ chính xác</h3>
+                        <p>Hạn chế tối đa sai sót trong quá trình nhập/xuất kho với hệ thống tự động</p>
+                    </div>
+                    <div class="benefit-item">
+                        <h3><Icon Type="check-circle" Theme="IconThemeType.Fill" Style="color: #52c41a;" /> Tiết kiệm thời gian</h3>
+                        <p>Giảm 80% thời gian kiểm kê, tìm kiếm hàng hóa trong kho</p>
+                    </div>
+                </Col>
+                <Col Span="12" Xs="24" Sm="24" Md="12">
+                <img src="https://www.cin7.com/hs-fs/hubfs/Imported_Blog_Media/Warehouse-management-system-hero-image-2x-Jan-31-2025-11-12-23-7435-PM.jpg?width=700&name=Warehouse-management-system-hero-image-2x-Jan-31-2025-11-12-23-7435-PM.jpg" alt="Lợi ích WMS" class="benefits-image" />
+                </Col>
+            </Row>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="section pricing-section">
+            <h2 class="section-title">Bảng giá linh hoạt</h2>
+            <p class="section-subtitle">Chọn gói dịch vụ phù hợp với quy mô doanh nghiệp của bạn</p>
+            
+            <Row Gutter="16" Class="pricing-grid">
+                <Col Span="8" Xs="24" Sm="12" Md="8">
+                    <Card Class="pricing-card">
+                        <div class="pricing-header">
+                            <h3>Cơ bản</h3>
+                            <div class="price">1.500.000<small>đ/tháng</small></div>
+                        </div>
+                        <Divider />
+                        <ul class="pricing-features">
+                            <li><Icon Type="check" /> Quản lý tối đa 1 kho</li>
+                            <li><Icon Type="check" /> 5 tài khoản người dùng</li>
+                            <li><Icon Type="check" /> Báo cáo cơ bản</li>
+                            <li><Icon Type="close" /> Không hỗ trợ API</li>
+                            <li><Icon Type="close" /> Không hỗ trợ mobile</li>
+                        </ul>
+                        <Button Type="ButtonType.Primary" Block="true">Đăng ký ngay</Button>
+                    </Card>
+                </Col>
+                <Col Span="8" Xs="24" Sm="12" Md="8">
+                    <Card Class="pricing-card featured">
+                        <div class="pricing-badge">Phổ biến</div>
+                        <div class="pricing-header">
+                            <h3>Tiêu chuẩn</h3>
+                            <div class="price">3.500.000<small>đ/tháng</small></div>
+                        </div>
+                        <Divider />
+                        <ul class="pricing-features">
+                            <li><Icon Type="check" /> Quản lý tối đa 3 kho</li>
+                            <li><Icon Type="check" /> 15 tài khoản người dùng</li>
+                            <li><Icon Type="check" /> Báo cáo nâng cao</li>
+                            <li><Icon Type="check" /> Hỗ trợ API cơ bản</li>
+                            <li><Icon Type="check" /> Ứng dụng mobile</li>
+                        </ul>
+                        <Button Type="ButtonType.Primary" Block="true">Đăng ký ngay</Button>
+                    </Card>
+                </Col>
+                <Col Span="8" Xs="24" Sm="12" Md="8">
+                    <Card Class="pricing-card">
+                        <div class="pricing-header">
+                            <h3>Doanh nghiệp</h3>
+                            <div class="price">Liên hệ</div>
+                        </div>
+                        <Divider />
+                        <ul class="pricing-features">
+                            <li><Icon Type="check" /> Không giới hạn kho</li>
+                            <li><Icon Type="check" /> Không giới hạn người dùng</li>
+                            <li><Icon Type="check" /> Báo cáo tùy chỉnh</li>
+                            <li><Icon Type="check" /> API đầy đủ</li>
+                            <li><Icon Type="check" /> Hỗ trợ 24/7</li>
+                        </ul>
+                        <Button Type="ButtonType.Primary" Block="true">Liên hệ tư vấn</Button>
+                    </Card>
+                </Col>
+            </Row>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="section testimonials-section">
+            <h2 class="section-title">Khách hàng nói gì về chúng tôi</h2>
+            <p class="section-subtitle">Những phản hồi từ khách hàng đã sử dụng Tiên Khanh - WMS</p>
+            
+            <Carousel DotPosition="CarouselDotPosition.Bottom" Autoplay="TimeSpan.FromSeconds(2)">
+                <CarouselSlick>
+                    <div class="testimonial-item">
+                        <div class="testimonial-content">
+                            <p>"Tiên Khanh - WMS đã giúp chúng tôi giảm 30% thời gian quản lý kho và hạn chế tối đa sai sót trong quá trình xuất nhập hàng."</p>
+                            <div class="testimonial-author">
+                                <Avatar Size="AvatarSize.Large" Icon="UserOutlined" />
+                                <div class="author-info">
+                                    <strong>Nguyễn Văn A</strong>
+                                    <span>Giám đốc Công ty TNHH ABC</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </CarouselSlick>
+                <CarouselSlick>
+                    <div class="testimonial-item">
+                        <div class="testimonial-content">
+                            <p>"Hệ thống báo cáo của Tiên Khanh - WMS rất mạnh mẽ, giúp chúng tôi có cái nhìn tổng quan về tình hình tồn kho để ra quyết định kinh doanh."</p>
+                            <div class="testimonial-author">
+                                <Avatar Size="AvatarSize.Large" Icon="UserOutlined" />
+                                <div class="author-info">
+                                    <strong>Trần Thị B</strong>
+                                    <span>Quản lý kho Công ty XYZ</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </CarouselSlick>
+
+            </Carousel>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section contact-section">
+            <h2 class="section-title">Liên hệ với chúng tôi</h2>
+            <p class="section-subtitle">Để được tư vấn và hỗ trợ tốt nhất</p>
+            
+            <Row Gutter="16">
+                <Col Span="12" Xs="24" Sm="24" Md="12">
+                    <Form Model="@contactForm" Layout="FormLayout.Vertical" OnFinish="HandleSubmit">
+                        <FormItem Label="Họ và tên">
+                            <Input @bind-Value="@contactForm.Name" Placeholder="Nhập họ và tên" />
+                        </FormItem>
+                        <FormItem Label="Email">
+                            <Input @bind-Value="@contactForm.Email" Placeholder="Nhập email" />
+                        </FormItem>
+                        <FormItem Label="Số điện thoại">
+                            <Input @bind-Value="@contactForm.Phone" Placeholder="Nhập số điện thoại" />
+                        </FormItem>
+                        <FormItem Label="Nội dung">
+                            <TextArea Rows="4" @bind-Value="@contactForm.Message" Placeholder="Nhập nội dung liên hệ" />
+                        </FormItem>
+                        <FormItem>
+                            <Button Type="ButtonType.Primary" HtmlType="submit">Gửi liên hệ</Button>
+                        </FormItem>
+                    </Form>
+                </Col>
+                <Col Span="12" Xs="24" Sm="24" Md="12">
+                    <div class="contact-info">
+                        <h3><Icon Type="home" Theme="IconThemeType.Fill" /> Công ty TNHH Tiên Khanh</h3>
+                        <p><Icon Type="environment" Theme="IconThemeType.Fill" /> Địa chỉ: Số 123, đường ABC, quận XYZ, TP. Hồ Chí Minh</p>
+                        <p><Icon Type="phone" Theme="IconThemeType.Fill" /> Điện thoại: 0901.234.567</p>
+                        <p><Icon Type="mail" Theme="IconThemeType.Fill" /> Email: contact@tienkhanh-wms.com</p>
+                    </div>
+                </Col>
+            </Row>
+        </section>
+    </Content>
+
+    <Footer Class="landing-footer">
+        <div class="footer-content">
+            <div class="footer-about">
+                <h3>Tiên Khanh - WMS</h3>
+                <p>Giải pháp quản lý kho hàng thông minh cho doanh nghiệp</p>
+                <div class="social-links">
+                    <a href="#"><Icon Type="facebook" Theme="IconThemeType.Fill" /></a>
+                    <a href="#"><Icon Type="youtube" Theme="IconThemeType.Fill" /></a>
+                    <a href="#"><Icon Type="linkedin" Theme="IconThemeType.Fill" /></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>Liên kết</h4>
+                <ul>
+                    <li><a href="#">Trang chủ</a></li>
+                    <li><a href="#features">Tính năng</a></li>
+                    <li><a href="#pricing">Bảng giá</a></li>
+                    <li><a href="#contact">Liên hệ</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Hỗ trợ</h4>
+                <ul>
+                    <li><a href="#">Câu hỏi thường gặp</a></li>
+                    <li><a href="#">Hướng dẫn sử dụng</a></li>
+                    <li><a href="#">Chính sách bảo mật</a></li>
+                    <li><a href="#">Điều khoản dịch vụ</a></li>
+                </ul>
+            </div>
+            <div class="footer-newsletter">
+                <h4>Đăng ký nhận tin</h4>
+                <p>Nhận thông tin mới nhất về sản phẩm và khuyến mãi</p>
+                <Space Class="newsletter-form">
+                    @* <Input Type="string" Placeholder="Nhập email của bạn" /> *@
+                    <Button Type="ButtonType.Primary">Đăng ký</Button>
+                </Space>
+            </div>
+        </div>
+        <Divider />
+        <div class="footer-copyright">
+            <p>© 2023 Tiên Khanh - WMS. All rights reserved.</p>
+        </div>
+    </Footer>
+</Layout>
+
+@code {
+    private string[] currentMenu = Array.Empty<string>();
+    
+    private ContactForm contactForm = new ContactForm();
+    
+    private class ContactForm
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public string Message { get; set; }
+    }
+    
+    private void HandleSubmit()
+    {
+        // Xử lý submit form liên hệ
+        Console.WriteLine("Form submitted");
+    }
+}

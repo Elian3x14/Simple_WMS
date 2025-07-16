@@ -55,7 +55,7 @@
                 }
             </div>
             <Menu Theme="MenuTheme.Dark" Mode="MenuMode.Inline" DefaultSelectedKeys=@(new[] { "1" })>
-                <MenuItem Key="/">
+                <MenuItem Key="/dashboard">
                     <a href="/" class="text-white text-decoration-none d-flex align-items-center">
                         <Icon Type="@IconType.Outline.Home" class="me-2" />
                         <span>Dashboard</span>
@@ -129,18 +129,36 @@
         </Sider>
         <Layout Class="site-layout">
             <Header Class="site-layout-background" Style="padding: 0;">
-                @if (collapsed)
-                {
+                <Flex Direction="FlexDirection.Horizontal" Justify="FlexJustify.SpaceBetween" Align="FlexAlign.Center" Class="pe-4">
+
                     <Button Type="ButtonType.Text" Class="trigger" OnClick="toggle">
-                        <Icon Type="@IconType.Outline.MenuUnfold" />
+                        <Icon Type="@(collapsed? IconType.Outline.MenuUnfold : IconType.Outline.MenuFold)" />
                     </Button>
-                }
-                else
-                {
-                    <Button Type="ButtonType.Text" Class="trigger" OnClick="toggle">
-                        <Icon Type="@IconType.Outline.MenuFold" />
-                    </Button>
-                }
+
+                    <Space Size="SpaceSize.Small">
+                        <SpaceItem>
+                            <Badge Count="5">
+                                <Button Shape="ButtonShape.Circle" Icon="@IconType.Outline.Notification" />
+                            </Badge>
+                        </SpaceItem>
+                        <SpaceItem>
+
+                            <Dropdown>
+                                <Overlay>
+                                    <Menu>
+                                        <MenuItem>Thông tin tài khoản</MenuItem>
+                                        <MenuItem>Cài đặt</MenuItem>
+                                        <MenuDivider />
+                                        <MenuItem>Đăng xuất</MenuItem>
+                                    </Menu>
+                                </Overlay>
+                                <ChildContent>
+                                    <Button Type="ButtonType.Primary" Icon="@IconType.Outline.User" Shape="ButtonShape.Circle" />
+                                </ChildContent>
+                            </Dropdown>
+                        </SpaceItem>
+                    </Space>
+                </Flex>
             </Header>
             <Content Class="site-layout-background" Style="margin: 24px 16px;padding: 24px;min-height: calc(100vh - 115px);">
                 @Body
