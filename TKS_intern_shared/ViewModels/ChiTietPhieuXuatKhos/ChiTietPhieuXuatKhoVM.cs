@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TKS_intern_shared.Models;
 
-namespace TKS_intern_shared.Models
+namespace TKS_intern_shared.ViewModels.ChiTietPhieuXuatKhos
 {
-    public class ChiTietPhieuXuatKho: BaseModel
+    public class ChiTietPhieuXuatKhoVM : BaseVM
     {
         public required int PhieuXuatKhoId { get; set; }
         public PhieuXuatKho? PhieuXuatKho { get; set; }
@@ -14,6 +15,6 @@ namespace TKS_intern_shared.Models
         public required int SanPhamId { get; set; }
         public required SanPham SanPham { get; set; }
         public required int SoLuongXuat { get; set; }
-        public required decimal DonGiaXuat { get; set; } // Đơn giá xuất kho
+        public required decimal DonGiaXuat { get; set; }
     }
 }

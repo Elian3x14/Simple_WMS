@@ -27,6 +27,7 @@ builder.Services.AddScoped<IKhoUserRepository, KhoUserRepository>();
 builder.Services.AddScoped<IPhieuNhapKhoRepository, PhieuNhapKhoRepository>();
 builder.Services.AddScoped<IChiTietPhieuNhapKhoRepository, ChiTietPhieuNhapKhoRepository>();
 builder.Services.AddScoped<IPhieuXuatKhoRepository, PhieuXuatKhoRepository>();
+builder.Services.AddScoped<IChiTietPhieuXuatKhoRepository, ChiTietPhieuXuatKhoRepository>();
 
 
 
