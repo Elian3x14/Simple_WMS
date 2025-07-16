@@ -1,4 +1,5 @@
 ﻿using TKS_intern_shared.Models;
+using TKS_intern_shared.ViewModels.BaoCaos;
 
 namespace TKS_intern_server.Repositories.Interfaces
 {
@@ -15,5 +16,8 @@ namespace TKS_intern_server.Repositories.Interfaces
 
         Task<bool> ExistsByTenAsync(string ten);
         Task<bool> ExistsByTenAsync(string ten, int excludeId);
+
+        Task<List<BaoCaoXuatNhapTonVM>> GetBaoCaoXuatNhapTonAsync(BaoCaoXuatNhapTonFilter filter);
+
     }
 }

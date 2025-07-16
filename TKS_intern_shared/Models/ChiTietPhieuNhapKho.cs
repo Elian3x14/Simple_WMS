@@ -9,7 +9,7 @@ namespace TKS_intern_shared.Models
     public class ChiTietPhieuNhapKho : BaseModel
     {
         public required int PhieuNhapKhoId { get; set; }
-        public PhieuNhapKho? PhieuNhapKho { get; set; }
+        public required PhieuNhapKho PhieuNhapKho { get; set; }
         public required int SanPhamId { get; set; }
         public required SanPham SanPham { get; set; }
         public required decimal SoLuongNhap { get; set; }

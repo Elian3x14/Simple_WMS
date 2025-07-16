@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TKS_intern_shared.Models;
-using TKS_intern_shared.ViewModels.SanPhams;
 using TKS_intern_server.Repositories.Interfaces;
+using TKS_intern_shared.Models;
+using TKS_intern_shared.ViewModels.BaoCaos;
+using TKS_intern_shared.ViewModels.SanPhams;
 
 namespace TKS_intern_shared.Controllers
 {
@@ -119,6 +120,13 @@ namespace TKS_intern_shared.Controllers
                 return NotFound(new { message = "Không tìm thấy sản phẩm cần xoá." });
 
             return NoContent();
+        }
+
+        [HttpPost("bao-cao")]
+        public async Task<IActionResult> BaoCaoXuatNhapTon([FromBody] BaoCaoXuatNhapTonFilter filter)
+        {
+            var data = await _sanPhamRepository.GetBaoCaoXuatNhapTonAsync(filter);
+            return Ok(data);
         }
     }
 }

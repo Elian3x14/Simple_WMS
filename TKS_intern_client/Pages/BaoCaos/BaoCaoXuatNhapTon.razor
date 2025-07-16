@@ -1,0 +1,61 @@
+﻿@page "/baocao/xuat-nhap-ton"
+@using TKS_intern_client.Services
+@using TKS_intern_shared.ViewModels.BaoCaos
+@inject ApiClient Api
+
+<PageHeader Title="Báo cáo Xuất Nhập Tồn" />
+
+<AntDesign.Form Model="Filter" OnFinish="OnSearch" Layout="FormLayout.Inline" Class="mb-4">
+    <AntDesign.FormItem Label="Từ ngày">
+        <AntDesign.DatePicker @bind-Value="Filter.TuNgay" Format="dd/MM/yyyy" />
+    </AntDesign.FormItem>
+    <AntDesign.FormItem Label="Đến ngày">
+        <AntDesign.DatePicker @bind-Value="Filter.DenNgay" Format="dd/MM/yyyy" />
+    </AntDesign.FormItem>
+    <AntDesign.FormItem>
+        <AntDesign.Button Type="ButtonType.Primary" HtmlType="ButtonHtmlType.Submit">Tìm kiếm</AntDesign.Button>
+    </AntDesign.FormItem>
+</AntDesign.Form>
+
+@if (Data == null)
+{
+    <Empty>
+        <DescriptionTemplate>
+            <span>Không có dữ liệu để hiển thị.</span>
+        </DescriptionTemplate>
+    </Empty>
+}
+else
+{
+    <Table TItem="BaoCaoXuatNhapTonVM" DataSource="Data" Bordered="true" Size="TableSize.Small">
+        <Column TData="BaoCaoXuatNhapTonVM" Title="Mã SP">@context.MaSanPham</Column>
+        <Column TData="BaoCaoXuatNhapTonVM" Title="Tên SP">@context.TenSanPham</Column>
+        <Column TData="BaoCaoXuatNhapTonVM" Title="SL Đầu kỳ">@context.SoLuongDauKy</Column>
+        <Column TData="BaoCaoXuatNhapTonVM" Title="SL Nhập">@context.SoLuongNhap</Column>
+        <Column TData="BaoCaoXuatNhapTonVM" Title="SL Xuất">@context.SoLuongXuat</Column>
+        <Column TData="BaoCaoXuatNhapTonVM" Title="SL Cuối kỳ">@context.SoLuongCuoiKy</Column>
+    </Table>
+}
+
+@code {
+    private BaoCaoXuatNhapTonFilter Filter = new()
+    {
+        TuNgay = DateTime.Today.AddDays(-30),
+        DenNgay = DateTime.Today
+    };
+
+    private List<BaoCaoXuatNhapTonVM>? Data;
+
+    private async Task OnSearch()
+    {
+        var response = await Api.PostAsync<BaoCaoXuatNhapTonFilter>("api/sanphams/bao-cao", Filter);
+        if (response.IsSuccessStatusCode)
+        {
+            Data = await response.Content.ReadFromJsonAsync<List<BaoCaoXuatNhapTonVM>>();
+        }
+        else
+        {
+            Data = null;
+        }
+    }
+}

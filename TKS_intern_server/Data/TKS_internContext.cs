@@ -16,7 +16,7 @@ namespace TKS_intern_server.Data
 
         public DbSet<DonViTinh> DonViTinh { get; set; } = default!;
         public DbSet<LoaiSanPham> LoaiSanPham { get; set; } = default!;
-        public DbSet<SanPham> SanPham { get; set; } = default!;
+        public DbSet<SanPham> SanPhams { get; set; } = default!;
         public DbSet<NhaCungCap> NhaCungCap { get; set; } = default!;
         public DbSet<Kho> Kho { get; set; } = default!;
         public DbSet<KhoUser> KhoUsers { get; set; } = default!;
