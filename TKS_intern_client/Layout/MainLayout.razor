@@ -1,20 +1,182 @@
 ﻿@inherits LayoutComponentBase
 <ConfigProvider>
-    <div class="page">
-        <div class="sidebar">
-            <NavMenu />
-        </div>
+    <style>
+        #components-layout-demo-custom-trigger .trigger {
+            font-size: 40px;
+            line-height: 64px;
+            padding: 0 24px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
 
-        <main>
-            <div class="top-row px-4">
-                <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            #components-layout-demo-custom-trigger .trigger:hover {
+                color: #1890ff;
+            }
+
+        #components-layout-demo-custom-trigger .logo {
+            height: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 16px;
+        }
+
+        .site-layout .site-layout-background {
+            background: #fff;
+        }
+
+        .logo-container {
+            width: 100%;
+            height: 64px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .logo-container > img {
+                height: 100%;
+                width: 100%;
+                display: block;
+                margin: 0 auto;
+                object-fit: contain;
+            }
+
+    </style>
+    <Layout>
+        <Sider @bind-Collapsed=@collapsed >
+            <div class="logo-container">
+                @if(collapsed)
+                {
+                    <img src="/logo-zip.png" alt="TKS Logo" 
+                        style="--size: 40px; width: var(--size); height: var(--size);" />   
+                }
+                else
+                {
+                    <img src="/logo.png" alt="TKS Logo" />
+                }
             </div>
+            <Menu Theme="MenuTheme.Dark" Mode="MenuMode.Inline" DefaultSelectedKeys=@(new[] { "1" })>
+                <MenuItem Key="/">
+                    <a href="/" class="text-white text-decoration-none d-flex align-items-center">
+                        <Icon Type="@IconType.Outline.Home" class="me-2" />
+                        <span>Dashboard</span>
+                    </a>
+                </MenuItem>
 
-            <article class="content px-4">
+                <MenuItem Key="/donvitinh">
+                    <a href="/donvitinh" class="text-white text-decoration-none d-flex align-items-center">
+                        <Icon Type="@IconType.Outline.Appstore" class="me-2" />
+                        <span>Đơn vị tính</span>
+                    </a>
+                </MenuItem>
+
+                <MenuItem Key="/loaisanpham">
+                    <a href="/loaisanpham" class="text-white text-decoration-none d-flex align-items-center">
+                        <Icon Type="@IconType.Outline.Tags" class="me-2" />
+                        <span>Loại sản phẩm</span>
+                    </a>
+                </MenuItem>
+
+                <MenuItem Key="/sanpham">
+                    <a href="/sanpham" class="text-white text-decoration-none d-flex align-items-center">
+                        <Icon Type="@IconType.Outline.Shopping" class="me-2" />
+                        <span>Sản phẩm</span>
+                    </a>
+                </MenuItem>
+
+                <MenuItem Key="/nhacungcap">
+                    <a href="/nhacungcap" class="text-white text-decoration-none d-flex align-items-center">
+                        <Icon Type="@IconType.Outline.Team" class="me-2" />
+                        <span>Nhà cung cấp</span>
+                    </a>
+                </MenuItem>
+
+                <MenuItem Key="/kho">
+                    <a href="/kho" class="text-white text-decoration-none d-flex align-items-center">
+                        <Icon Type="@IconType.Outline.Bank" class="me-2" />
+                        <span>Kho</span>
+                    </a>
+                </MenuItem>
+
+                <MenuItem Key="/phieunhapkho">
+                    <a href="/phieunhapkho" class="text-white text-decoration-none d-flex align-items-center">
+                        <Icon Type="@IconType.Outline.Download" class="me-2" />
+                        <span>Phiếu nhập kho</span>
+                    </a>
+                </MenuItem>
+
+                <MenuItem Key="/phieuxuatkho">
+                    <a href="/phieuxuatkho" class="text-white text-decoration-none d-flex align-items-center">
+                        <Icon Type="@IconType.Outline.Upload" class="me-2" />
+                        <span>Phiếu xuất kho</span>
+                    </a>
+                </MenuItem>
+
+                <MenuItem Key="/nhanvien">
+                    <a href="/nhanvien" class="text-white text-decoration-none d-flex align-items-center">
+                        <Icon Type="@IconType.Outline.User" class="me-2" />
+                        <span>Nhân viên</span>
+                    </a>
+                </MenuItem>
+
+                <MenuItem Key="/logout" OnClick="@Logout">
+                    <div class="text-danger text-decoration-none d-flex align-items-center">
+                        <Icon Type="@IconType.Outline.Logout" class="me-2" />
+                        <span>Đăng xuất</span>
+                    </div>
+                </MenuItem>
+
+            </Menu>
+        </Sider>
+        <Layout Class="site-layout">
+            <Header Class="site-layout-background" Style="padding: 0;">
+                @if (collapsed)
+                {
+                    <Button Type="ButtonType.Text" Class="trigger" OnClick="toggle">
+                        <Icon Type="@IconType.Outline.MenuUnfold" />
+                    </Button>
+                }
+                else
+                {
+                    <Button Type="ButtonType.Text" Class="trigger" OnClick="toggle">
+                        <Icon Type="@IconType.Outline.MenuFold" />
+                    </Button>
+                }
+            </Header>
+            <Content Class="site-layout-background" Style="margin: 24px 16px;padding: 24px;min-height: calc(100vh - 115px);">
                 @Body
-            </article>
-        </main>
-    </div>
+            </Content>
+        </Layout>
+    </Layout>
+
+   
+
+
+
 </ConfigProvider>
 
 <AntContainer @rendermode="RenderMode.InteractiveAuto" />
+
+@code {
+    [Inject] private NavigationManager Navigation { get; set; } = null!;
+    [Inject] private IJSRuntime JS { get; set; } = null!;
+    private bool collapsed;
+
+    void toggle()
+    {
+        collapsed = !collapsed;
+    }
+
+    void OnCollapse(bool isCollapsed)
+    {
+        Console.WriteLine($"Collapsed: {isCollapsed}");
+    }
+
+    private async Task Logout()
+    {
+        // Ví dụ: xóa token từ localStorage
+        await JS.InvokeVoidAsync("localStorage.removeItem", "authToken");
+
+        // Điều hướng về trang đăng nhập
+        Navigation.NavigateTo("/login", true);
+    }
+}
