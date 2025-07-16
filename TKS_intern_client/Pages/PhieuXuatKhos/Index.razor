@@ -1,0 +1,119 @@
+﻿@page "/phieuxuatkho"
+@using TKS_intern_client.Services
+@using TKS_intern_shared.ViewModels.PhieuXuatKhos
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Phiếu Xuất Kho</PageTitle>
+
+<Breadcrumb>
+    <BreadcrumbItem Href="/">Home</BreadcrumbItem>
+    <BreadcrumbItem>Phiếu xuất kho</BreadcrumbItem>
+</Breadcrumb>
+
+<Title Level="3">Danh sách Phiếu Xuất Kho</Title>
+
+<a href="/phieuxuatkho/create">
+    <AntDesign.Button Type="ButtonType.Primary" class="mb-3">
+        Thêm mới
+    </AntDesign.Button>
+</a>
+
+@if (phieuXuatKhoList == null)
+{
+    <Spin Tip="Đang tải dữ liệu..." />
+}
+else if (!phieuXuatKhoList.Any())
+{
+    <Empty>
+        <DescriptionTemplate>
+            <span>Không có dữ liệu</span>
+        </DescriptionTemplate>
+        <ChildContent>
+            <Button Type="ButtonType.Primary">Tạo mới</Button>
+        </ChildContent>
+    </Empty>
+}
+else
+{
+    <Table TItem="PhieuXuatKhoVM" DataSource="phieuXuatKhoList">
+        <PropertyColumn Property="x => x.Id" Title="ID" />
+
+        <PropertyColumn Property="x => x.SoPhieuXuatKho" Title="Số Phiếu" />
+
+        <Column TData="PhieuXuatKhoVM" Title="Kho">
+            <Template>@context.Kho?.TenKho</Template>
+        </Column>
+
+        @* <Column TData="PhieuXuatKhoVM" Title="Khách Hàng">
+            <Template>@context.KhachHang?.TenKhachHang</Template>
+        </Column> *@
+
+        <Column TData="PhieuXuatKhoVM" Title="Ngày Xuất">
+            <Template>@context.NgayXuatKho.ToString("dd/MM/yyyy HH:mm")</Template>
+        </Column>
+
+        <PropertyColumn Property="x => x.GhiChu" Title="Ghi chú" />
+
+        <Column TData="PhieuXuatKhoVM" Title="Ngày Tạo">
+            <Template>@context.CreatedAt.ToString("dd/MM/yyyy HH:mm")</Template>
+        </Column>
+
+        <Column TData="PhieuXuatKhoVM" Title="Ngày Cập Nhật">
+            <Template>@context.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</Template>
+        </Column>
+
+        <ActionColumn Title="Hành động">
+            <Template>
+                <Space Size="SpaceSize.Small">
+                    <a href=@($"/phieuxuatkho/detail/{context.Id}")>
+                        <Button Size="ButtonSize.Small" Type="ButtonType.Link">
+                            Xem
+                        </Button>
+                    </a>
+                    <a href=@($"/phieuxuatkho/edit/{context.Id}")>
+                        <Button Size="ButtonSize.Small" Type="ButtonType.Text">
+                            Sửa
+                        </Button>
+                    </a>
+                    <Button Size="ButtonSize.Small" Type="ButtonType.Text" Danger
+                            OnClick="()=>DeletePhieuXuatKho(context.Id)">
+                        Xóa
+                    </Button>
+                </Space>
+            </Template>
+        </ActionColumn>
+    </Table>
+}
+
+@code {
+    private List<PhieuXuatKhoVM>? phieuXuatKhoList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        phieuXuatKhoList = await Api.GetAsync<List<PhieuXuatKhoVM>>("api/PhieuXuatKhos");
+    }
+
+    private async Task DeletePhieuXuatKho(int id)
+    {
+        var confirm = await JS.InvokeAsync<bool>("confirm", $"Bạn có chắc muốn xóa phiếu xuất kho ID {id}?");
+        if (confirm)
+        {
+            var response = await Api.DeleteAsync($"api/PhieuXuatKhos/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                await LoadData();
+            }
+            else
+            {
+                Console.WriteLine($"Xóa thất bại: {response.StatusCode}");
+            }
+        }
+    }
+}
