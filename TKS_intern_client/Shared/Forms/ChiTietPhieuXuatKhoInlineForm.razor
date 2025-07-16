@@ -1,0 +1,64 @@
+﻿@using TKS_intern_shared.ViewModels.ChiTietPhieuXuatKhos
+@using TKS_intern_shared.ViewModels.SanPhams
+@using Microsoft.AspNetCore.Components
+
+<AntDesign.Form TModel="ChiTietPhieuXuatKhoSaveVM" Model="NewItem" OnFinish="OnSubmit" Layout="FormLayout.Vertical">
+    <DataAnnotationsValidator />
+    <GridRow Gutter="16" Align="RowAlign.Bottom">
+        <GridCol Span="8">
+            <AntDesign.FormItem Label="Sản phẩm" Required>
+                <AntDesign.Select DataSource="SanPhams"
+                                  ItemValue="sp => sp.Id"
+                                  ItemLabel="sp => sp.TenSanPham"
+                                  @bind-Value="NewItem.SanPhamId"
+                                  Placeholder="Chọn sản phẩm"
+                                  Style="width: 100%;" />
+            </AntDesign.FormItem>
+        </GridCol>
+
+        <GridCol Span="4">
+            <AntDesign.FormItem Label="Số lượng xuất" Required>
+                <AntDesign.InputNumber @bind-Value="NewItem.SoLuongXuat" Min="1" Style="width: 100%;" />
+            </AntDesign.FormItem>
+        </GridCol>
+
+        <GridCol Span="8">
+            <AntDesign.FormItem Label="Đơn giá xuất" Required>
+                <Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
+                    <AntDesign.InputNumber @bind-Value="NewItem.DonGiaXuat" Min="0" Style="width: 100%;" />
+                    <AntDesign.Button Type="ButtonType.Primary" HtmlType="ButtonHtmlType.Submit">
+                        Thêm
+                    </AntDesign.Button>
+                </Flex>
+            </AntDesign.FormItem>
+        </GridCol>
+    </GridRow>
+</AntDesign.Form>
+
+@code {
+    [Parameter] public List<SanPhamVM> SanPhams { get; set; } = new();
+    [Parameter] public EventCallback<ChiTietPhieuXuatKhoSaveVM> OnAdd { get; set; }
+
+    public ChiTietPhieuXuatKhoSaveVM NewItem = new()
+    {
+        SoLuongXuat = 1,
+        DonGiaXuat = 0
+    };
+
+    private async Task OnSubmit()
+    {
+        NewItem.SanPham = SanPhams.FirstOrDefault(sp => sp.Id == NewItem.SanPhamId);
+
+        if (OnAdd.HasDelegate)
+        {
+            await OnAdd.InvokeAsync(NewItem);
+        }
+
+        // Reset lại form
+        NewItem = new ChiTietPhieuXuatKhoSaveVM
+        {
+            SoLuongXuat = 1,
+            DonGiaXuat = 0
+        };
+    }
+}

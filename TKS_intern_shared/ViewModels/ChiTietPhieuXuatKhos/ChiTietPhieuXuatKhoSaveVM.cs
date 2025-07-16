@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using TKS_intern_shared.Models;
+using TKS_intern_shared.ViewModels.SanPhams;
 
 namespace TKS_intern_shared.ViewModels.ChiTietPhieuXuatKhos
 {
@@ -14,7 +15,7 @@ namespace TKS_intern_shared.ViewModels.ChiTietPhieuXuatKhos
 
         // SanPham là object liên kết, không nên bắt required trong ViewModel Save
         [JsonIgnore]
-        public SanPham? SanPham { get; set; }
+        public SanPhamVM? SanPham { get; set; }
 
         [Required(ErrorMessage = "Số lượng xuất là bắt buộc.")]
         [Range(1, int.MaxValue, ErrorMessage = "Số lượng xuất phải lớn hơn 0.")]

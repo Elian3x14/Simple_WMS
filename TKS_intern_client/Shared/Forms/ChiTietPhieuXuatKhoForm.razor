@@ -1,0 +1,65 @@
+﻿@using TKS_intern_client.Services
+@using TKS_intern_shared.ViewModels.ChiTietPhieuXuatKhos
+@using TKS_intern_shared.ViewModels.SanPhams
+@using TKS_intern_client.Shared.Tables
+@using Microsoft.AspNetCore.Components
+
+<div>
+    <ChiTietPhieuXuatKhoInlineForm SanPhams="SanPhams" OnAdd="HandleAddRow" />
+
+    @* <ChiTietPhieuXuatKhoSaveTable Items="Items" OnEditClicked="EditRow" OnDeleteClicked="DeleteRow" /> *@
+
+    <div class="mt-4">
+        <AntDesign.Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
+            <AntDesign.Button Type="ButtonType.Default" OnClick="OnCancelClicked">Hủy</AntDesign.Button>
+            <AntDesign.Button Type="ButtonType.Primary" OnClick="OnValidSubmit">
+                Bước kế tiếp
+                <Icon Type="right" Theme="IconThemeType.Outline" />
+            </AntDesign.Button>
+        </AntDesign.Flex>
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<ChiTietPhieuXuatKhoSaveVM> Items { get; set; } = new();
+    [Parameter] public EventCallback OnValidSubmitCallback { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+
+    private List<SanPhamVM> SanPhams { get; set; } = new();
+
+    [Inject] public ApiClient Api { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        SanPhams = await Api.GetAsync<List<SanPhamVM>>("api/SanPhams") ?? new();
+    }
+
+    private async Task OnValidSubmit()
+    {
+        if (OnValidSubmitCallback.HasDelegate)
+            await OnValidSubmitCallback.InvokeAsync();
+    }
+
+    private async Task OnCancelClicked()
+    {
+        if (OnCancel.HasDelegate)
+            await OnCancel.InvokeAsync();
+    }
+
+    private Task HandleAddRow(ChiTietPhieuXuatKhoSaveVM item)
+    {
+        Items.Add(item);
+        return Task.CompletedTask;
+    }
+
+    private void EditRow(ChiTietPhieuXuatKhoSaveVM item)
+    {
+        Console.WriteLine($"Editing item: {item.SanPham?.TenSanPham}");
+        // TODO: implement modal edit if needed
+    }
+
+    private void DeleteRow(ChiTietPhieuXuatKhoSaveVM item)
+    {
+        Items.Remove(item);
+    }
+}
