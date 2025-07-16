@@ -1,0 +1,31 @@
+﻿@using TKS_intern_shared.ViewModels.ChiTietPhieuXuatKhos
+@using AntDesign
+@using Microsoft.AspNetCore.Components
+
+<Table TItem="ChiTietPhieuXuatKhoVM"
+       DataSource="Items"
+       RowKey="x => x.SanPhamId"
+       Bordered="true"
+       Size="TableSize.Small">
+
+    <Column TData="ChiTietPhieuXuatKhoVM" Title="Sản phẩm">
+        <Template>@context.SanPham?.TenSanPham</Template>
+    </Column>
+
+    <Column TData="ChiTietPhieuXuatKhoVM" Title="Số lượng">
+        <Template>@context.SoLuongXuat</Template>
+    </Column>
+
+    <Column TData="ChiTietPhieuXuatKhoVM" Title="Đơn giá">
+        <Template>@context.DonGiaXuat.ToString("N0")</Template>
+    </Column>
+
+    <Column TData="ChiTietPhieuXuatKhoVM" Title="Thành tiền">
+        <Template>@((context.SoLuongXuat * context.DonGiaXuat).ToString("N0"))</Template>
+    </Column>
+
+</Table>
+
+@code {
+    [Parameter] public List<ChiTietPhieuXuatKhoVM> Items { get; set; } = new();
+}

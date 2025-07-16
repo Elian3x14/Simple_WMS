@@ -1,0 +1,111 @@
+﻿@page "/phieuxuatkho/detail/{id:int}"
+@using TKS_intern_client.Services
+@using TKS_intern_client.Shared.Tables
+@using TKS_intern_shared.ViewModels.ChiTietPhieuXuatKhos
+@using TKS_intern_shared.ViewModels.PhieuXuatKhos
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<Breadcrumb>
+    <BreadcrumbItem>Home</BreadcrumbItem>
+    <BreadcrumbItem Href="/phieuxuatkho">Phiếu xuất kho</BreadcrumbItem>
+    <BreadcrumbItem>Chi tiết phiếu <Tag Color="TagColor.Red">@phieu?.SoPhieuXuatKho</Tag></BreadcrumbItem>
+</Breadcrumb>
+
+<PageHeader Title="Chi tiết phiếu xuất kho"
+            SubTitle="Xem thông tin chi tiết"
+            OnBack="Back" />
+
+@if (phieu == null)
+{
+    <Skeleton Active="true" Title="true" ParagraphRows="4" />
+}
+else
+{
+    <Card Title="Thông tin phiếu" Bordered="true" Class="mb-4">
+        <Extra>
+            <a href="@($"/phieuxuatkho/edit/{phieu.Id}")">
+                <Button Type="ButtonType.Link">
+                    <Icon Type="edit" Theme="IconThemeType.Outline" /> Chỉnh sửa
+                </Button>
+            </a>
+
+            <a href="@($"/phieuxuatkho/print/{phieu.Id}")" target="_blank">
+                <Button Type="ButtonType.Dashed">
+                    <Icon Type="printer" Theme="IconThemeType.Outline" /> In phiếu
+                </Button>
+            </a>
+        </Extra>
+        <Body>
+            <Descriptions Column="2" Bordered="true" Size="DescriptionsSize.Small">
+                <DescriptionsItem Title="Số Phiếu">
+                    @phieu.SoPhieuXuatKho
+                </DescriptionsItem>
+                <DescriptionsItem Title="Kho">
+                    <Tag Color="TagColor.Blue">@phieu.Kho?.TenKho</Tag>
+                </DescriptionsItem>
+                <DescriptionsItem Title="Ngày Xuất">
+                    @phieu.NgayXuatKho.ToString("dd/MM/yyyy HH:mm")
+                </DescriptionsItem>
+                <DescriptionsItem Title="Ghi Chú">
+                    @phieu.GhiChu
+                </DescriptionsItem>
+                <DescriptionsItem Title="Ngày Tạo">
+                    @phieu.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                </DescriptionsItem>
+                <DescriptionsItem Title="Ngày Cập Nhật">
+                    @phieu.UpdatedAt.ToString("dd/MM/yyyy HH:mm")
+                </DescriptionsItem>
+            </Descriptions>
+        </Body>
+    </Card>
+
+    <Card Title="Chi tiết sản phẩm" Bordered="true">
+        @if (ChiTietPhieuXuatKhos == null || !ChiTietPhieuXuatKhos.Any())
+        {
+            <Empty>
+                <DescriptionTemplate>
+                    <span>Hiện không có chi tiết phiếu xuất nào.</span>
+                </DescriptionTemplate>
+                <ChildContent>
+                    <Button Type="ButtonType.Primary">Thêm chi tiết</Button>
+                </ChildContent>
+            </Empty>
+        }
+        else
+        {
+            <ChiTietPhieuXuatKhoTable Items="ChiTietPhieuXuatKhos" />
+        }
+
+        <Divider />
+        <Button Type="ButtonType.Default" @onclick="Back">Quay lại</Button>
+    </Card>
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+
+    private PhieuXuatKhoVM? phieu;
+    private List<ChiTietPhieuXuatKhoVM>? ChiTietPhieuXuatKhos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        phieu = await Api.GetAsync<PhieuXuatKhoVM>($"api/PhieuXuatKhos/{id}");
+        if (phieu == null)
+        {
+            await JS.InvokeVoidAsync("alert", "Không tìm thấy phiếu xuất kho.");
+            Navigation.NavigateTo("/phieuxuatkho");
+            return;
+        }
+
+        ChiTietPhieuXuatKhos = await Api.GetAsync<List<ChiTietPhieuXuatKhoVM>>(
+            $"api/ChiTietPhieuXuatKhos/phieuXuatKho/{id}"
+        );
+    }
+
+    private void Back()
+    {
+        Navigation.NavigateTo("/phieuxuatkho");
+    }
+}
