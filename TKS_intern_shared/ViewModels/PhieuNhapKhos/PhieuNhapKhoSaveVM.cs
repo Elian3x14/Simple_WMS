@@ -18,6 +18,7 @@ namespace TKS_intern_shared.ViewModels.PhieuNhapKhos
         public int NhaCungCapId { get; set; }
 
         [Required(ErrorMessage = "Ngày nhập kho là bắt buộc.")]
+        [DataType(DataType.Date, ErrorMessage = "Ngày nhập kho không hợp lệ.")]
         public DateTime NgayNhapKho { get; set; }
 
         [MaxLength(500, ErrorMessage = "Ghi chú không được vượt quá 500 ký tự.")]
