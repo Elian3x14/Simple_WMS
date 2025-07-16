@@ -1,13 +1,12 @@
-﻿@page "/phieunhapkho/print/{id:int}"
-@using TKS_intern_shared.ViewModels.PhieuNhapKhos
-@using TKS_intern_shared.ViewModels.ChiTietPhieuNhapKhos
+﻿@page "/phieuxuatkho/print/{id:int}"
+@using TKS_intern_shared.ViewModels.PhieuXuatKhos
+@using TKS_intern_shared.ViewModels.ChiTietPhieuXuatKhos
 @using TKS_intern_client.Services
 @layout PrintLayout
 
 @inject ApiClient Api
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
-
 
 @if (phieu == null)
 {
@@ -20,19 +19,18 @@ else
             <div class="left">
                 <div><strong>Đơn vị:</strong> Công ty ABC</div>
                 <div><strong>Bộ phận:</strong> Kho hàng</div>
-                <div><strong>Ngày:</strong> @phieu.NgayNhapKho.ToString("dd/MM/yyyy")</div>
-                <div><strong>Số phiếu:</strong> @phieu.SoPhieuNhapKho</div>
-                <div><strong>Nhà cung cấp:</strong> @phieu.NhaCungCap?.TenNhaCungCap</div>
-                <div><strong>Kho nhập:</strong> @phieu.Kho?.TenKho</div>
+                <div><strong>Ngày:</strong> @phieu.NgayXuatKho.ToString("dd/MM/yyyy")</div>
+                <div><strong>Số phiếu:</strong> @phieu.SoPhieuXuatKho</div>
+                <div><strong>Kho xuất:</strong> @phieu.Kho?.TenKho</div>
             </div>
             <div class="right">
-                <div><strong>Mẫu số:</strong> 01 - VT</div>
+                <div><strong>Mẫu số:</strong> 02 - VT</div>
                 <div>(Ban hành theo QĐ số 15/2006/QĐ-BTC)</div>
                 <div>Ngày 20/03/2006 của Bộ trưởng BTC</div>
             </div>
         </div>
 
-        <div class="title">PHIẾU NHẬP KHO</div>
+        <div class="title">PHIẾU XUẤT KHO</div>
 
         <table>
             <thead>
@@ -47,30 +45,30 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var (item, index) in ChiTietPhieuNhapKhos.Select((x, i) => (x, i + 1)))
+                @foreach (var (item, index) in ChiTietPhieuXuatKhos.Select((x, i) => (x, i + 1)))
                 {
                     <tr>
                         <td>@index</td>
                         <td>@item.SanPham?.TenSanPham</td>
                         <td>@item.SanPham?.MaSanPham</td>
                         <td>@item.SanPham?.DonViTinh.TenDonViTinh</td>
-                        <td>@item.SoLuongNhap</td>
-                        <td>@item.DonGiaNhap.ToString("N0")</td>
-                        <td>@((item.SoLuongNhap * item.DonGiaNhap).ToString("N0"))</td>
+                        <td>@item.SoLuongXuat</td>
+                        <td>@item.DonGiaXuat.ToString("N0")</td>
+                        <td>@((item.SoLuongXuat * item.DonGiaXuat).ToString("N0"))</td>
                     </tr>
                 }
                 <tr>
                     <td colspan="4"><strong>Tổng cộng</strong></td>
-                    <td><strong>@ChiTietPhieuNhapKhos.Sum(x => x.SoLuongNhap)</strong></td>
+                    <td><strong>@ChiTietPhieuXuatKhos.Sum(x => x.SoLuongXuat)</strong></td>
                     <td></td>
-                    <td><strong>@ChiTietPhieuNhapKhos.Sum(x => x.SoLuongNhap * x.DonGiaNhap).ToString("N0")</strong></td>
+                    <td><strong>@ChiTietPhieuXuatKhos.Sum(x => x.SoLuongXuat * x.DonGiaXuat).ToString("N0")</strong></td>
                 </tr>
             </tbody>
         </table>
 
         <div style="margin-top: 20px;">
             <strong>Tổng số tiền (viết bằng chữ):</strong>
-            <i>@ToWords(ChiTietPhieuNhapKhos.Sum(x => x.SoLuongNhap * x.DonGiaNhap)) đồng</i>
+            <i>@ToWords(ChiTietPhieuXuatKhos.Sum(x => x.SoLuongXuat * x.DonGiaXuat)) đồng</i>
         </div>
 
         <div style="margin-top: 20px;">
@@ -82,7 +80,7 @@ else
                 Người lập phiếu<br /><br /><br /><br />....................................
             </div>
             <div class="signature-block">
-                Người giao hàng<br /><br /><br /><br />....................................
+                Người nhận hàng<br /><br /><br /><br />....................................
             </div>
             <div class="signature-block">
                 Thủ kho<br /><br /><br /><br />....................................
@@ -102,16 +100,16 @@ else
 @code {
     [Parameter] public int id { get; set; }
 
-    private PhieuNhapKhoVM? phieu;
-    private List<ChiTietPhieuNhapKhoVM> ChiTietPhieuNhapKhos = new();
+    private PhieuXuatKhoVM? phieu;
+    private List<ChiTietPhieuXuatKhoVM> ChiTietPhieuXuatKhos = new();
 
     protected override async Task OnInitializedAsync()
     {
-        phieu = await Api.GetAsync<PhieuNhapKhoVM>($"api/PhieuNhapKhos/{id}");
-        var chiTiet = await Api.GetAsync<List<ChiTietPhieuNhapKhoVM>>($"api/ChiTietPhieuNhapKhos/phieuNhapKho/{id}");
+        phieu = await Api.GetAsync<PhieuXuatKhoVM>($"api/PhieuXuatKhos/{id}");
+        var chiTiet = await Api.GetAsync<List<ChiTietPhieuXuatKhoVM>>($"api/ChiTietPhieuXuatKhos/phieuXuatKho/{id}");
         if (chiTiet != null)
         {
-            ChiTietPhieuNhapKhos = chiTiet;
+            ChiTietPhieuXuatKhos = chiTiet;
         }
     }
 
@@ -122,12 +120,11 @@ else
 
     private void Back()
     {
-        Navigation.NavigateTo("/phieunhapkho/detail/" + id);
+        Navigation.NavigateTo($"/phieuxuatkho/detail/{id}");
     }
 
     private string ToWords(decimal number)
     {
         return PrintHelper.ToWords(number);
     }
-
 }
