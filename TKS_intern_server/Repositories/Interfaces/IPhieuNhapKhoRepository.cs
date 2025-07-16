@@ -1,4 +1,5 @@
 ﻿using TKS_intern_shared.Models;
+using TKS_intern_shared.ViewModels.BaoCaos;
 
 namespace TKS_intern_server.Repositories.Interfaces
 {
@@ -11,5 +12,7 @@ namespace TKS_intern_server.Repositories.Interfaces
 
         Task<bool> ExistsBySoPhieuAsync(string soPhieuNhap);
         Task<bool> ExistsBySoPhieuAsync(string soPhieuNhap, int excludeId);
+
+        Task<List<BaoCaoNhapHangVM>> GetBaoCaoNhapHangAsync(DateTime tuNgay, DateTime denNgay);
     }
 }

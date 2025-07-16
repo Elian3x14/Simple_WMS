@@ -17,7 +17,7 @@ namespace TKS_intern_shared.Models
         public required DateTime NgayNhapKho { get; set; }
         public required string? GhiChu { get; set; }
 
-        public IEnumerable<ChiTietPhieuNhapKho>? ChiTietPhieuNhapKhos;
+        public required IEnumerable<ChiTietPhieuNhapKho> ChiTietPhieuNhapKhos;
 
         // Người lập phiếu nhập kho, ....
     }

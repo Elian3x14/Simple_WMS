@@ -1,0 +1,83 @@
+﻿@page "/baocao/nhap"
+@using TKS_intern_client.Services
+@using TKS_intern_shared.ViewModels.BaoCaos
+@inject ApiClient Api
+
+<PageHeader Title="Báo cáo chi tiết hàng nhập" />
+
+<AntDesign.Form Model="Filter" OnFinish="OnSearch" Layout="FormLayout.Inline" Class="mb-4">
+    <AntDesign.FormItem Label="Từ ngày">
+        <AntDesign.DatePicker @bind-Value="Filter.TuNgay" Format="dd/MM/yyyy" />
+    </AntDesign.FormItem>
+    <AntDesign.FormItem Label="Đến ngày">
+        <AntDesign.DatePicker @bind-Value="Filter.DenNgay" Format="dd/MM/yyyy" />
+    </AntDesign.FormItem>
+    <AntDesign.FormItem>
+        <AntDesign.Button Type="ButtonType.Primary" HtmlType="ButtonHtmlType.Submit">Tìm kiếm</AntDesign.Button>
+    </AntDesign.FormItem>
+</AntDesign.Form>
+
+@if (Data == null)
+{
+    <Empty>
+        <DescriptionTemplate>
+            <span>Không có bản ghi nào để hiển thị.</span>
+        </DescriptionTemplate>
+    </Empty>
+}
+else
+{
+    <Table TItem="BaoCaoNhapHangVM" DataSource="Data" Bordered="true" Size="TableSize.Small" >
+        <Column TData="BaoCaoNhapHangVM" Title="Ngày nhập">
+            <Template>@context.NgayNhap.ToString("dd/MM/yyyy")</Template>
+        </Column>
+        <Column TData="BaoCaoNhapHangVM" Title="Số phiếu nhập">
+            <Template>@context.SoPhieu</Template>
+        </Column>
+        <Column TData="BaoCaoNhapHangVM" Title="NCC">
+            <Template>@context.NhaCungCap</Template>
+        </Column>
+        <Column TData="BaoCaoNhapHangVM" Title="Mã sản phẩm">
+            <Template>@context.MaSanPham</Template>
+        </Column>
+        <Column TData="BaoCaoNhapHangVM" Title="Tên sản phẩm">
+            <Template>@context.TenSanPham</Template>
+        </Column>
+        <Column TData="BaoCaoNhapHangVM" Title="SL Nhập">
+            <Template>@context.SoLuong</Template>
+        </Column>
+        <Column TData="BaoCaoNhapHangVM" Title="Đơn giá">
+            <Template>@context.DonGia.ToString("N0")</Template>
+        </Column>
+        <Column TData="BaoCaoNhapHangVM" Title="Trị giá">
+            <Template>@((context.SoLuong * context.DonGia).ToString("N0"))</Template>
+        </Column>
+    </Table>
+}
+
+@code {
+    [Inject] IJSRuntime JS { get; set; } = default!;
+
+    private BaoCaoNhapFilter Filter = new()
+    {
+        TuNgay = DateTime.Today.AddDays(-7),
+        DenNgay = DateTime.Today
+    };
+
+    private List<BaoCaoNhapHangVM>? Data;
+
+    private async Task OnSearch()
+    {
+        var httpResponse = await Api.PostAsync<BaoCaoNhapFilter>("api/PhieuNhapKhos/baocao", Filter);
+
+        if( httpResponse.IsSuccessStatusCode )
+        {
+            Data = await httpResponse.Content.ReadFromJsonAsync<List<BaoCaoNhapHangVM>>();
+        }
+        else
+        {
+            Data = null;
+            await JS.InvokeVoidAsync("alert", "Không tìm thấy dữ liệu phù hợp.");
+        }
+    }
+}

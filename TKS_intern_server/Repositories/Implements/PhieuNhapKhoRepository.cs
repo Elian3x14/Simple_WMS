@@ -2,6 +2,7 @@
 using TKS_intern_server.Data;
 using TKS_intern_server.Repositories.Interfaces;
 using TKS_intern_shared.Models;
+using TKS_intern_shared.ViewModels.BaoCaos;
 
 namespace TKS_intern_server.Repositories.Implements
 {
@@ -58,6 +59,28 @@ namespace TKS_intern_server.Repositories.Implements
         {
             return _context.PhieuNhapKhos
                 .AnyAsync(p => p.SoPhieuNhapKho == soPhieuNhap && p.Id != excludeId);
+        }
+
+        public async Task<List<BaoCaoNhapHangVM>> GetBaoCaoNhapHangAsync(DateTime tuNgay, DateTime denNgay)
+        {
+            var result = await _context.PhieuNhapKhos
+                .Include(p => p.NhaCungCap)
+                .Include(p => p.ChiTietPhieuNhapKhos)
+                    .ThenInclude(ct => ct.SanPham)
+                .Where(p => p.NgayNhapKho.Date >= tuNgay.Date && p.NgayNhapKho.Date <= denNgay.Date)
+                .SelectMany(p => p.ChiTietPhieuNhapKhos.Select(ct => new BaoCaoNhapHangVM
+                {
+                    NgayNhap = p.NgayNhapKho,
+                    SoPhieu = p.SoPhieuNhapKho,
+                    NhaCungCap = p.NhaCungCap.TenNhaCungCap,
+                    MaSanPham = ct.SanPham.MaSanPham,
+                    TenSanPham = ct.SanPham.TenSanPham,
+                    SoLuong = ct.SoLuongNhap,
+                    DonGia = ct.DonGiaNhap
+                }))
+                .ToListAsync();
+
+            return result;
         }
     }
 }

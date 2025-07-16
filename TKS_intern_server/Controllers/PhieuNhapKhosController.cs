@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TKS_intern_server.Repositories.Interfaces;
 using TKS_intern_shared.Models;
+using TKS_intern_shared.ViewModels.BaoCaos;
 using TKS_intern_shared.ViewModels.PhieuNhapKhos;
 
 namespace TKS_intern_server.Controllers
@@ -76,6 +77,13 @@ namespace TKS_intern_server.Controllers
                 return NotFound(new { message = "Không tìm thấy phiếu nhập kho để xoá." });
 
             return NoContent();
+        }
+
+        [HttpPost("baocao")]
+        public async Task<ActionResult<IEnumerable<BaoCaoNhapHangVM>>> BaoCaoChiTietNhap([FromBody] BaoCaoNhapFilter filter)
+        {
+            var result = await _repository.GetBaoCaoNhapHangAsync(filter.TuNgay, filter.DenNgay);
+            return Ok(result);
         }
     }
 }
