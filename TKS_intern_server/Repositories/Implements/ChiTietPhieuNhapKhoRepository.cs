@@ -17,8 +17,11 @@ namespace TKS_intern_server.Repositories.Implements
         public async Task<IEnumerable<ChiTietPhieuNhapKho>> GetByPhieuNhapKhoIdAsync(int phieuNhapKhoId)
         {
             return await _context.ChiTietPhieuNhapKhos
-                .Where(c => c.PhieuNhapKhoId == phieuNhapKhoId)
-                .ToListAsync();
+                 .Where(c => c.PhieuNhapKhoId == phieuNhapKhoId)
+                 .Include(c => c.SanPham)
+                     .ThenInclude(sp => sp.DonViTinh)
+                 .ToListAsync();
+
         }
 
         public async Task AddRangeAsync(IEnumerable<ChiTietPhieuNhapKho> details)
