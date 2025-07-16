@@ -1,0 +1,86 @@
+﻿@page "/baocao/xuat"
+@using TKS_intern_client.Services
+@using TKS_intern_shared.ViewModels.BaoCaos
+@inject ApiClient Api
+@inject IJSRuntime JS
+
+<PageHeader Title="Báo cáo chi tiết hàng xuất" />
+
+<AntDesign.Form Model="Filter" OnFinish="OnSearch" Layout="FormLayout.Inline" Class="mb-4">
+    <AntDesign.FormItem Label="Từ ngày">
+        <AntDesign.DatePicker @bind-Value="Filter.TuNgay" Format="dd/MM/yyyy" />
+    </AntDesign.FormItem>
+    <AntDesign.FormItem Label="Đến ngày">
+        <AntDesign.DatePicker @bind-Value="Filter.DenNgay" Format="dd/MM/yyyy" />
+    </AntDesign.FormItem>
+    <AntDesign.FormItem>
+        <AntDesign.Button Type="ButtonType.Primary" HtmlType="ButtonHtmlType.Submit">Tìm kiếm</AntDesign.Button>
+    </AntDesign.FormItem>
+
+    <AntDesign.FormItem>
+        <AntDesign.Button Type="ButtonType.Dashed" >
+            <Icon Type="file-excel" Theme="IconThemeType.Outline" />
+            Xuất Excel
+        </AntDesign.Button>
+    </AntDesign.FormItem>
+
+</AntDesign.Form>
+
+@if (Data == null)
+{
+    <Empty>
+        <DescriptionTemplate>
+            <span>Không có bản ghi nào để hiển thị.</span>
+        </DescriptionTemplate>
+    </Empty>
+}
+else
+{
+    <Table TItem="BaoCaoXuatHangVM" DataSource="Data" Bordered="true" Size="TableSize.Small">
+        <Column TData="BaoCaoXuatHangVM" Title="Ngày xuất">
+            <Template>@context.NgayXuat.ToString("dd/MM/yyyy")</Template>
+        </Column>
+        <Column TData="BaoCaoXuatHangVM" Title="Số phiếu xuất">
+            <Template>@context.SoPhieu</Template>
+        </Column>
+        <Column TData="BaoCaoXuatHangVM" Title="Mã sản phẩm">
+            <Template>@context.MaSanPham</Template>
+        </Column>
+        <Column TData="BaoCaoXuatHangVM" Title="Tên sản phẩm">
+            <Template>@context.TenSanPham</Template>
+        </Column>
+        <Column TData="BaoCaoXuatHangVM" Title="SL xuất">
+            <Template>@context.SoLuong</Template>
+        </Column>
+        <Column TData="BaoCaoXuatHangVM" Title="Đơn giá">
+            <Template>@context.DonGia.ToString("N0")</Template>
+        </Column>
+        <Column TData="BaoCaoXuatHangVM" Title="Trị giá">
+            <Template>@((context.SoLuong * context.DonGia).ToString("N0"))</Template>
+        </Column>
+    </Table>
+}
+
+@code {
+    private BaoCaoXuatFilter Filter = new()
+    {
+        TuNgay = DateTime.Today.AddDays(-7),
+        DenNgay = DateTime.Today
+    };
+
+    private List<BaoCaoXuatHangVM>? Data;
+
+    private async Task OnSearch()
+    {
+        var response = await Api.PostAsync<BaoCaoXuatFilter>("api/PhieuXuatKhos/baocao", Filter);
+        if (response.IsSuccessStatusCode)
+        {
+            Data = await response.Content.ReadFromJsonAsync<List<BaoCaoXuatHangVM>>();
+        }
+        else
+        {
+            Data = null;
+            await JS.InvokeVoidAsync("alert", "Không tìm thấy dữ liệu phù hợp.");
+        }
+    }
+}

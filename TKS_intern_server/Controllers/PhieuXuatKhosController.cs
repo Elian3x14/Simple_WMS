@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TKS_intern_server.Repositories.Interfaces;
 using TKS_intern_shared.Models;
+using TKS_intern_shared.ViewModels.BaoCaos;
 using TKS_intern_shared.ViewModels.PhieuXuatKhos;
 
 namespace TKS_intern_server.Controllers
@@ -74,5 +75,13 @@ namespace TKS_intern_server.Controllers
 
             return NoContent();
         }
+
+        [HttpPost("baocao")]
+        public async Task<ActionResult<List<BaoCaoXuatHangVM>>> BaoCaoXuat([FromBody] BaoCaoXuatFilter filter)
+        {
+            var result = await _repository.GetBaoCaoXuatHangAsync(filter.TuNgay, filter.DenNgay);
+            return Ok(result);
+        }
+
     }
 }

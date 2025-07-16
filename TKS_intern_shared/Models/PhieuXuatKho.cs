@@ -15,7 +15,7 @@ namespace TKS_intern_shared.Models
         public required DateTime NgayXuatKho { get; set; }
         public required string? GhiChu { get; set; }
 
-        public IEnumerable<ChiTietPhieuXuatKho>? ChiTietPhieuXuatKhos;
+        public required IEnumerable<ChiTietPhieuXuatKho> ChiTietPhieuXuatKhos;
 
     }
 }
