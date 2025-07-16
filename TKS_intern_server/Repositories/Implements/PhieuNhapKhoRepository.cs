@@ -72,7 +72,7 @@ namespace TKS_intern_server.Repositories.Implements
                 {
                     NgayNhap = p.NgayNhapKho,
                     SoPhieu = p.SoPhieuNhapKho,
-                    NhaCungCap = p.NhaCungCap.TenNhaCungCap,
+                    NhaCungCap = p.NhaCungCap!.TenNhaCungCap,
                     MaSanPham = ct.SanPham.MaSanPham,
                     TenSanPham = ct.SanPham.TenSanPham,
                     SoLuong = ct.SoLuongNhap,

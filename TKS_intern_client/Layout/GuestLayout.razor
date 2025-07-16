@@ -1,0 +1,78 @@
+﻿@inherits LayoutComponentBase
+
+
+<Layout Class="landing-layout">
+
+    <Header Class="landing-header">
+        <div class="header-content">
+            <div class="logo">
+                <h1>Tiên Khanh - WMS</h1>
+                <span class="tagline">Giải pháp quản lý kho thông minh</span>
+            </div>
+            <Menu Mode="MenuMode.Horizontal" Theme="MenuTheme.Dark" Class="nav-menu" @bind-SelectedKeys="@currentMenu">
+                <MenuItem Key="features">Tính năng</MenuItem>
+                <MenuItem Key="benefits">Lợi ích</MenuItem>
+                <MenuItem Key="pricing">Bảng giá</MenuItem>
+                <MenuItem Key="contact">Liên hệ</MenuItem>
+            </Menu>
+            <div class="header-actions">
+                <a href="/dashboard">
+                    <Button Type="ButtonType.Primary">Đăng nhập</Button>
+                </a>
+                <Button>Đăng ký</Button>
+            </div>
+        </div>
+    </Header>
+
+    <Content Class="landing-content">
+        @Body
+    </Content>
+
+    <Footer Class="landing-footer">
+        <div class="footer-content">
+            <div class="footer-about">
+                <h3>Tiên Khanh - WMS</h3>
+                <p>Giải pháp quản lý kho hàng thông minh cho doanh nghiệp</p>
+                <div class="social-links">
+                    <a href="#"><Icon Type="facebook" Theme="IconThemeType.Fill" /></a>
+                    <a href="#"><Icon Type="youtube" Theme="IconThemeType.Fill" /></a>
+                    <a href="#"><Icon Type="linkedin" Theme="IconThemeType.Fill" /></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>Liên kết</h4>
+                <ul>
+                    <li><a href="#">Trang chủ</a></li>
+                    <li><a href="#features">Tính năng</a></li>
+                    <li><a href="#pricing">Bảng giá</a></li>
+                    <li><a href="#contact">Liên hệ</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Hỗ trợ</h4>
+                <ul>
+                    <li><a href="#">Câu hỏi thường gặp</a></li>
+                    <li><a href="#">Hướng dẫn sử dụng</a></li>
+                    <li><a href="#">Chính sách bảo mật</a></li>
+                    <li><a href="#">Điều khoản dịch vụ</a></li>
+                </ul>
+            </div>
+            <div class="footer-newsletter">
+                <h4>Đăng ký nhận tin</h4>
+                <p>Nhận thông tin mới nhất về sản phẩm và khuyến mãi</p>
+                <Space Class="newsletter-form">
+                    @* <Input Type="string" Placeholder="Nhập email của bạn" /> *@
+                    <Button Type="ButtonType.Primary">Đăng ký</Button>
+                </Space>
+            </div>
+        </div>
+        <Divider />
+        <div class="footer-copyright">
+            <p>© 2023 Tiên Khanh - WMS. All rights reserved.</p>
+        </div>
+    </Footer>
+</Layout>
+
+@code {
+    private string[] currentMenu = Array.Empty<string>();
+}
