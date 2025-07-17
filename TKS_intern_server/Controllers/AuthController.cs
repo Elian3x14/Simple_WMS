@@ -33,7 +33,11 @@ namespace TKS_intern_server.Controllers
                 );
 
             var token = _tokenService.GenerateToken(user);
-            return Ok(new { token });
+            return Ok(new TokenVM
+            {
+                AccessToken = token,
+                RefreshToken = null // TODO: thêm logic refresh token nếu bạn triển khai
+            });
         }
 
 

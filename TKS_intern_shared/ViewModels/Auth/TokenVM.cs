@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace TKS_intern_shared.ViewModels.Auth
 {
-    public class LoginResult
+    public class TokenVM
     {
-        public bool Success { get; set; }
-        public string? Message { get; set; }
-        public string? Token { get; set; }
+        public required string AccessToken { get; set; }
+        public string? RefreshToken { get; set; }
     }
 }

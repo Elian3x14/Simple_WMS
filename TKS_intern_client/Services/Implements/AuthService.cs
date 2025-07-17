@@ -20,7 +20,7 @@ namespace TKS_intern_client.Services.Implements
             _navigationManager = navigationManager;
         }
 
-        public async Task<LoginResult> LoginAsync(string username, string password)
+        public async Task<TokenVM> LoginAsync(string username, string password)
         {
             try
             {
@@ -32,20 +32,20 @@ namespace TKS_intern_client.Services.Implements
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var result = await response.Content.ReadFromJsonAsync<LoginResult>();
-                    if (result == null || string.IsNullOrEmpty(result.Token))
+                    var result = await response.Content.ReadFromJsonAsync<TokenVM>();
+                    if (result == null || string.IsNullOrEmpty(result.AccessToken))
                     {
-                        return new LoginResult { Success = false, Message = "Invalid response from server" };
+                        return new TokenVM { Success = false, Message = "Invalid response from server" };
                     }
-                    await _localStorage.SetItemAsync("authToken", result.Token);
+                    await _localStorage.SetItemAsync("authToken", result.AccessToken);
                     return result;
                 }
 
-                return new LoginResult { Success = false, Message = "Sai tên đăng nhập hoặc mật khẩu" };
+                return new TokenVM { Success = false, Message = "Sai tên đăng nhập hoặc mật khẩu" };
             }
             catch (Exception ex)
             {
-                return new LoginResult { Success = false, Message = ex.Message };
+                return new TokenVM { Success = false, Message = ex.Message };
             }
         }
 
