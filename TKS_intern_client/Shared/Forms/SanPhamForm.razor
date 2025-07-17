@@ -1,58 +1,63 @@
 ﻿@using Microsoft.AspNetCore.Components
-@using Microsoft.AspNetCore.Components.Forms
+@using AntDesign
 @using TKS_intern_shared.ViewModels.SanPhams
 @using TKS_intern_shared.ViewModels.LoaiSanPhams
 @using TKS_intern_shared.ViewModels.DonViTinhs
 
-<EditForm Model="Model" OnValidSubmit="OnValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+<AntDesign.Form Model="Model" OnFinish="OnValidSubmit" Layout="FormLayout.Vertical">
+    <Row Gutter="16">
+        <Col Span="12">
+        <FormItem Label="Mã sản phẩm" Name="@nameof(Model.MaSanPham)" Required>
+            <Input @bind-Value="Model.MaSanPham" />
+        </FormItem>
+        </Col>
+        <Col Span="12">
+        <FormItem Label="Tên sản phẩm" Name="@nameof(Model.TenSanPham)" Required>
+            <Input @bind-Value="Model.TenSanPham" />
+        </FormItem>
+        </Col>
+    </Row>
 
-    <div class="mb-3">
-        <label class="form-label">Mã sản phẩm</label>
-        <InputText class="form-control" @bind-Value="Model.MaSanPham" />
-        <ValidationMessage For="@(() => Model.MaSanPham)" />
-    </div>
+    <Row Gutter="16">
+        <Col Span="12">
+        <FormItem Label="Loại sản phẩm" Name="@nameof(Model.LoaiSanPhamId)" Required>
+            <Select @bind-Value="Model.LoaiSanPhamId"
+                    Placeholder="Chọn loại sản phẩm"
+                    DataSource="LoaiSanPhamList"
+                    ItemValue="item => item.Id"
+                    ItemLabel="item => item.TenLoaiSanPham">
+            </Select>
+        </FormItem>
+        </Col>
+        <Col Span="12">
+        <FormItem Label="Đơn vị tính" Name="@nameof(Model.DonViTinhId)" Required>
+            <Select @bind-Value="Model.DonViTinhId"
+                    Placeholder="Chọn đơn vị tính"
+                    DataSource="DonViTinhList"
+                    ItemValue="item => item.Id"
+                    ItemLabel="item => item.TenDonViTinh">
+            </Select>
+        </FormItem>
+        </Col>
+    </Row>
 
-    <div class="mb-3">
-        <label class="form-label">Tên sản phẩm</label>
-        <InputText class="form-control" @bind-Value="Model.TenSanPham" />
-        <ValidationMessage For="@(() => Model.TenSanPham)" />
-    </div>
+    <Row>
+        <Col Span="24">
+        <FormItem Label="Ghi chú" Name="@nameof(Model.GhiChu)">
+            <TextArea @bind-Value="Model.GhiChu" Rows="4" />
+        </FormItem>
+        </Col>
+    </Row>
 
-    <div class="mb-3">
-        <label class="form-label">Loại sản phẩm</label>
-        <InputSelect class="form-select" @bind-Value="Model.LoaiSanPhamId">
-            <option value="">-- Chọn loại sản phẩm --</option>
-            @foreach (var loai in LoaiSanPhamList)
-            {
-                <option value="@loai.Id">@loai.TenLoaiSanPham</option>
-            }
-        </InputSelect>
-        <ValidationMessage For="@(() => Model.LoaiSanPhamId)" />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Đơn vị tính</label>
-        <InputSelect class="form-select" @bind-Value="Model.DonViTinhId">
-            <option value="">-- Chọn đơn vị tính --</option>
-            @foreach (var dvt in DonViTinhList)
-            {
-                <option value="@dvt.Id">@dvt.TenDonViTinh</option>
-            }
-        </InputSelect>
-        <ValidationMessage For="@(() => Model.DonViTinhId)" />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Ghi chú</label>
-        <InputTextArea class="form-control" @bind-Value="Model.GhiChu" />
-        <ValidationMessage For="@(() => Model.GhiChu)" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Lưu</button>
-    <button type="button" class="btn btn-secondary ms-2" @onclick="OnCancelClicked">Hủy</button>
-</EditForm>
+    <Row>
+        <Col Span="24">
+        <FormItem>
+            <Button Type="ButtonType.Primary" HtmlType="submit">Lưu</Button>
+            <Button Class="ml-2" @onclick="OnCancelClicked">Hủy</Button>
+        </FormItem>
+        </Col>
+    </Row>
+</AntDesign.Form>
 
 @code {
     [Parameter, EditorRequired]

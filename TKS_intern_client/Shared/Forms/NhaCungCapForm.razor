@@ -1,32 +1,40 @@
 ﻿@using Microsoft.AspNetCore.Components
-@using Microsoft.AspNetCore.Components.Forms
+@using AntDesign
 @using TKS_intern_shared.ViewModels.NhaCungCaps
 
-<EditForm Model="Model" OnValidSubmit="OnValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+<AntDesign.Form Model="Model" OnFinish="OnValidSubmit" Layout="FormLayout.Vertical">
+    <DataAnnotationsValidator/>
+    <Row Gutter="16">
+        <Col Span="12">
+        <FormItem Label="Mã nhà cung cấp" Name="@nameof(Model.MaNhaCungCap)" Required>
+            <Input @bind-Value="Model.MaNhaCungCap" />
+        </FormItem>
+        </Col>
 
-    <div class="mb-3">
-        <label class="form-label">Mã nhà cung cấp</label>
-        <InputText class="form-control" @bind-Value="Model.MaNhaCungCap" />
-        <ValidationMessage For="@(() => Model.MaNhaCungCap)" />
-    </div>
+        <Col Span="12">
+        <FormItem Label="Tên nhà cung cấp" Name="@nameof(Model.TenNhaCungCap)" Required>
+            <Input @bind-Value="Model.TenNhaCungCap" />
+        </FormItem>
+        </Col>
+    </Row>
 
-    <div class="mb-3">
-        <label class="form-label">Tên nhà cung cấp</label>
-        <InputText class="form-control" @bind-Value="Model.TenNhaCungCap" />
-        <ValidationMessage For="@(() => Model.TenNhaCungCap)" />
-    </div>
+    <Row>
+        <Col Span="24">
+        <FormItem Label="Ghi chú" Name="@nameof(Model.GhiChu)">
+            <TextArea @bind-Value="Model.GhiChu" Rows="4" />
+        </FormItem>
+        </Col>
+    </Row>
 
-    <div class="mb-3">
-        <label class="form-label">Ghi chú</label>
-        <InputTextArea class="form-control" @bind-Value="Model.GhiChu" />
-        <ValidationMessage For="@(() => Model.GhiChu)" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Lưu</button>
-    <button type="button" class="btn btn-secondary ms-2" @onclick="OnCancelClicked">Hủy</button>
-</EditForm>
+    <Row>
+        <Col Span="24">
+        <FormItem>
+            <Button Type="ButtonType.Primary" HtmlType="submit">Lưu</Button>
+            <Button Class="ml-2" @onclick="OnCancelClicked">Hủy</Button>
+        </FormItem>
+        </Col>
+    </Row>
+</AntDesign.Form>
 
 @code {
     [Parameter, EditorRequired]
