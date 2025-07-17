@@ -1,4 +1,4 @@
-﻿@page "/phieunhapkho"
+﻿    @page "/phieunhapkho"
 @using TKS_intern_client.Services
 @using TKS_intern_shared.ViewModels.PhieuNhapKhos
 @inject ApiClient Api
@@ -14,11 +14,22 @@
 
 <Title Level="3">Danh sách Phiếu Nhập Kho</Title>
 
-<a href="/phieunhapkho/create">
-    <AntDesign.Button Type="ButtonType.Primary" Icon="@IconType.Outline.Plus" class="mb-3">
-        Thêm mới
-    </AntDesign.Button>
-</a>
+<Space class="mb-3">
+    <SpaceItem>
+        <a href="/phieunhapkho/create">
+            <AntDesign.Button Type="ButtonType.Primary" Icon="@IconType.Outline.Plus">
+                Thêm mới
+            </AntDesign.Button>
+        </a>
+    </SpaceItem>
+    <SpaceItem>
+        <a href="/baocao/nhap">
+            <Button Type="ButtonType.Dashed" Icon="@IconType.Outline.FileText">
+                Xem báo cáo
+            </Button>
+        </a>
+    </SpaceItem>
+</Space>
 
 @if (phieuNhapKhoList == null)
 {

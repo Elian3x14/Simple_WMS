@@ -14,11 +14,23 @@
 
 <Title Level="3">Danh sách Phiếu Xuất Kho</Title>
 
-<a href="/phieuxuatkho/create">
-    <AntDesign.Button Type="ButtonType.Primary" class="mb-3">
-        Thêm mới
-    </AntDesign.Button>
-</a>
+<Space class="mb-3">
+    <SpaceItem>
+        <a href="/phieuxuatkho/create">
+            <AntDesign.Button Type="ButtonType.Primary" Icon="@IconType.Outline.Plus">
+                Thêm mới
+            </AntDesign.Button>
+        </a>
+    </SpaceItem>
+    <SpaceItem>
+        <a href="/baocao/xuat">
+            <Button Type="ButtonType.Dashed" Icon="@IconType.Outline.FileText">
+                Xem báo cáo
+            </Button>
+        </a>
+    </SpaceItem>
+</Space>
+
 
 @if (phieuXuatKhoList == null)
 {
