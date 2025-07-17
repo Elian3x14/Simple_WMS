@@ -14,12 +14,10 @@
     public class AuthRepository : IAuthRepository
     {
         private readonly TKS_internContext _context;
-        private readonly IConfiguration _configuration;
 
-        public AuthRepository(TKS_internContext context, IConfiguration configuration)
+        public AuthRepository(TKS_internContext context)
         {
             _context = context;
-            _configuration = configuration;
         }
 
         public async Task<User?> AuthenticateAsync(string username, string password)
