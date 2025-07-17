@@ -4,7 +4,7 @@ namespace TKS_intern_client.Services
 {
     public interface IAuthService
     {
-        Task<TokenVM> LoginAsync(string username, string password);
+        Task<TokenVM?> LoginAsync(string username, string password);
         Task LogoutAsync();
         Task<bool> IsAuthenticatedAsync();
     }

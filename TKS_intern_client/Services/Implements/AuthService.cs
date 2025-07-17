@@ -20,33 +20,25 @@ namespace TKS_intern_client.Services.Implements
             _navigationManager = navigationManager;
         }
 
-        public async Task<TokenVM> LoginAsync(string username, string password)
+        public async Task<TokenVM?> LoginAsync(string username, string password)
         {
-            try
+            var response = await _httpClient.PostAsJsonAsync("api/auth/login", new
             {
-                var response = await _httpClient.PostAsJsonAsync("api/auth/login", new
-                {
-                    Username = username,
-                    Password = password
-                });
+                Username = username,
+                Password = password
+            });
 
-                if (response.IsSuccessStatusCode)
-                {
-                    var result = await response.Content.ReadFromJsonAsync<TokenVM>();
-                    if (result == null || string.IsNullOrEmpty(result.AccessToken))
-                    {
-                        return new TokenVM { Success = false, Message = "Invalid response from server" };
-                    }
-                    await _localStorage.SetItemAsync("authToken", result.AccessToken);
-                    return result;
-                }
-
-                return new TokenVM { Success = false, Message = "Sai tên đăng nhập hoặc mật khẩu" };
-            }
-            catch (Exception ex)
+            if (!response.IsSuccessStatusCode)
             {
-                return new TokenVM { Success = false, Message = ex.Message };
+                throw new Exception("Login failed. Please check your credentials.");
             }
+            var result = await response.Content.ReadFromJsonAsync<TokenVM>();
+            if (result == null || string.IsNullOrEmpty(result.AccessToken))
+            {
+                return null;
+            }
+            await _localStorage.SetItemAsync("authToken", result.AccessToken);
+            return result;
         }
 
         public async Task LogoutAsync()

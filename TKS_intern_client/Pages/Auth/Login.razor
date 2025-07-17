@@ -50,8 +50,8 @@
             <h6>Tài khoản mẫu</h6>
             
             <div>
-                <Button Type="@ButtonType.Primary" OnClick="setAdminAccount">Admin</Button>
-                <Button OnClick="setStaffAccount">Staff</Button>
+                <Button Type="@ButtonType.Primary" OnClick="SetAdminAccount">Admin</Button>
+                <Button OnClick="SetStaffAccount">Staff</Button>
             </div>
         </Form>
     </div>
@@ -69,7 +69,7 @@
         {
             var result = await AuthService.LoginAsync(loginModel.Username, loginModel.Password);
 
-            if (result.Success)
+            if (result != null)
             {
                 // await MessageService.Success("Đăng nhập thành công!");
                 Console.WriteLine("Login successful!");
@@ -78,7 +78,7 @@
             else
             {
                 // await MessageService.Error(result.Message ?? "Đăng nhập thất bại");
-                Console.WriteLine($"Login failed: {result.Message ?? "Unknown error"}");
+                Console.WriteLine($"Login failed");
             }
         }
         catch (Exception ex)
@@ -97,13 +97,13 @@
         Console.WriteLine("Validation failed");
     }
 
-    private void setAdminAccount()
+    private void SetAdminAccount()
     {
         loginModel.Username = "admin";
         loginModel.Password = "admin123";
     }
 
-    private void setStaffAccount()
+    private void SetStaffAccount()
     {
         loginModel.Username = "staff";
         loginModel.Password = "staff123";
