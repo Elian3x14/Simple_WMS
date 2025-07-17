@@ -6,6 +6,5 @@ namespace TKS_intern_client.Services
     {
         Task<TokenVM?> LoginAsync(string username, string password);
         Task LogoutAsync();
-        Task<bool> IsAuthenticatedAsync();
     }
 }

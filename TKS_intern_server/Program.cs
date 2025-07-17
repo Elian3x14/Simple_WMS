@@ -20,6 +20,8 @@ builder.Services.AddAutoMapper(typeof(KhoProfile));
 builder.Services.AddAutoMapper(typeof(KhoUserProfile));
 builder.Services.AddAutoMapper(typeof(PhieuNhapKhoProfile));
 builder.Services.AddAutoMapper(typeof(ChiTietPhieuXuatKhoProfile).Assembly);
+builder.Services.AddAutoMapper(typeof(UserProfile).Assembly);
+
 
 // Repositories
 builder.Services.AddScoped<IDonViTinhRepository, DonViTinhRepository>();
@@ -33,6 +35,7 @@ builder.Services.AddScoped<IChiTietPhieuNhapKhoRepository, ChiTietPhieuNhapKhoRe
 builder.Services.AddScoped<IPhieuXuatKhoRepository, PhieuXuatKhoRepository>();
 builder.Services.AddScoped<IChiTietPhieuXuatKhoRepository, ChiTietPhieuXuatKhoRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 // Services
 builder.Services.AddScoped<ITokenService, TokenService>();
 
