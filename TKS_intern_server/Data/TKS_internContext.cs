@@ -28,6 +28,8 @@ namespace TKS_intern_server.Data
 
         public DbSet<ChiTietPhieuXuatKho> ChiTietPhieuXuatKhos{ get; set; } = default!;
 
+        public DbSet<User> Users { get; set; } = default!;
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -302,6 +304,36 @@ namespace TKS_intern_server.Data
                     .HasForeignKey(e => e.SanPhamId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
+
+            // Users
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.ToTable("Users");
+
+                entity.HasKey(u => u.Id);
+
+                entity.Property(u => u.UserName)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.HasIndex(u => u.UserName)
+                      .IsUnique(); 
+
+                entity.Property(u => u.Email)
+                    .IsRequired()
+                    .HasMaxLength(256);
+
+                entity.Property(u => u.PasswordHash)
+                    .IsRequired()
+                    .HasMaxLength(256);
+
+                entity.Property(u => u.FullName)
+                    .HasMaxLength(100);
+
+                entity.Property(u => u.IsActive)
+                    .HasDefaultValue(true);
+            });
+
 
             // Cấu hình cho tất cả entity kế thừa từ BaseModel
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())

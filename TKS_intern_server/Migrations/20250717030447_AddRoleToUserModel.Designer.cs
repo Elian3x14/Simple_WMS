@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TKS_intern_server.Data;
 
@@ -11,9 +12,11 @@ using TKS_intern_server.Data;
 namespace TKS_intern_server.Migrations
 {
     [DbContext(typeof(TKS_internContext))]
-    partial class TKS_internContextModelSnapshot : ModelSnapshot
+    [Migration("20250717030447_AddRoleToUserModel")]
+    partial class AddRoleToUserModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

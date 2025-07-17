@@ -1,8 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using TKS_intern_server.Data;
 using TKS_intern_server.Mappers;
 using TKS_intern_server.Repositories.Implements;
 using TKS_intern_server.Repositories.Interfaces;
+using TKS_intern_server.Services.Implements;
+using TKS_intern_server.Services.Interfaces;
 using TKS_intern_shared.Repositories.Implements;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<TKS_internContext>(options =>
@@ -18,8 +21,7 @@ builder.Services.AddAutoMapper(typeof(KhoUserProfile));
 builder.Services.AddAutoMapper(typeof(PhieuNhapKhoProfile));
 builder.Services.AddAutoMapper(typeof(ChiTietPhieuXuatKhoProfile).Assembly);
 
-
-
+// Repositories
 builder.Services.AddScoped<IDonViTinhRepository, DonViTinhRepository>();
 builder.Services.AddScoped<ILoaiSanPhamRepository, LoaiSanPhamRepository>();
 builder.Services.AddScoped<ISanPhamRepository, SanPhamRepository>();
@@ -30,14 +32,43 @@ builder.Services.AddScoped<IPhieuNhapKhoRepository, PhieuNhapKhoRepository>();
 builder.Services.AddScoped<IChiTietPhieuNhapKhoRepository, ChiTietPhieuNhapKhoRepository>();
 builder.Services.AddScoped<IPhieuXuatKhoRepository, PhieuXuatKhoRepository>();
 builder.Services.AddScoped<IChiTietPhieuXuatKhoRepository, ChiTietPhieuXuatKhoRepository>();
-
-
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+// Services
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+var jwtKey = builder.Configuration["JwtSettings:Key"];
+if (string.IsNullOrEmpty(jwtKey))
+{
+    throw new InvalidOperationException("JWT Key is not configured properly.");
+}
+
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+            ValidAudience = builder.Configuration["JwtSettings:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                System.Text.Encoding.UTF8.GetBytes(jwtKey)
+            )
+        };
+    });
+
+
+builder.Services.AddAuthorization();
+
 
 // Cấu hình CORS
 builder.Services.AddCors(options =>
@@ -50,6 +81,8 @@ builder.Services.AddCors(options =>
                   .AllowAnyMethod();
         });
 });
+
+
 
 var app = builder.Build();
 
@@ -64,7 +97,9 @@ app.UseCors("AllowFrontendLocalhost7033");
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllers();
 
