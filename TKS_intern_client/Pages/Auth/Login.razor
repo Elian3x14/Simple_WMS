@@ -11,8 +11,7 @@
 <div class="login-container">
     <div class="login-card">
         <div class="login-logo">
-            <img src="/images/warehouse-logo.png" alt="Logo quản lý kho hàng" />
-            <h2>Hệ thống quản lý kho hàng</h2>
+            <img src="/logo.png" alt="TKS Logo" />
         </div>
 
         <Form Model="@loginModel" OnFinish="@HandleLogin" OnFinishFailed="HandleLoginFailed" Layout="FormLayout.Vertical">
@@ -26,7 +25,11 @@
             </FormItem>
 
             <FormItem Label="Mật khẩu" Required>
-                <InputPassword @bind-Value="@loginModel.Password" Placeholder="Nhập mật khẩu"/>
+                <InputPassword @bind-Value="@loginModel.Password" Placeholder="Nhập mật khẩu">
+                    <Prefix>
+                        <Icon Type="@IconType.Outline.Lock" />
+                    </Prefix>
+                </InputPassword>
             </FormItem>
 
             <FormItem>
@@ -42,8 +45,13 @@
 
             <div class="login-links">
                 <a href="/forgot-password">Quên mật khẩu?</a>
-                <Divider Type="DividerType.Vertical" />
-                <a href="/register">Đăng ký tài khoản</a>
+            </div>
+
+            <h6>Tài khoản mẫu</h6>
+            
+            <div>
+                <Button Type="@ButtonType.Primary" OnClick="setAdminAccount">Admin</Button>
+                <Button OnClick="setStaffAccount">Staff</Button>
             </div>
         </Form>
     </div>
@@ -56,11 +64,11 @@
     private async Task HandleLogin()
     {
         isLoading = true;
-        
+
         try
         {
             var result = await AuthService.LoginAsync(loginModel.Username, loginModel.Password);
-            
+
             if (result.Success)
             {
                 // await MessageService.Success("Đăng nhập thành công!");
@@ -87,5 +95,17 @@
     private void HandleLoginFailed()
     {
         Console.WriteLine("Validation failed");
+    }
+
+    private void setAdminAccount()
+    {
+        loginModel.Username = "admin";
+        loginModel.Password = "admin123";
+    }
+
+    private void setStaffAccount()
+    {
+        loginModel.Username = "staff";
+        loginModel.Password = "staff123";
     }
 }

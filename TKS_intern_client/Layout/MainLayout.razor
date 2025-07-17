@@ -43,17 +43,19 @@
     </style>
     <Layout>
         <Sider @bind-Collapsed=@collapsed >
-            <div class="logo-container">
-                @if(collapsed)
-                {
-                    <img src="/logo-zip.png" alt="TKS Logo" 
-                        style="--size: 40px; width: var(--size); height: var(--size);" />   
-                }
-                else
-                {
-                    <img src="/logo.png" alt="TKS Logo" />
-                }
-            </div>
+            <a href="/">
+                <div class="logo-container">
+                    @if(collapsed)
+                    {
+                        <img src="/logo-zip.png" alt="TKS Logo" 
+                            style="--size: 40px; width: var(--size); height: var(--size);" />   
+                    }
+                    else
+                    {
+                        <img src="/logo.png" alt="TKS Logo" />
+                    }
+                </div>
+            </a>
             <Menu Theme="MenuTheme.Dark" Mode="MenuMode.Inline" DefaultSelectedKeys=@(new[] { "1" })>
                 <MenuItem Key="/dashboard">
                     <a href="/dashboard" class="text-white text-decoration-none d-flex align-items-center">

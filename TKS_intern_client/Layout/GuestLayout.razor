@@ -5,10 +5,12 @@
 
     <Header Class="landing-header">
         <div class="header-content">
-            <div class="logo">
-                <h1>Tiên Khanh - WMS</h1>
-                <span class="tagline">Giải pháp quản lý kho thông minh</span>
-            </div>
+            <a href="/">
+                <div class="logo">
+                    <h1>Tiên Khanh - WMS</h1>
+                    <span class="tagline">Giải pháp quản lý kho thông minh</span>
+                </div>
+            </a>
             <Menu Mode="MenuMode.Horizontal" Theme="MenuTheme.Dark" Class="nav-menu" @bind-SelectedKeys="@currentMenu">
                 <MenuItem Key="features">Tính năng</MenuItem>
                 <MenuItem Key="benefits">Lợi ích</MenuItem>
@@ -16,7 +18,7 @@
                 <MenuItem Key="contact">Liên hệ</MenuItem>
             </Menu>
             <div class="header-actions">
-                <a href="/dashboard">
+                <a href="/login">
                     <Button Type="ButtonType.Primary">Đăng nhập</Button>
                 </a>
                 <Button>Đăng ký</Button>
@@ -61,8 +63,14 @@
                 <h4>Đăng ký nhận tin</h4>
                 <p>Nhận thông tin mới nhất về sản phẩm và khuyến mãi</p>
                 <Space Class="newsletter-form">
-                    @* <Input Type="string" Placeholder="Nhập email của bạn" /> *@
-                    <Button Type="ButtonType.Primary">Đăng ký</Button>
+                    <Form Model="newsletter">
+                        <FormItem Label="Email">
+                            <Input @bind-Value="newsletter.Email" Placeholder="Nhập email của bạn" />
+                        </FormItem>
+                        <FormItem>
+                            <Button Type="ButtonType.Primary">Đăng ký</Button>
+                        </FormItem>
+                    </Form>
                 </Space>
             </div>
         </div>
@@ -75,4 +83,10 @@
 
 @code {
     private string[] currentMenu = Array.Empty<string>();
+    private NewsLetter newsletter = new();
+
+    private class NewsLetter 
+    {
+        public string Email { get; set; } = string.Empty;
+    }
 }
