@@ -6,7 +6,18 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
-<h3>Cập nhật Nhà Cung Cấp</h3>
+<PageHeader Class="site-page-header p-0" Title="Cập nhật Nhà Cung Cấp" Subtitle="Quản lý nhà cung cấp">
+    <PageHeaderBreadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Trang chủ</BreadcrumbItem>
+            <BreadcrumbItem>
+                <a href="/nhacungcap">Nhà Cung Cấp</a>
+            </BreadcrumbItem>
+            <BreadcrumbItem>Cập nhật</BreadcrumbItem>
+        </Breadcrumb>
+    </PageHeaderBreadcrumb>
+</PageHeader>
+
 
 @if (model == null)
 {

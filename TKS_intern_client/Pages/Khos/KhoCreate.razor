@@ -5,7 +5,17 @@
 @inject ApiClient Api
 @inject NavigationManager Navigation
 
-<h3>Thêm mới Kho</h3>
+<PageHeader Class="site-page-header p-0" Title="Thêm mới Kho" Subtitle="Quản lý kho hàng">
+    <PageHeaderBreadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Trang chủ</BreadcrumbItem>
+            <BreadcrumbItem>
+                <a href="/kho">Kho</a>
+            </BreadcrumbItem>
+            <BreadcrumbItem>Thêm mới</BreadcrumbItem>
+        </Breadcrumb>
+    </PageHeaderBreadcrumb>
+</PageHeader>
 
 <KhoForm Model="model"
          OnValidSubmitCallback="HandleValidSubmit"

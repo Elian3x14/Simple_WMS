@@ -6,7 +6,18 @@
 @inject ApiClient Api
 @inject NavigationManager Navigation
 
-<h3>Thêm mới Đơn Vị Tính</h3>
+<PageHeader Class="site-page-header p-0" Title="Thêm mới Đơn Vị Tính" Subtitle="Quản lý đơn vị tính">
+    <PageHeaderBreadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Trang chủ</BreadcrumbItem>
+            <BreadcrumbItem>
+                <a href="/donvitinh">Đơn Vị Tính</a>
+            </BreadcrumbItem>
+            <BreadcrumbItem>Thêm mới</BreadcrumbItem>
+        </Breadcrumb>
+    </PageHeaderBreadcrumb>
+</PageHeader>
+
 
 <DonViTinhForm Model="model"
                OnValidSubmitCallback="HandleValidSubmit"

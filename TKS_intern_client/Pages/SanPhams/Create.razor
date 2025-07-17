@@ -7,7 +7,18 @@
 @inject ApiClient Api
 @inject NavigationManager Navigation
 
-<h3>Thêm mới Sản Phẩm</h3>
+<PageHeader Class="site-page-header p-0" Title="Thêm mới Sản Phẩm" Subtitle="Quản lý sản phẩm">
+    <PageHeaderBreadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Trang chủ</BreadcrumbItem>
+            <BreadcrumbItem>
+                <a href="/sanpham">Sản Phẩm</a>
+            </BreadcrumbItem>
+            <BreadcrumbItem>Thêm mới</BreadcrumbItem>
+        </Breadcrumb>
+    </PageHeaderBreadcrumb>
+</PageHeader>
+
 
 @if (loaiSanPhamList is null || donViTinhList is null)
 {

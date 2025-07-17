@@ -1,25 +1,22 @@
 ﻿@using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Forms
+@using AntDesign
 @using TKS_intern_shared.ViewModels.DonViTinhs
 
-<EditForm Model="Model" OnValidSubmit="OnValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+<AntDesign.Form Model="Model" OnFinish="OnValidSubmit" Layout="FormLayout.Vertical">
+    <FormItem Label="Tên đơn vị tính" Name="@nameof(Model.TenDonViTinh)" Required>
+        <Input @bind-Value="Model.TenDonViTinh" />
+    </FormItem>
 
-    <div class="mb-3">
-        <label class="form-label">Tên đơn vị tính</label>
-        <InputText class="form-control" @bind-Value="Model.TenDonViTinh" />
-        <ValidationMessage For="@(() => Model.TenDonViTinh)" />
-    </div>
+    <FormItem Label="Ghi chú" Name="@nameof(Model.GhiChu)">
+        <TextArea @bind-Value="Model.GhiChu" Rows="4" />
+    </FormItem>
 
-    <div class="mb-3">
-        <label class="form-label">Ghi chú</label>
-        <InputTextArea class="form-control" @bind-Value="Model.GhiChu" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Lưu</button>
-    <button type="button" class="btn btn-secondary ms-2" @onclick="OnCancelClicked">Hủy</button>
-</EditForm>
+    <FormItem>
+        <Button Type="ButtonType.Primary" HtmlType="submit">Lưu</Button>
+        <Button Class="ml-2" @onclick="OnCancelClicked">Hủy</Button>
+    </FormItem>
+</AntDesign.Form>
 
 @code {
     [Parameter, EditorRequired]

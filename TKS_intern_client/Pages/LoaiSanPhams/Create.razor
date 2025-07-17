@@ -5,7 +5,18 @@
 @inject ApiClient Api
 @inject NavigationManager Navigation
 
-<h3>Thêm mới Loại Sản Phẩm</h3>
+<PageHeader Class="site-page-header p-0" Title="Thêm mới Loại Sản Phẩm" Subtitle="Quản lý loại sản phẩm">
+    <PageHeaderBreadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Trang chủ</BreadcrumbItem>
+            <BreadcrumbItem>
+                <a href="/loaisanpham">Loại Sản Phẩm</a>
+            </BreadcrumbItem>
+            <BreadcrumbItem>Thêm mới</BreadcrumbItem>
+        </Breadcrumb>
+    </PageHeaderBreadcrumb>
+</PageHeader>
+
 
 <LoaiSanPhamForm Model="model"
                  OnValidSubmitCallback="HandleValidSubmit"
