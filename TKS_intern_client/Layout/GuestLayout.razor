@@ -18,10 +18,19 @@
                 <MenuItem Key="contact">Liên hệ</MenuItem>
             </Menu>
             <div class="header-actions">
-                <a href="/login">
-                    <Button Type="ButtonType.Primary">Đăng nhập</Button>
-                </a>
-                <Button>Đăng ký</Button>
+                <AuthorizeView>
+                    <Authorized>
+                        <a href="/dashboard">
+                            <Button Type="ButtonType.Primary">Go to App</Button>
+                        </a>
+                    </Authorized>
+                    <NotAuthorized>
+                        <a href="/login">
+                            <Button Type="ButtonType.Primary">Đăng nhập</Button>
+                        </a>
+                        <Button>Đăng ký</Button>
+                    </NotAuthorized>
+                </AuthorizeView>
             </div>
         </div>
     </Header>

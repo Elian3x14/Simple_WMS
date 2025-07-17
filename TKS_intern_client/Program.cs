@@ -1,4 +1,5 @@
 ﻿using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using TKS_intern_client;
@@ -17,7 +18,8 @@ builder.Services.AddScoped(sp =>
 builder.Services.AddScoped<ApiClient>(); // đăng ký service
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-//builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddAuthorizationCore();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 builder.Services.AddAntDesign();
 builder.Services.AddBlazoredLocalStorage();
 
