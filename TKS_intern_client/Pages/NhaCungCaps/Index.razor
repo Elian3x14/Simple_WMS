@@ -1,0 +1,108 @@
+﻿@page "/nhacungcap"
+@using TKS_intern_client.Services
+@using TKS_intern_shared.ViewModels.NhaCungCaps
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Nhà Cung Cấp</PageTitle>
+
+<Breadcrumb>
+    <BreadcrumbItem Href="/">Home</BreadcrumbItem>
+    <BreadcrumbItem>Nhà Cung Cấp</BreadcrumbItem>
+</Breadcrumb>
+
+<Title Level="3">Danh sách Nhà Cung Cấp</Title>
+
+<a href="/nhacungcap/create">
+    <AntDesign.Button Type="ButtonType.Primary" Icon="@IconType.Outline.Plus" class="mb-3">
+        Thêm mới
+    </AntDesign.Button>
+</a>
+
+@if (nhaCungCaps == null)
+{
+    <Spin Tip="Đang tải dữ liệu..." />
+}
+else if (!nhaCungCaps.Any())
+{
+    <Empty>
+        <DescriptionTemplate>
+            <span>Không có nhà cung cấp nào</span>
+        </DescriptionTemplate>
+        <ChildContent>
+            <Button Type="ButtonType.Primary" OnClick="CreateNhaCungCap">Thêm nhà cung cấp mới</Button>
+        </ChildContent>
+    </Empty>
+}
+else
+{
+    <Table TItem="NhaCungCapVM" DataSource="nhaCungCaps" RowKey="x => x.Id" Bordered="true" Size="TableSize.Small">
+
+        <PropertyColumn Property="x => x.Id" Title="ID" />
+        <PropertyColumn Property="x => x.MaNhaCungCap" Title="Mã Nhà Cung Cấp" />
+        <PropertyColumn Property="x => x.TenNhaCungCap" Title="Tên Nhà Cung Cấp" />
+        <PropertyColumn Property="x => x.GhiChu" Title="Ghi Chú" />
+
+        <Column TData="NhaCungCapVM" Title="Ngày Tạo">
+            <Template>@context.CreatedAt.ToString("dd/MM/yyyy HH:mm")</Template>
+        </Column>
+
+        <Column TData="NhaCungCapVM" Title="Ngày Cập Nhật">
+            <Template>@context.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</Template>
+        </Column>
+
+        <ActionColumn Title="Hành động">
+            <Template>
+                <Space Size="SpaceSize.Small">
+                    <a href=@($"/nhacungcap/edit/{context.Id}")>
+                        <Button Size="ButtonSize.Small" Type="ButtonType.Text">
+                            <Icon Type="edit" Theme="IconThemeType.Outline" />
+                        </Button>
+                    </a>
+                    <Button Size="ButtonSize.Small" Type="ButtonType.Text" Danger
+                            OnClick="() => DeleteNhaCungCap(context.Id)">
+                        <Icon Type="delete" Theme="IconThemeType.Outline" />
+                    </Button>
+                </Space>
+            </Template>
+        </ActionColumn>
+
+    </Table>
+}
+
+@code {
+    private List<NhaCungCapVM>? nhaCungCaps;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        nhaCungCaps = await Api.GetAsync<List<NhaCungCapVM>>("api/NhaCungCaps");
+    }
+
+    private void CreateNhaCungCap()
+    {
+        Navigation.NavigateTo("/nhacungcap/create");
+    }
+
+    private async Task DeleteNhaCungCap(int id)
+    {
+        var confirm = await JS.InvokeAsync<bool>("confirm", $"Bạn có chắc muốn xóa nhà cung cấp ID {id}?");
+        if (confirm)
+        {
+            var response = await Api.DeleteAsync($"api/NhaCungCaps/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                await LoadData(); // refresh lại danh sách
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", $"Xóa thất bại: {response.StatusCode}");
+            }
+        }
+    }
+}

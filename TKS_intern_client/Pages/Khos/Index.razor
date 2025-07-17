@@ -1,0 +1,109 @@
+﻿@page "/kho"
+@using TKS_intern_client.Services
+@using TKS_intern_shared.ViewModels.Khos
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Kho</PageTitle>
+
+<Breadcrumb>
+    <BreadcrumbItem Href="/">Home</BreadcrumbItem>
+    <BreadcrumbItem>Kho</BreadcrumbItem>
+</Breadcrumb>
+
+<Title Level="3">Danh sách Kho</Title>
+
+<a href="/kho/create">
+    <AntDesign.Button Type="ButtonType.Primary" Icon="@IconType.Outline.Plus" class="mb-3">
+        Thêm mới
+    </AntDesign.Button>
+</a>
+
+@if (khos == null)
+{
+    <Spin Tip="Đang tải dữ liệu..." />
+}
+else if (!khos.Any())
+{
+    <Empty>
+        <DescriptionTemplate>
+            <span>Không có kho nào</span>
+        </DescriptionTemplate>
+        <ChildContent>
+            <Button Type="ButtonType.Primary" OnClick="CreateKho">Thêm kho mới</Button>
+        </ChildContent>
+    </Empty>
+}
+else
+{
+    <Table TItem="KhoVM" DataSource="khos" RowKey="x => x.Id" Bordered="true" Size="TableSize.Small">
+
+        <PropertyColumn Property="x => x.Id" Title="ID" />
+
+        <PropertyColumn Property="x => x.TenKho" Title="Tên Kho" />
+
+        <PropertyColumn Property="x => x.GhiChu" Title="Ghi Chú" />
+
+        <Column TData="KhoVM" Title="Ngày Tạo">
+            <Template>@context.CreatedAt.ToString("dd/MM/yyyy HH:mm")</Template>
+        </Column>
+
+        <Column TData="KhoVM" Title="Ngày Cập Nhật">
+            <Template>@context.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</Template>
+        </Column>
+
+        <ActionColumn Title="Hành động">
+            <Template>
+                <Space Size="SpaceSize.Small">
+                    <a href=@($"/kho/edit/{context.Id}")>
+                        <Button Size="ButtonSize.Small" Type="ButtonType.Text">
+                            <Icon Type="edit" Theme="IconThemeType.Outline" />
+                        </Button>
+                    </a>
+                    <Button Size="ButtonSize.Small" Type="ButtonType.Text" Danger
+                            OnClick="() => DeleteKho(context.Id)">
+                        <Icon Type="delete" Theme="IconThemeType.Outline" />
+                    </Button>
+                </Space>
+            </Template>
+        </ActionColumn>
+
+    </Table>
+}
+
+@code {
+    private List<KhoVM>? khos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        khos = await Api.GetAsync<List<KhoVM>>("api/Khos");
+    }
+
+    private void CreateKho()
+    {
+        Navigation.NavigateTo("/kho/create");
+    }
+
+    private async Task DeleteKho(int id)
+    {
+        var confirm = await JS.InvokeAsync<bool>("confirm", $"Bạn có chắc muốn xóa kho ID {id}?");
+        if (confirm)
+        {
+            var response = await Api.DeleteAsync($"api/Khos/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                await LoadData(); // reload danh sách
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", $"Xóa thất bại: {response.StatusCode}");
+            }
+        }
+    }
+}

@@ -1,0 +1,109 @@
+﻿@page "/donvitinh"
+@using TKS_intern_client.Services
+@using TKS_intern_shared.ViewModels.DonViTinhs
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Đơn Vị Tính</PageTitle>
+
+<Breadcrumb>
+    <BreadcrumbItem Href="/">Home</BreadcrumbItem>
+    <BreadcrumbItem>Đơn Vị Tính</BreadcrumbItem>
+</Breadcrumb>
+
+<Title Level="3">Danh sách Đơn Vị Tính</Title>
+
+<a href="/donvitinh/create">
+    <AntDesign.Button Type="ButtonType.Primary" Icon="@IconType.Outline.Plus" class="mb-3">
+        Thêm mới
+    </AntDesign.Button>
+</a>
+
+@if (donViTinhs == null)
+{
+    <Spin Tip="Đang tải dữ liệu..." />
+}
+else if (!donViTinhs.Any())
+{
+    <Empty>
+        <DescriptionTemplate>
+            <span>Không có đơn vị tính nào</span>
+        </DescriptionTemplate>
+        <ChildContent>
+            <Button Type="ButtonType.Primary" OnClick="CreateDonViTinh">Thêm đơn vị mới</Button>
+        </ChildContent>
+    </Empty>
+}
+else
+{
+    <Table TItem="DonViTinhVM" DataSource="donViTinhs" RowKey="x => x.Id" Bordered="true" Size="TableSize.Small">
+
+        <PropertyColumn Property="x => x.Id" Title="ID" />
+
+        <PropertyColumn Property="x => x.TenDonViTinh" Title="Tên Đơn Vị Tính" />
+
+        <PropertyColumn Property="x => x.GhiChu" Title="Ghi Chú" />
+
+        <Column TData="DonViTinhVM" Title="Ngày Tạo">
+            <Template>@context.CreatedAt.ToString("dd/MM/yyyy HH:mm")</Template>
+        </Column>
+
+        <Column TData="DonViTinhVM" Title="Ngày Cập Nhật">
+            <Template>@context.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</Template>
+        </Column>
+
+        <ActionColumn Title="Hành động">
+            <Template>
+                <Space Size="SpaceSize.Small">
+                    <a href=@($"/donvitinh/edit/{context.Id}")>
+                        <Button Size="ButtonSize.Small" Type="ButtonType.Text">
+                            <Icon Type="edit" Theme="IconThemeType.Outline" />
+                        </Button>
+                    </a>
+                    <Button Size="ButtonSize.Small" Type="ButtonType.Text" Danger
+                            OnClick="() => DeleteDonViTinh(context.Id)">
+                        <Icon Type="delete" Theme="IconThemeType.Outline" />
+                    </Button>
+                </Space>
+            </Template>
+        </ActionColumn>
+
+    </Table>
+}
+
+@code {
+    private List<DonViTinhVM>? donViTinhs;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        donViTinhs = await Api.GetAsync<List<DonViTinhVM>>("api/DonViTinhs");
+    }
+
+    private void CreateDonViTinh()
+    {
+        Navigation.NavigateTo("/donvitinh/create");
+    }
+
+    private async Task DeleteDonViTinh(int id)
+    {
+        var confirm = await JS.InvokeAsync<bool>("confirm", $"Bạn có chắc muốn xóa đơn vị tính ID {id}?");
+        if (confirm)
+        {
+            var response = await Api.DeleteAsync($"api/DonViTinhs/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                await LoadData(); // refresh danh sách
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", $"Xóa thất bại: {response.StatusCode}");
+            }
+        }
+    }
+}
