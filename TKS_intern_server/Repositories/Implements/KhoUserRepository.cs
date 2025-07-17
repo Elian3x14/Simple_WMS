@@ -60,5 +60,15 @@ namespace TKS_intern_server.Repositories.Implements
             return _context.KhoUsers
                 .AnyAsync(ku => ku.MaDangNhap == maDangNhap && ku.KhoId == khoId);
         }
+
+        public async Task<IEnumerable<KhoUser>> GetByKhoAsync(int khoId)
+        {
+            return await _context.KhoUsers
+                .Where(ku => ku.KhoId == khoId)
+                .Include(ku => ku.User) // Include User details if needed
+                .Include(ku => ku.Kho) // Include Kho details if needed
+                .OrderByDescending(ku => ku.UpdatedAt)
+                .ToListAsync();
+        }
     }
 }

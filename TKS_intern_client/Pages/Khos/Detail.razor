@@ -1,0 +1,113 @@
+﻿@page "/kho/detail/{id:int}"
+@using TKS_intern_client.Services
+@using TKS_intern_client.Shared.Tables
+@using TKS_intern_shared.ViewModels.KhoUsers
+@using TKS_intern_shared.ViewModels.Khos
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageHeader Title="Chi tiết kho hàng"
+            SubTitle="Xem thông tin chi tiết">
+    <PageHeaderBreadcrumb>
+            <Breadcrumb>
+                <BreadcrumbItem>Home</BreadcrumbItem>
+                <BreadcrumbItem Href="/kho">Kho</BreadcrumbItem>
+                <BreadcrumbItem>Chi tiết kho</BreadcrumbItem>
+            </Breadcrumb>
+    </PageHeaderBreadcrumb>        
+</PageHeader>
+
+@if (kho == null)
+{
+    <Skeleton Active="true" Title="true" ParagraphRows="3" />
+}
+else
+{
+    <Card Title="Thông tin kho" Bordered="true" Class="mb-4">
+        <Extra>
+            <a href="@($"/kho/edit/{kho.Id}")">
+                <Button Type="ButtonType.Link">
+                    <Icon Type="edit" Theme="IconThemeType.Outline" /> Chỉnh sửa
+                </Button>
+            </a>
+        </Extra>
+        <Body>
+            <Descriptions Column="1" Bordered="true" Size="DescriptionsSize.Small">
+                <DescriptionsItem Title="Tên kho">
+                    @kho.TenKho
+                </DescriptionsItem>
+                <DescriptionsItem Title="Ghi chú">
+                    @kho.GhiChu
+                </DescriptionsItem>
+                <DescriptionsItem Title="Ngày tạo">
+                    @kho.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                </DescriptionsItem>
+                <DescriptionsItem Title="Ngày cập nhật">
+                    @kho.UpdatedAt.ToString("dd/MM/yyyy HH:mm")
+                </DescriptionsItem>
+            </Descriptions>
+        </Body>
+    </Card>
+
+    <Tabs Type="TabType.Card">
+        <TabPane Tab="Hàng trong kho">
+            Danh sách hàng trong kho được hiển thị ở đây.
+        </TabPane>
+        <TabPane Tab="Người phụ trách">
+            <Flex Justify="FlexJustify.SpaceBetween" Align="FlexAlign.Center">
+                <Title Level="5"> Danh sách hàng trong kho</Title>
+                <Button Type="ButtonType.Primary" Size="ButtonSize.Small">
+                    <Icon Type="plus" Theme="IconThemeType.Outline" /> Thêm người phụ trách
+                </Button>
+            </Flex>
+            <KhoUserTable Items="khoUserVMs"
+                          OnEditClicked="OnEditClicked"
+                          OnDeleteClicked="OnDeleteClicked" />
+
+        </TabPane>
+    </Tabs> 
+
+
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+    private KhoVM? kho;
+    
+    private List<KhoUserVM>? khoUserVMs = new List<KhoUserVM>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        kho = await Api.GetAsync<KhoVM>($"api/Khos/{id}");
+        if (kho == null)
+        {
+            await JS.InvokeVoidAsync("alert", "Không tìm thấy kho.");
+            Navigation.NavigateTo("/kho");
+            return;
+        }
+        khoUserVMs = await Api.GetAsync<List<KhoUserVM>>($"api/Khousers/kho/{id}");
+
+        if (khoUserVMs == null || khoUserVMs.Count == 0)
+        {
+            await JS.InvokeVoidAsync("alert", "Kho này chưa có người phụ trách.");
+        }
+
+    }
+
+
+    private void OnDeleteClicked(KhoUserVM khoUser)
+    {
+        // Xử lý sự kiện xóa người phụ trách kho
+        // Có thể gọi API để xóa hoặc hiển thị thông báo xác nhận
+        Console.WriteLine($"Xóa người phụ trách: {khoUser.User?.FullName}");
+    }
+
+    private void OnEditClicked(KhoUserVM khoUser)
+    {
+        // Xử lý sự kiện chỉnh sửa người phụ trách kho
+        // Có thể điều hướng đến trang chỉnh sửa hoặc hiển thị modal
+        Console.WriteLine($"Chỉnh sửa người phụ trách: {khoUser.User?.FullName}");
+    }
+    
+}

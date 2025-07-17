@@ -56,6 +56,11 @@ else
         <ActionColumn Title="Hành động">
             <Template>
                 <Space Size="SpaceSize.Small">
+                    <a href=@($"/kho/detail/{context.Id}")>
+                        <Button Size="ButtonSize.Small" Type="ButtonType.Text">
+                            <Icon Type="eye" Theme="IconThemeType.Outline" />
+                        </Button>
+                    </a>
                     <a href=@($"/kho/edit/{context.Id}")>
                         <Button Size="ButtonSize.Small" Type="ButtonType.Text">
                             <Icon Type="edit" Theme="IconThemeType.Outline" />

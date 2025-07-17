@@ -10,5 +10,6 @@ namespace TKS_intern_server.Repositories.Interfaces
         Task<KhoUser> CreateAsync(KhoUser khoUser);
         Task<bool> DeleteAsync(string maDangNhap, int khoId);
         Task<bool> ExistsAsync(string maDangNhap, int khoId);
+        Task<IEnumerable<KhoUser>> GetByKhoAsync(int khoId);
     }
 }

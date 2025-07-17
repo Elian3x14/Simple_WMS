@@ -9,6 +9,7 @@ namespace TKS_intern_server.Mappers
         public KhoUserProfile()
         {
             CreateMap<KhoUser, KhoUserSaveVM>().ReverseMap();
+            CreateMap<KhoUser, KhoUserVM>();
         }
     }
 }

@@ -63,5 +63,15 @@ namespace TKS_intern_shared.Controllers
                 return NoContent();
             return NotFound(new { message = "Không tìm thấy phân quyền kho-user cần xoá." });
         }
+
+        // GET: api/KhoUsers/kho/1
+        [HttpGet("kho/{khoId}")]
+        public async Task<ActionResult<IEnumerable<KhoUserVM>>> GetByKho(int khoId)
+        {
+            var list = await _khoUserRepository.GetByKhoAsync(khoId);
+            var mapped = _mapper.Map<IEnumerable<KhoUserVM>>(list);
+            return Ok(mapped);
+        }
+
     }
 }

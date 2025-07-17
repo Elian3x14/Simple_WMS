@@ -1,0 +1,58 @@
+﻿@using TKS_intern_shared.ViewModels.KhoUsers
+@using AntDesign
+
+<Table TItem="KhoUserVM"
+       DataSource="Items"
+       RowKey="x => x.Id"
+       Bordered="true"
+       Size="TableSize.Small">
+
+    <Column TData="KhoUserVM" Title="Tên người phụ trách">
+        <Template>@context.User?.FullName</Template>
+    </Column>
+
+    <Column TData="KhoUserVM" Title="Mã đăng nhập">
+        <Template>@context.MaDangNhap</Template>
+    </Column>
+
+    <Column TData="KhoUserVM" Title="Kho">
+        <Template>@context.Kho?.TenKho</Template>
+    </Column>
+
+    @if (OnDeleteClicked.HasDelegate || OnEditClicked.HasDelegate)
+    {
+        <ActionColumn Title="Hành động">
+            <Space Size="SpaceSize.Middle">
+                @if (OnEditClicked.HasDelegate)
+                {
+                    <SpaceItem>
+                        <Button Size="ButtonSize.Small"
+                                Icon="edit"
+                                Type="ButtonType.Link"
+                                OnClick="@(() => OnEditClicked.InvokeAsync(context))">
+                        </Button>
+                    </SpaceItem>
+                }
+                @if (OnDeleteClicked.HasDelegate)
+                {
+                    <SpaceItem>
+                        <Button Size="ButtonSize.Small"
+                                Icon="delete"
+                                Type="ButtonType.Primary"
+                                Danger
+                                OnClick="@(() => OnDeleteClicked.InvokeAsync(context))">
+                        </Button>
+                    </SpaceItem>
+                }
+            </Space>
+        </ActionColumn>
+    }
+
+</Table>
+
+@code {
+    [Parameter] public List<KhoUserVM> Items { get; set; } = new();
+
+    [Parameter] public EventCallback<KhoUserVM> OnEditClicked { get; set; }
+    [Parameter] public EventCallback<KhoUserVM> OnDeleteClicked { get; set; }
+}

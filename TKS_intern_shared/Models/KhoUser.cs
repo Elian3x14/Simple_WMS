@@ -11,7 +11,8 @@ namespace TKS_intern_shared.Models
         public required string MaDangNhap { get; set; }
         public required int KhoId { get; set; }
         public required Kho Kho { get; set; }
+        public required int UserId { get; set; }
 
-        // Thêm quyền, vai trò , hoặc thông tin khác nếu cần
+        public required User User { get; set; }
     }
 }
