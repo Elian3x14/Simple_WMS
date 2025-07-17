@@ -30,6 +30,11 @@
             if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
                 return null;
 
+            // Cập nhật thời gian đăng nhập cuối
+            user.LastLoginAt = DateTime.UtcNow;
+            
+            await _context.SaveChangesAsync();
+
             return user;
         }
 
