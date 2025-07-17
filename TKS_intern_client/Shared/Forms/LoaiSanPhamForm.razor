@@ -1,32 +1,25 @@
 ﻿@using Microsoft.AspNetCore.Components
-@using Microsoft.AspNetCore.Components.Forms
+@using AntDesign
 @using TKS_intern_shared.ViewModels.LoaiSanPhams
 
-<EditForm Model="Model" OnValidSubmit="OnValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
+<AntDesign.Form Model="Model" OnFinish="OnValidSubmit" Layout="FormLayout.Vertical">
+    <FormItem Label="Mã loại sản phẩm" Name="@nameof(Model.MaLoaiSanPham)" Required>
+        <Input @bind-Value="Model.MaLoaiSanPham" />
+    </FormItem>
 
-    <div class="mb-3">
-        <label class="form-label">Mã loại sản phẩm</label>
-        <InputText class="form-control" @bind-Value="Model.MaLoaiSanPham" />
-        <ValidationMessage For="@(() => Model.MaLoaiSanPham)" />
-    </div>
+    <FormItem Label="Tên loại sản phẩm" Name="@nameof(Model.TenLoaiSanPham)" Required>
+        <Input @bind-Value="Model.TenLoaiSanPham" />
+    </FormItem>
 
-    <div class="mb-3">
-        <label class="form-label">Tên loại sản phẩm</label>
-        <InputText class="form-control" @bind-Value="Model.TenLoaiSanPham" />
-        <ValidationMessage For="@(() => Model.TenLoaiSanPham)" />
-    </div>
+    <FormItem Label="Ghi chú" Name="@nameof(Model.GhiChu)">
+        <TextArea @bind-Value="Model.GhiChu" Rows="4" />
+    </FormItem>
 
-    <div class="mb-3">
-        <label class="form-label">Ghi chú</label>
-        <InputTextArea class="form-control" @bind-Value="Model.GhiChu" />
-        <ValidationMessage For="@(() => Model.GhiChu)" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Lưu</button>
-    <button type="button" class="btn btn-secondary ms-2" @onclick="OnCancelClicked">Hủy</button>
-</EditForm>
+    <FormItem>
+        <Button Type="ButtonType.Primary" HtmlType="submit">Lưu</Button>
+        <Button Class="ml-2" @onclick="OnCancelClicked">Hủy</Button>
+    </FormItem>
+</AntDesign.Form>
 
 @code {
     [Parameter, EditorRequired]

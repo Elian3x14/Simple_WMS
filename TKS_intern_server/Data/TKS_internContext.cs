@@ -40,7 +40,7 @@ namespace TKS_intern_server.Data
                 entity.Property(e => e.TenDonViTinh)
                     .IsRequired() // NOT NULL
                     .HasColumnName("Ten_Don_Vi_Tinh")
-                    .HasColumnType("varchar(255)");
+                    .HasColumnType("nvarchar(255)");
                 entity.HasIndex(entity => entity.TenDonViTinh)
                     .IsUnique(); // Unique
                 entity.Property(e => e.GhiChu)
@@ -54,14 +54,14 @@ namespace TKS_intern_server.Data
                 entity.Property(e => e.MaLoaiSanPham)
                     .IsRequired()
                     .HasColumnName("Ma_Loai_San_Pham")
-                    .HasColumnType("varchar(50)");
+                    .HasColumnType("nvarchar(50)");
 
                 entity.HasIndex(e => e.MaLoaiSanPham).IsUnique();
 
                 entity.Property(e => e.TenLoaiSanPham)
                     .IsRequired()
                     .HasColumnName("Ten_Loai_San_Pham")
-                    .HasColumnType("varchar(255)");
+                    .HasColumnType("nvarchar(255)");
 
                 entity.HasIndex(e => e.TenLoaiSanPham).IsUnique();
 
@@ -77,7 +77,7 @@ namespace TKS_intern_server.Data
                 entity.Property(e => e.MaSanPham)
                     .IsRequired()
                     .HasColumnName("Ma_San_Pham")
-                    .HasColumnType("varchar(50)");
+                    .HasColumnType("nvarchar(50)");
 
                 entity.HasIndex(e => e.MaSanPham)
                     .IsUnique();
@@ -120,12 +120,12 @@ namespace TKS_intern_server.Data
                 entity.Property(e => e.MaNhaCungCap)
                     .IsRequired()
                     .HasColumnName("Ma_NCC")
-                    .HasColumnType("varchar(50)");
+                    .HasColumnType("nvarchar(50)");
 
                 entity.Property(e => e.TenNhaCungCap)
                     .IsRequired()
                     .HasColumnName("Ten_NCC")
-                    .HasColumnType("varchar(255)");
+                    .HasColumnType("nvarchar(255)");
 
                 entity.HasIndex(e => e.TenNhaCungCap)
                     .IsUnique(); // Tên nhà cung cấp là duy nhất
@@ -146,7 +146,7 @@ namespace TKS_intern_server.Data
                 entity.Property(e => e.TenKho)
                     .IsRequired()
                     .HasColumnName("Ten_Kho")
-                    .HasColumnType("varchar(255)");
+                    .HasColumnType("nvarchar(255)");
 
                 entity.HasIndex(e => e.TenKho)
                     .IsUnique(); // Tên kho là duy nhất
@@ -188,7 +188,7 @@ namespace TKS_intern_server.Data
                 entity.Property(e => e.SoPhieuNhapKho)
                     .IsRequired()
                     .HasColumnName("So_Phieu_Nhap_Kho")
-                    .HasColumnType("varchar(50)");
+                    .HasColumnType("nvarchar(50)");
 
                 entity.HasIndex(e => e.SoPhieuNhapKho).IsUnique();
 
