@@ -79,9 +79,13 @@
     [Parameter] public EventCallback OnValidSubmitCallback { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
 
+    protected override void OnInitialized()
+    {
+        Console.WriteLine("PhieuNhapKhoForm initialized with Model: " + JsonSerializer.Serialize(Model));
+    }
+
     private async Task OnValidSubmit()
     {
-        Console.WriteLine("Form submitted successfully." + JsonSerializer.Serialize(Model));
         if (OnValidSubmitCallback.HasDelegate)
             await OnValidSubmitCallback.InvokeAsync();
     }

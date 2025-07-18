@@ -1,0 +1,170 @@
+﻿@page "/phieunhapkho/edit/{Id:int}"
+@using System.Text.Json
+@using TKS_intern_client.Services
+@using TKS_intern_client.Shared.Forms
+@using TKS_intern_client.Shared.Tables
+@using TKS_intern_shared.ViewModels.PhieuNhapKhos
+@using TKS_intern_shared.ViewModels.Khos
+@using TKS_intern_shared.ViewModels.NhaCungCaps
+@using TKS_intern_shared.ViewModels.ChiTietPhieuNhapKhos
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>
+    Chỉnh sửa Phiếu Nhập Kho
+</PageTitle>
+
+<Breadcrumb>
+    <BreadcrumbItem>Home</BreadcrumbItem>
+    <BreadcrumbItem Href="/phieunhapkho">Phiếu nhập kho</BreadcrumbItem>
+    <BreadcrumbItem>Chỉnh sửa</BreadcrumbItem>
+</Breadcrumb>
+
+<h3>Chỉnh sửa Phiếu Nhập Kho</h3>
+
+@if (khos == null || nhaCungCaps == null || model == null)
+{
+    <p><em>Đang tải dữ liệu...</em></p>
+}
+else
+{
+    <AntDesign.Steps Current="@currentStep" Class="mb-4">
+        <AntDesign.Step Title="Thông tin phiếu nhập kho" />
+        <AntDesign.Step Title="Chi tiết phiếu nhập kho" />
+        <AntDesign.Step Title="Xem lại & Cập nhật" />
+    </AntDesign.Steps>
+
+    @if (currentStep == 0)
+    {
+        <PhieuNhapKhoForm Model="model"
+                          Khos="khos"
+                          NhaCungCaps="nhaCungCaps"
+                          OnValidSubmitCallback="NextStep"
+                          OnCancel="Cancel" />
+    }
+    else if (currentStep == 1)
+    {
+        <ChiTietPhieuNhapKhoForm Items="chiTietList"
+                                 OnValidSubmitCallback="NextStep"
+                                 OnCancel="BackStep" />
+    }
+    else if (currentStep == 2)
+    {
+        <Card Class="p-4" Bordered="true">
+            <Title Level="5">Thông tin phiếu nhập kho</Title>
+
+            <Descriptions Column="1" Bordered="true" Size="DescriptionsSize.Small">
+                <DescriptionsItem Title="Kho">
+                    <Tag Color="TagColor.Blue">
+                        @khos?.FirstOrDefault(k => k.Id == model.KhoId)?.TenKho
+                    </Tag>
+                </DescriptionsItem>
+
+                <DescriptionsItem Title="Nhà cung cấp">
+                    <Tag Color="TagColor.Lime">
+                        @nhaCungCaps?.FirstOrDefault(n => n.Id == model.NhaCungCapId)?.TenNhaCungCap
+                    </Tag>
+                </DescriptionsItem>
+
+                <DescriptionsItem Title="Ngày nhập kho">
+                    <Tag Color="TagColor.Orange">
+                        @model.NgayNhapKho.ToString("dd/MM/yyyy")
+                    </Tag>
+                </DescriptionsItem>
+            </Descriptions>
+
+            <Divider Orientation="DividerOrientation.Left">
+                <Title Level="5">Chi tiết sản phẩm</Title>
+            </Divider>
+
+            <ChiTietPhieuNhapKhoSaveTable Items="chiTietList" />
+
+            <Divider />
+
+            <Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
+                <Button Type="default" Icon="left" OnClick="BackStep">Quay lại</Button>
+                <Button Type="ButtonType.Primary" Icon="save" OnClick="SubmitAll">Cập nhật</Button>
+            </Flex>
+        </Card>
+    }
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private int currentStep = 0;
+    private PhieuNhapKhoUpdateVM? model;
+    private List<KhoVM>? khos;
+    private List<NhaCungCapVM>? nhaCungCaps;
+    private List<ChiTietPhieuNhapKhoSaveVM> chiTietList = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        khos = await Api.GetAsync<List<KhoVM>>("api/Khos");
+        nhaCungCaps = await Api.GetAsync<List<NhaCungCapVM>>("api/NhaCungCaps");
+
+        var phieu = await Api.GetAsync<PhieuNhapKhoVM>($"api/PhieuNhapKhos/{Id}");
+        if (phieu is null)
+        {
+            _message.Error("Không tìm thấy phiếu nhập kho.");
+            Navigation.NavigateTo("/phieunhapkho");
+            return;
+        }
+
+        model = new PhieuNhapKhoUpdateVM
+        {
+            Id = phieu.Id,
+            SoPhieuNhapKho = phieu.SoPhieuNhapKho,
+            KhoId = phieu.KhoId,
+            NhaCungCapId = phieu.NhaCungCapId,
+            NgayNhapKho = phieu.NgayNhapKho
+        };
+
+        var chiTiet = await Api.GetAsync<List<ChiTietPhieuNhapKhoVM>>($"api/ChiTietPhieuNhapKhos/phieuNhapKho/{Id}");
+        if (chiTiet != null)
+        {
+            chiTietList = chiTiet.Select(x => new ChiTietPhieuNhapKhoSaveVM
+            {
+                Id = x.Id,
+                PhieuNhapKhoId = Id,
+                SanPhamId = x.SanPhamId,
+                SanPham = x.SanPham,
+                DonGiaNhap = x.DonGiaNhap,
+                SoLuongNhap = x.SoLuongNhap
+            }).ToList();
+        }
+    }
+
+    private void NextStep() => currentStep++;
+    private void BackStep() => currentStep--;
+    private void Cancel() => Navigation.NavigateTo("/phieunhapkho");
+
+    private async Task SubmitAll()
+    {
+        var response = await Api.PutAsync($"api/PhieuNhapKhos/{Id}", model);
+        if (!response.IsSuccessStatusCode)
+        {
+            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                _message.Error(error?.Message ?? "Dữ liệu không hợp lệ.");
+            }
+            else
+            {
+                _message.Error("Cập nhật phiếu nhập kho thất bại.");
+            }
+            return;
+        }
+
+        var responseChiTiet = await Api.PutAsync($"api/ChiTietPhieuNhapKhos/phieu/{Id}", chiTietList);
+        if (!responseChiTiet.IsSuccessStatusCode)
+        {
+            _message.Error("Cập nhật chi tiết phiếu nhập kho thất bại.");
+            return;
+        }
+
+        _message.Success("Cập nhật phiếu nhập kho thành công.");
+        Navigation.NavigateTo("/phieunhapkho");
+    }
+}

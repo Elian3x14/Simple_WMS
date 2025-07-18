@@ -3,7 +3,7 @@
 
 <Table TItem="ChiTietPhieuNhapKhoSaveVM"
        DataSource="Items"
-       RowKey="x => x.SanPhamId"
+       RowKey="x => x.SanPhamId.ToString() + x.DonGiaNhap + x.SoLuongNhap"
        Bordered="true"
        Size="TableSize.Small">
 

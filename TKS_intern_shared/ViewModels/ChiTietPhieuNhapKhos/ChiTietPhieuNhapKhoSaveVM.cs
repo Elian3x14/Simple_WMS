@@ -5,6 +5,7 @@ namespace TKS_intern_shared.ViewModels.ChiTietPhieuNhapKhos
 {
     public class ChiTietPhieuNhapKhoSaveVM
     {
+        public int Id { get; set; } = 0;
         [Required(ErrorMessage = "PhieuNhapKhoId là bắt buộc.")]
         public int PhieuNhapKhoId { get; set; }
 

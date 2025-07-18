@@ -2,65 +2,62 @@
 @using TKS_intern_shared.ViewModels.SanPhams
 @using Microsoft.AspNetCore.Components
 
-<AntDesign.Form TModel="ChiTietPhieuNhapKhoSaveVM" Model="NewItem" OnFinish="OnSubmit" Layout="FormLayout.Vertical">
+<Form TModel="ChiTietPhieuNhapKhoSaveVM" Model="Model" OnFinish="OnSubmit" Layout="FormLayout.Vertical">
     <DataAnnotationsValidator />
     <GridRow Gutter="16" Align="RowAlign.Bottom">
         <GridCol Span="8">
-            <AntDesign.FormItem Label="Sản phẩm" Required>
-                <AntDesign.Select DataSource="SanPhams"
-                                  ItemValue="sp => sp.Id"
-                                  ItemLabel="sp => sp.TenSanPham"
-                                  @bind-Value="NewItem.SanPhamId"
-                                  Placeholder="Chọn sản phẩm"
-                                  Style="width: 100%;" />
-            </AntDesign.FormItem>
+            <FormItem Label="Sản phẩm" Required>
+                <Select DataSource="SanPhams"
+                        ItemValue="sp => sp.Id"
+                        ItemLabel="sp => sp.TenSanPham"
+                        @bind-Value="Model.SanPhamId"
+                        Placeholder="Chọn sản phẩm"
+                        Disabled="Model.Id > 0"
+                        Style="width: 100%;" />
+            </FormItem>
         </GridCol> 
 
 
         <GridCol Span="4">
-            <AntDesign.FormItem Label="Số lượng nhập" Required>
-                <AntDesign.InputNumber @bind-Value="NewItem.SoLuongNhap" Min="1" Style="width: 100%;" />
-            </AntDesign.FormItem>
+            <FormItem Label="Số lượng nhập" Required>
+                <AntDesign.InputNumber @bind-Value="Model.SoLuongNhap" Min="1" Style="width: 100%;" />
+            </FormItem>
         </GridCol>
 
         <GridCol Span="8">
-            <AntDesign.FormItem Label="Đơn giá nhập" Required>
+            <FormItem Label="Đơn giá nhập" Required>
                 <Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
-                    <AntDesign.InputNumber @bind-Value="NewItem.DonGiaNhap" Min="0" Style="width: 100%;" />
-                    <AntDesign.Button Type="ButtonType.Primary" HtmlType="ButtonHtmlType.Submit">
-                        Thêm
-                    </AntDesign.Button>
+                    <AntDesign.InputNumber @bind-Value="Model.DonGiaNhap" Min="0" Style="width: 100%;" />
+                    <Button Type="ButtonType.Primary" HtmlType="ButtonHtmlType.Submit">
+                        @(Model.Id > 0 ? "Cập nhật": "Thêm")
+                    </Button>
+                    @if(Model.Id > 0)
+                    {
+                        <Button Type="ButtonType.Default" OnClick="() => Model = new()">
+                            Hủy
+                        </Button>
+                    }
                 </Flex>
-            </AntDesign.FormItem>
+            </FormItem>
         </GridCol>
 
     </GridRow>
-</AntDesign.Form>
+</Form>
 
 @code {
     [Parameter] public List<SanPhamVM> SanPhams { get; set; } = new();
     [Parameter] public EventCallback<ChiTietPhieuNhapKhoSaveVM> OnAdd { get; set; }
-
-    public ChiTietPhieuNhapKhoSaveVM NewItem = new()
-    {
-        SoLuongNhap = 1,
-        DonGiaNhap = 0
-    };
+    [Parameter] public bool IsEdit { get; set; } = false;
+    [Parameter] public required ChiTietPhieuNhapKhoSaveVM Model { get; set; } 
 
     private async Task OnSubmit()
     {
-        NewItem.SanPham = SanPhams.FirstOrDefault(sp => sp.Id == NewItem.SanPhamId);
+        Model.SanPham = SanPhams.FirstOrDefault(sp => sp.Id == Model.SanPhamId);
       
         if (OnAdd.HasDelegate)
         {
-            await OnAdd.InvokeAsync(NewItem);
+            await OnAdd.InvokeAsync(Model);
+            Model = new(); // Reset the model after adding
         }
-
-        // Reset lại form
-        NewItem = new ChiTietPhieuNhapKhoSaveVM
-        {
-            SoLuongNhap = 1,
-            DonGiaNhap = 0
-        };
     }
 }

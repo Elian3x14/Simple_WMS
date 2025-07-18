@@ -1,4 +1,5 @@
-﻿@using TKS_intern_client.Services
+﻿@using System.Text.Json
+@using TKS_intern_client.Services
 @using TKS_intern_client.Shared.Tables
 @using TKS_intern_shared.ViewModels.ChiTietPhieuNhapKhos
 @using TKS_intern_shared.ViewModels.SanPhams
@@ -6,30 +7,40 @@
 @using Microsoft.AspNetCore.Components.Forms
 
 <div>
-    <ChiTietPhieuNhapKhoInlineForm SanPhams="SanPhams" OnAdd="HandleAddRow" />
+    <ChiTietPhieuNhapKhoInlineForm 
+        SanPhams="SanPhams" 
+        OnAdd="HandleAddRow"
+        IsEdit="IsEdit"
+        Model="chiTiet" />
 
-    <ChiTietPhieuNhapKhoSaveTable Items="Items" OnEditClicked="EditRow" OnDeleteClicked="DeleteRow" />
+    <ChiTietPhieuNhapKhoSaveTable 
+        Items="Items" 
+        OnEditClicked="EditRow" 
+        OnDeleteClicked="DeleteRow" />
 
     <div class="mt-4">
-        <AntDesign.Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
-            <AntDesign.Button Type="ButtonType.Default" OnClick="OnCancelClicked">Hủy</AntDesign.Button>
-            <AntDesign.Button Type="ButtonType.Primary" OnClick="OnValidSubmit">
+        <Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
+            <Button Type="ButtonType.Default" OnClick="OnCancelClicked">Hủy</Button>
+            <Button Type="ButtonType.Primary" OnClick="OnValidSubmit">
                 Bước kế tiếp
                 <Icon Type="right" Theme="IconThemeType.Outline" />
-            </AntDesign.Button>
-        </AntDesign.Flex>
+            </Button>
+        </Flex>
     </div>
 </div>
+
+@inject ApiClient Api;
 
 @code {
     [Parameter] public List<ChiTietPhieuNhapKhoSaveVM> Items { get; set; } = new();
     [Parameter] public EventCallback OnValidSubmitCallback { get; set; }
     [Parameter] public EventCallback OnCancel { get; set; }
 
+    [Parameter] public ChiTietPhieuNhapKhoSaveVM chiTiet { get; set; } = new();
 
+    private bool IsEdit { get; set; } = false;
     private List<SanPhamVM> SanPhams { get; set; } = new();
 
-    [Inject] public ApiClient Api { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -50,15 +61,24 @@
 
     private Task HandleAddRow(ChiTietPhieuNhapKhoSaveVM item)
     {
-        Items.Add(item);
+        if (IsEdit)
+        {
+            Items.Remove(chiTiet); // Remove the old item if editing
+            Items.Add(item); // Add the updated item
+        }
+        else
+        {
+            Items.Add(item);
+        }
+        chiTiet = new(); // Reset the current item after adding
+        IsEdit = false; // Reset edit mode
         return Task.CompletedTask;
     }
 
     private void EditRow(ChiTietPhieuNhapKhoSaveVM item)
     {
-        Console.WriteLine($"Editing item: {item.SanPham?.TenSanPham}");
-        // Logic to edit the row can be implemented here
-        // For example, you could open a modal with the item details for editing
+        IsEdit = true; // Set edit mode
+        chiTiet = item; // Set the current item to be edited
     }
 
     private void DeleteRow(ChiTietPhieuNhapKhoSaveVM item)
