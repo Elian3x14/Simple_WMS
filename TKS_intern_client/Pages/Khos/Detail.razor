@@ -1,8 +1,12 @@
 ﻿@page "/kho/detail/{id:int}"
+@using System.Text.Json
 @using TKS_intern_client.Services
+@using TKS_intern_client.Shared.Forms
+@using TKS_intern_client.Shared.Modals
 @using TKS_intern_client.Shared.Tables
 @using TKS_intern_shared.ViewModels.KhoUsers
 @using TKS_intern_shared.ViewModels.Khos
+@using TKS_intern_shared.ViewModels.Users
 @inject ApiClient Api
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
@@ -55,27 +59,32 @@ else
             Danh sách hàng trong kho được hiển thị ở đây.
         </TabPane>
         <TabPane Tab="Người phụ trách">
-            <Flex Justify="FlexJustify.SpaceBetween" Align="FlexAlign.Center">
+            <Flex Justify="FlexJustify.SpaceBetween" Align="FlexAlign.Center" Class="mb-3">
                 <Title Level="5"> Danh sách hàng trong kho</Title>
-                <Button Type="ButtonType.Primary" Size="ButtonSize.Small">
-                    <Icon Type="plus" Theme="IconThemeType.Outline" /> Thêm người phụ trách
-                </Button>
+                <KhoUserFormModal Users="users" 
+                    KhoId="id" 
+                    OnValidSubmitCallback="OnValidSubmitCallback" 
+                    Model="khoUserModel" />
             </Flex>
+
             <KhoUserTable Items="khoUserVMs"
                           OnEditClicked="OnEditClicked"
                           OnDeleteClicked="OnDeleteClicked" />
-
         </TabPane>
     </Tabs> 
 
 
 }
 
+@inject ModalService ModalService;
 @code {
     [Parameter] public int id { get; set; }
     private KhoVM? kho;
-    
+    private bool IsKhoUserModalOpen = false;
+
     private List<KhoUserVM>? khoUserVMs = new List<KhoUserVM>();
+    private List<UserVM> users = new List<UserVM>();
+    private KhoUserSaveVM khoUserModel = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -93,8 +102,9 @@ else
             await JS.InvokeVoidAsync("alert", "Kho này chưa có người phụ trách.");
         }
 
-    }
+        users = await Api.GetAsync<List<UserVM>>("api/Users") ?? new();
 
+    }
 
     private void OnDeleteClicked(KhoUserVM khoUser)
     {
@@ -108,6 +118,25 @@ else
         // Xử lý sự kiện chỉnh sửa người phụ trách kho
         // Có thể điều hướng đến trang chỉnh sửa hoặc hiển thị modal
         Console.WriteLine($"Chỉnh sửa người phụ trách: {khoUser.User?.FullName}");
+    }
+
+    private async Task OnValidSubmitCallback()
+    {
+        if (khoUserModel != null)
+        {
+            khoUserModel.KhoId = id;
+            var response = await Api.PostAsync("/api/KhoUsers", khoUserModel);
+            if (response.IsSuccessStatusCode)
+            {
+                khoUserVMs = await Api.GetAsync<List<KhoUserVM>>($"api/Khousers/kho/{id}");
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", "Thêm người phụ trách kho thất bại.");
+            }
+        }
+
+        Console.WriteLine($"KhoUser {JsonSerializer.Serialize(khoUserModel)}");
     }
     
 }

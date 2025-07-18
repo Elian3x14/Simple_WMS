@@ -1,0 +1,104 @@
+﻿@using TKS_intern_shared.Enums
+@using TKS_intern_shared.ViewModels.KhoUsers
+@using TKS_intern_shared.ViewModels.Users
+
+
+<Button Type="ButtonType.Primary" OnClick="ShowModalWithService">
+    <Icon Type="plus" Theme="IconThemeType.Outline" /> Thêm người phụ trách
+</Button>
+
+
+@inject ModalService ModalService;
+@code {
+    private Form<KhoUserSaveVM> _form = default!;
+    private List<(int Value, string Label)> RoleOptions = new();
+
+    [Parameter] public List<UserVM> Users { get; set; } = new();
+    [Parameter] public int KhoId { get; set; }
+    [Parameter] public EventCallback OnValidSubmitCallback { get; set; }
+    [Parameter] public KhoUserSaveVM Model { get; set; } = default!;
+
+    RenderFragment FormTemplate()
+    {
+        return @<Form Model="Model" 
+                    Layout="FormLayout.Vertical" 
+                    OnFinish="OnValidSubmit"
+                    @ref="_form">
+            <DataAnnotationsValidator />
+            <FormItem Label="Người dùng">
+                <Select @bind-Value="Model.UserId"
+                        Placeholder="Chọn người dùng"
+                        DataSource="Users"
+                        ItemValue="item => item.Id"
+                        ItemLabel="item => item.Email" />
+            </FormItem>
+            <FormItem Label="Mã đăng nhập">
+                <Input @bind-Value="@Model.MaDangNhap" />
+            </FormItem>
+            <FormItem Label="Vai trò">
+                <Select 
+                        Placeholder="Chọn vai trò"
+                        DataSource="RoleOptions"
+                        ItemValue="item => item.Value"
+                        ItemLabel="item => item.Label" />
+            </FormItem>
+        </Form>
+    ;
+    }
+
+
+    protected override void OnInitialized()
+    {
+        Model.UserId = 0;
+        Model.KhoId = KhoId;
+        RoleOptions = Enum.GetValues(typeof(KhoUserRole))
+         .Cast<KhoUserRole>()
+         .Select(role => ((int)role, role.ToString()))
+         .ToList();
+    }
+
+
+    private void ShowModalWithService()
+    {
+        ModalRef modalRef = default!;
+        modalRef = ModalService.CreateModal(new()
+            {
+                Title = "Thêm người phụ trách kho",
+                Content = FormTemplate(),
+                OnOk = async e =>
+                {
+
+                    modalRef?.SetConfirmLoading(true);
+                    await Task.Delay(1000);
+                    if (!_form.Validate())
+                    {
+                        Console.WriteLine("Form is not valid");
+                        modalRef?.SetConfirmLoading(false);
+                        return;
+                    }
+
+                    _form.Submit();
+                    await modalRef.CloseAsync();
+
+
+                    _form.Reset();
+                },
+                OnCancel = async e =>
+                {
+                    if (!_form.IsModified || await ModalService.ConfirmAsync(new() { Content = "Are you sure you want to discard the entries?" }))
+                    {
+                        await modalRef.CloseAsync();
+                        _form.Reset();
+                    }
+                },
+
+            });
+    }
+
+    private async Task OnValidSubmit()
+    {
+        if (OnValidSubmitCallback.HasDelegate)
+            await OnValidSubmitCallback.InvokeAsync();
+    }
+}
+

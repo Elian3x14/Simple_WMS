@@ -3,6 +3,7 @@
 @using TKS_intern_client.Shared
 @using TKS_intern_client.Shared.Forms
 @using TKS_intern_shared.ViewModels.DonViTinhs
+@using TKS_intern_shared.ViewModels.Errors
 @inject ApiClient Api
 @inject NavigationManager Navigation
 
@@ -33,9 +34,10 @@
         {
             Navigation.NavigateTo("/donvitinh");
         }
-        else
+        else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
         {
-            Console.WriteLine("Thêm thất bại: " + response.StatusCode);
+            var errorResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+            _message.Error(errorResponse!.Message);
         }
     }
 

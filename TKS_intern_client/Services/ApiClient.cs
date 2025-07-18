@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using TKS_intern_shared.ViewModels.Errors;
 
 namespace TKS_intern_client.Services
 {
@@ -18,7 +19,7 @@ namespace TKS_intern_client.Services
 
         public async Task<HttpResponseMessage> PostAsync<T>(string url, T data)
         {
-            return await _http.PostAsJsonAsync(url, data);
+            return await _http.PostAsJsonAsync(url, data); 
         }
 
         public async Task<HttpResponseMessage> PutAsync<T>(string url, T data)

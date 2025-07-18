@@ -5,6 +5,7 @@
 @using TKS_intern_shared.ViewModels.DonViTinhs
 
 <AntDesign.Form Model="Model" OnFinish="OnValidSubmit" Layout="FormLayout.Vertical">
+    <DataAnnotationsValidator />
     <Row Gutter="16">
         <Col Span="12">
         <FormItem Label="Mã sản phẩm" Name="@nameof(Model.MaSanPham)" Required>
