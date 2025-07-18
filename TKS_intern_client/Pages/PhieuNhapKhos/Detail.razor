@@ -7,15 +7,21 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
-<Breadcrumb>
-    <BreadcrumbItem>Home</BreadcrumbItem>
-    <BreadcrumbItem Href="/phieunhapkho">Phiếu nhập kho</BreadcrumbItem>
-    <BreadcrumbItem>Chi tiết phiếu <Tag Color="TagColor.Lime">@phieu?.SoPhieuNhapKho</Tag></BreadcrumbItem>
-</Breadcrumb>
-
 <PageHeader Title="Chi tiết phiếu nhập kho"
-            SubTitle="Xem thông tin chi tiết"
-            OnBack="Back" />
+            SubTitle="Xem thông tin chi tiết">
+    <PageHeaderBreadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem Href="/phieunhapkho">Phiếu nhập kho</BreadcrumbItem>
+            <BreadcrumbItem>Chi tiết phiếu</BreadcrumbItem>
+        </Breadcrumb>
+    </PageHeaderBreadcrumb>
+    <PageHeaderExtra>
+        <Button Type="ButtonType.Primary" @onclick="Back">
+            <Icon Type="left" Theme="IconThemeType.Outline" /> Quay lại
+        </Button>
+    </PageHeaderExtra>
+</PageHeader>
 
 @if (phieu == null)
 {
