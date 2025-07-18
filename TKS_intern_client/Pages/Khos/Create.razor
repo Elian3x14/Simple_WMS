@@ -31,6 +31,11 @@
         {
             Navigation.NavigateTo("/kho");
         }
+        else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+        {
+            var errorResponse = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+            _message.Error(errorResponse!.Message);
+        }
         else
         {
             Console.WriteLine("Thêm thất bại: " + response.StatusCode);
