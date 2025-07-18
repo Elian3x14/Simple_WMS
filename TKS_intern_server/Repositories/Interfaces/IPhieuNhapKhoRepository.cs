@@ -8,6 +8,7 @@ namespace TKS_intern_server.Repositories.Interfaces
         Task<IEnumerable<PhieuNhapKho>> GetAllAsync();
         Task<PhieuNhapKho?> GetByIdAsync(int id);
         Task<PhieuNhapKho> CreateAsync(PhieuNhapKho phieuNhapKho);
+        Task<PhieuNhapKho> UpdateAsync(PhieuNhapKho phieuNhapKho);
         Task<bool> DeleteAsync(int id);
 
         Task<bool> ExistsBySoPhieuAsync(string soPhieuNhap);

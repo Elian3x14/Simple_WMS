@@ -82,5 +82,26 @@ namespace TKS_intern_server.Repositories.Implements
 
             return result;
         }
+
+        public async Task<PhieuNhapKho> UpdateAsync(PhieuNhapKho phieuNhapKho)
+        {
+            var existing = await _context.PhieuNhapKhos.FindAsync(phieuNhapKho.Id);
+            if (existing == null)
+                throw new InvalidOperationException("Phiếu nhập kho không tồn tại.");
+
+            // Cập nhật các trường
+            existing.SoPhieuNhapKho = phieuNhapKho.SoPhieuNhapKho;
+            existing.KhoId = phieuNhapKho.KhoId;
+            existing.NhaCungCapId = phieuNhapKho.NhaCungCapId;
+            existing.NgayNhapKho = phieuNhapKho.NgayNhapKho;
+            existing.GhiChu = phieuNhapKho.GhiChu;
+
+            // Có thể cập nhật thêm các navigation property nếu cần
+
+            _context.PhieuNhapKhos.Update(existing);
+            await _context.SaveChangesAsync();
+            return existing;
+        }
+
     }
 }
