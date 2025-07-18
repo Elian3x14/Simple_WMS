@@ -7,18 +7,26 @@
 
 <PageTitle>Sản Phẩm</PageTitle>
 
-<Breadcrumb>
-    <BreadcrumbItem Href="/">Home</BreadcrumbItem>
-    <BreadcrumbItem>Sản Phẩm</BreadcrumbItem>
-</Breadcrumb>
-
-<Title Level="3">Danh sách Sản Phẩm</Title>
-
-<a href="/sanpham/create">
-    <AntDesign.Button Type="ButtonType.Primary" Icon="@IconType.Outline.Plus" class="mb-3">
-        Thêm mới
-    </AntDesign.Button>
-</a>
+<PageHeader Title="Quản lý Sản Phẩm" SubTitle="Danh sách và quản lý sản phẩm trong kho">
+    <PageHeaderBreadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem Href="/">Home</BreadcrumbItem>
+            <BreadcrumbItem>Sản Phẩm</BreadcrumbItem>
+        </Breadcrumb>
+    </PageHeaderBreadcrumb>
+    <PageHeaderExtra>
+        <a href="/sanpham/create">
+            <Button Type="ButtonType.Primary" >
+                <Icon Type="plus" Theme="IconThemeType.Outline" /> Thêm mới
+            </Button>
+        </a>
+        <a href="/baocao/xuat-nhap-ton">
+            <Button Type="ButtonType.Link">
+                <Icon Type="file-text" Theme="IconThemeType.Outline" /> Báo cáo xuất nhập tồn
+            </Button>
+        </a>
+    </PageHeaderExtra>
+</PageHeader>
 
 @if (sanPhams == null)
 {

@@ -3,7 +3,32 @@
 @using TKS_intern_shared.ViewModels.BaoCaos
 @inject ApiClient Api
 
-<PageHeader Title="Báo cáo Xuất Nhập Tồn" />
+<PageTitle>
+    Báo cáo Xuất Nhập Tồn Sản Phẩm
+</PageTitle>
+
+<PageHeader Title="Báo cáo Xuất Nhập Tồn" SubTitle="Tổng hợp xuất, nhập và tồn kho theo từng sản phẩm" Class="px-0">
+    <PageHeaderBreadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem Href="/">Home</BreadcrumbItem>
+            <BreadcrumbItem Href="/sanpham">Sản phẩm</BreadcrumbItem>
+            <BreadcrumbItem>Xuất Nhập Tồn</BreadcrumbItem>
+        </Breadcrumb>
+    </PageHeaderBreadcrumb>
+    <PageHeaderExtra>
+        <a href="/sanpham">
+            <Button Type="ButtonType.Link">
+                <Icon Type="appstore" Theme="IconThemeType.Outline" /> Quản lý sản phẩm
+            </Button>
+        </a>
+        <a href="/phieunhapkho">
+            <Button Type="ButtonType.Link">
+                <Icon Type="form" Theme="IconThemeType.Outline" /> Phiếu nhập kho
+            </Button>
+        </a>
+    </PageHeaderExtra>
+</PageHeader>
+
 
 <AntDesign.Form Model="Filter" OnFinish="OnSearch" Layout="FormLayout.Inline" Class="mb-4">
     <AntDesign.FormItem Label="Từ ngày">
