@@ -3,6 +3,7 @@
 @using TKS_intern_shared.ViewModels.LoaiSanPhams
 
 <AntDesign.Form Model="Model" OnFinish="OnValidSubmit" Layout="FormLayout.Vertical">
+    <DataAnnotationsValidator />
     <FormItem Label="Mã loại sản phẩm" Name="@nameof(Model.MaLoaiSanPham)" Required>
         <Input @bind-Value="Model.MaLoaiSanPham" />
     </FormItem>

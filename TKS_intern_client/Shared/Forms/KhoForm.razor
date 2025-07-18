@@ -3,6 +3,7 @@
 @using TKS_intern_shared.ViewModels.Khos
 
 <AntDesign.Form Model="Model" OnFinish="OnValidSubmit" Layout="FormLayout.Vertical">
+    <DataAnnotationsValidator />
     <FormItem Label="Tên kho" Name="@nameof(Model.TenKho)" Required>
         <Input @bind-Value="Model.TenKho" />
     </FormItem>
