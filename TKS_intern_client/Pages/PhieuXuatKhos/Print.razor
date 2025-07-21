@@ -8,6 +8,8 @@
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
 
+<PageTitle>In Phiếu Xuất Kho</PageTitle>
+
 @if (phieu == null)
 {
     <p>Đang tải dữ liệu...</p>
@@ -91,8 +93,8 @@ else
         </div>
 
         <div class="no-print">
-            <button @onclick="PrintPage">In phiếu</button>
-            <button @onclick="Back">Quay lại</button>
+            <button @onclick="PrintPage" class="btn btn-primary">In phiếu</button>
+            <button @onclick="Back" class="btn btn-outline-primary">Quay lại</button>
         </div>
     </div>
 }

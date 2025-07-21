@@ -7,15 +7,18 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
-<Breadcrumb>
-    <BreadcrumbItem>Home</BreadcrumbItem>
-    <BreadcrumbItem Href="/phieuxuatkho">Phiếu xuất kho</BreadcrumbItem>
-    <BreadcrumbItem>Chi tiết phiếu <Tag Color="TagColor.Red">@phieu?.SoPhieuXuatKho</Tag></BreadcrumbItem>
-</Breadcrumb>
+<PageTitle>Chi tiết Phiếu Xuất Kho</PageTitle>
 
 <PageHeader Title="Chi tiết phiếu xuất kho"
-            SubTitle="Xem thông tin chi tiết"
-            OnBack="Back" />
+            SubTitle="Xem thông tin chi tiết">
+    <PageHeaderBreadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem Href="/phieuxuatkho">Phiếu xuất kho</BreadcrumbItem>
+            <BreadcrumbItem>Chi tiết phiếu</BreadcrumbItem>
+        </Breadcrumb>
+    </PageHeaderBreadcrumb>
+</PageHeader>
 
 @if (phieu == null)
 {
@@ -40,7 +43,9 @@ else
         <Body>
             <Descriptions Column="2" Bordered="true" Size="DescriptionsSize.Small">
                 <DescriptionsItem Title="Số Phiếu">
-                    @phieu.SoPhieuXuatKho
+                     <Tag Color="TagColor.Lime">
+                        @phieu.SoPhieuXuatKho
+                     </Tag>
                 </DescriptionsItem>
                 <DescriptionsItem Title="Kho">
                     <Tag Color="TagColor.Blue">@phieu.Kho?.TenKho</Tag>
