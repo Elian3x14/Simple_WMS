@@ -120,7 +120,8 @@ else
             SoPhieuNhapKho = phieu.SoPhieuNhapKho,
             KhoId = phieu.KhoId,
             NhaCungCapId = phieu.NhaCungCapId,
-            NgayNhapKho = phieu.NgayNhapKho
+            NgayNhapKho = phieu.NgayNhapKho,
+            GhiChu = phieu.GhiChu
         };
 
         var chiTiet = await Api.GetAsync<List<ChiTietPhieuNhapKhoVM>>($"api/ChiTietPhieuNhapKhos/phieuNhapKho/{Id}");
