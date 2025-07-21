@@ -93,23 +93,21 @@ namespace TKS_intern_server.Data
 
                 // Loại sản phẩm (FK)
                 entity.Property(e => e.LoaiSanPhamId)
-                    .IsRequired()
                     .HasColumnName("Loai_San_Pham_ID");
 
                 entity.HasOne(e => e.LoaiSanPham)
                     .WithMany()
                     .HasForeignKey(e => e.LoaiSanPhamId)
-                    .OnDelete(DeleteBehavior.Restrict); // tránh xoá lan truyền
+                    .OnDelete(DeleteBehavior.SetNull);
 
                 // Đơn vị tính (FK)
                 entity.Property(e => e.DonViTinhId)
-                    .IsRequired()
                     .HasColumnName("Don_Vi_Tinh_ID");
 
                 entity.HasOne(e => e.DonViTinh)
                     .WithMany()
                     .HasForeignKey(e => e.DonViTinhId)
-                    .OnDelete(DeleteBehavior.Restrict); // tránh xoá lan truyền
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             // Nhà cung cấp
