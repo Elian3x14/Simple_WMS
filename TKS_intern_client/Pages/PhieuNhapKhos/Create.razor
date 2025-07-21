@@ -11,13 +11,19 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
-<Breadcrumb>
-    <BreadcrumbItem>Home</BreadcrumbItem>
-    <BreadcrumbItem Href="/phieunhapkho">Phiếu nhập kho</BreadcrumbItem>
-    <BreadcrumbItem>Tạo mới</BreadcrumbItem>
-</Breadcrumb>
+<PageTitle>
+    Tạo mới Phiếu Nhập Kho
+</PageTitle>
 
-<h3>Thêm mới Phiếu Nhập Kho</h3>
+<PageHeader Title="Tạo mới Phiếu Nhập Kho" SubTitle="Quản lý phiếu nhập kho" Class="px-0">
+    <PageHeaderBreadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem Href="/phieunhapkho">Phiếu nhập kho</BreadcrumbItem>
+            <BreadcrumbItem>Tạo mới</BreadcrumbItem>
+        </Breadcrumb>
+    </PageHeaderBreadcrumb>
+</PageHeader>
 
 @if (khos == null || nhaCungCaps == null)
 {

@@ -34,17 +34,16 @@ namespace TKS_intern_shared.Repositories.Implements
 
             return true; // Xóa thành công
         }
-
-
         public Task<bool> ExistsByNameAsync(string name)
         {
-            return _context.DonViTinh.AnyAsync(d => d.TenDonViTinh == name);
+            return _context.DonViTinh
+                .AnyAsync(d => d.TenDonViTinh== name);
         }
 
         public Task<bool> ExistsByNameAsync(string name, int excludeId)
         {
             return _context.DonViTinh
-                .AnyAsync(d => d.TenDonViTinh == name && d.Id != excludeId);
+                .AnyAsync(d => d.TenDonViTinh== name && d.Id != excludeId);
         }
 
         public async Task<IEnumerable<DonViTinh>> GetAllAsync()

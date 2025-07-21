@@ -15,13 +15,15 @@
     Chỉnh sửa Phiếu Nhập Kho
 </PageTitle>
 
-<Breadcrumb>
-    <BreadcrumbItem>Home</BreadcrumbItem>
-    <BreadcrumbItem Href="/phieunhapkho">Phiếu nhập kho</BreadcrumbItem>
-    <BreadcrumbItem>Chỉnh sửa</BreadcrumbItem>
-</Breadcrumb>
-
-<h3>Chỉnh sửa Phiếu Nhập Kho</h3>
+<PageHeader Title="Tạo mới Phiếu Nhập Kho" SubTitle="Quản lý phiếu nhập kho" Class="px-0">
+    <PageHeaderBreadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem Href="/phieunhapkho">Phiếu nhập kho</BreadcrumbItem>
+            <BreadcrumbItem>Chỉnh sửa</BreadcrumbItem>
+        </Breadcrumb>
+    </PageHeaderBreadcrumb>
+</PageHeader>
 
 @if (khos == null || nhaCungCaps == null || model == null)
 {
