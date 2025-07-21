@@ -157,7 +157,7 @@ else
             return;
         }
 
-        var responseChiTiet = await Api.PutAsync($"api/ChiTietPhieuNhapKhos/phieu/{Id}", chiTietList);
+        var responseChiTiet = await Api.PostAsync($"api/ChiTietPhieuNhapKhos/{Id}", chiTietList);
         if (!responseChiTiet.IsSuccessStatusCode)
         {
             _message.Error("Cập nhật chi tiết phiếu nhập kho thất bại.");

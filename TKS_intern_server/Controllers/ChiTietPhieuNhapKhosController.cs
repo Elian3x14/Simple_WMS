@@ -35,25 +35,48 @@ namespace TKS_intern_shared.Controllers
             return Ok(_mapper.Map<IEnumerable<ChiTietPhieuNhapKhoVM>>(list));
         }
 
-        // POST: api/ChiTietPhieuNhapKhos
-        [HttpPost]
-        public async Task<IActionResult> PostListChiTietPhieuNhapKho([FromBody] List<ChiTietPhieuNhapKhoSaveVM> items)
+        // POST: api/ChiTietPhieuNhapKhos/{phieuNhapKhoId}
+        [HttpPost("{phieuNhapKhoId}")]
+        public async Task<IActionResult> PostListChiTietPhieuNhapKho([FromBody] List<ChiTietPhieuNhapKhoSaveVM> items, int phieuNhapKhoId)
         {
-            // TODO: Validate thêm trạng thái của phiếu nhập kho và sản phẩm trước khi thêm chi tiết
             if (items == null || !items.Any())
                 return BadRequest(new { message = "Danh sách chi tiết phiếu nhập không được rỗng." });
-            var firstItem = items.First();
-            if (await _sanPhamRepository.GetByIdAsync(firstItem.SanPhamId)== null)
-                return BadRequest(new { message = "Sản phẩm không tồn tại." });
             
-            if (await _phieuNhapKhoRepository.GetByIdAsync(firstItem.PhieuNhapKhoId) == null)   
+            var phieuNhapKho = await _phieuNhapKhoRepository.GetByIdAsync(phieuNhapKhoId);
+            if (phieuNhapKho == null)
                 return BadRequest(new { message = "Phiếu nhập kho không tồn tại." });
 
-            var mapped = _mapper.Map<List<ChiTietPhieuNhapKho>>(items);
-            await _repository.AddRangeAsync(mapped);
+            List<ChiTietPhieuNhapKho> model2Saves = new();
+            SanPham? temp = default!;
+            foreach (var item in items)
+            {
+                temp = await _sanPhamRepository.GetByIdAsync(item.SanPhamId);
+                if (temp == null)
+                    return BadRequest(new { message = $"Sản phẩm với ID {item.SanPhamId} không tồn tại." });
 
-            return Ok(new { message = "Thêm chi tiết phiếu nhập thành công." });
+                model2Saves.Add(new ChiTietPhieuNhapKho()
+                {
+                    PhieuNhapKhoId = phieuNhapKhoId,
+                    SanPhamId = item.SanPhamId,
+                    SoLuongNhap = item.SoLuongNhap,
+                    DonGiaNhap = item.DonGiaNhap,
+                    SanPham = temp,
+                    PhieuNhapKho = phieuNhapKho
+                });
+            }
+
+            // Xóa toàn bộ chi tiết phiếu nhập kho cũ
+            var existingDetails = await _repository.GetByPhieuNhapKhoIdAsync(phieuNhapKhoId);
+            if (existingDetails.Any())
+            {
+                await _repository.DeleteByPhieuNhapKhoIdAsync(phieuNhapKhoId);
+            }
+
+            await _repository.AddRangeAsync(model2Saves);
+
+            return Ok(new { message = "Lưu danh sách chi tiết phiếu nhập thành công." });
         }
+
 
         // DELETE: api/ChiTietPhieuNhapKhos/phieuNhapKho/5
         [HttpDelete("phieuNhapKho/{phieuNhapKhoId}")]
