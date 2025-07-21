@@ -129,6 +129,11 @@ else
 
     private async Task SubmitAll()
     {
+        if (chiTietList.Count <= 0)
+        {
+            _message.Error("Vui lòng thêm ít nhất một sản phẩm vào phiếu xuất kho.");
+        }
+
         var response = await Api.PutAsync($"api/PhieuXuatKhos/{id}", model!);
         if (!response.IsSuccessStatusCode)
         {

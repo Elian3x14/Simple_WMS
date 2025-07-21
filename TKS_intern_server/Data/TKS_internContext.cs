@@ -191,11 +191,9 @@ namespace TKS_intern_server.Data
                 entity.HasIndex(e => e.SoPhieuNhapKho).IsUnique();
 
                 entity.Property(e => e.KhoId)
-                    .IsRequired()
                     .HasColumnName("Kho_ID");
 
                 entity.Property(e => e.NhaCungCapId)
-                    .IsRequired()
                     .HasColumnName("NCC_ID");
 
                 entity.Property(e => e.NgayNhapKho)
@@ -209,12 +207,12 @@ namespace TKS_intern_server.Data
                 entity.HasOne(e => e.Kho)
                     .WithMany()
                     .HasForeignKey(e => e.KhoId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.SetNull);
 
                 entity.HasOne(e => e.NhaCungCap)
                     .WithMany()
                     .HasForeignKey(e => e.NhaCungCapId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             // Nhập kho raw data (chi tiết phiếu nhập)
@@ -261,7 +259,6 @@ namespace TKS_intern_server.Data
                     .HasColumnType("varchar(50)");
                 entity.HasIndex(e => e.SoPhieuXuatKho).IsUnique();
                 entity.Property(e => e.KhoId)
-                    .IsRequired()
                     .HasColumnName("Kho_ID");
                 entity.Property(e => e.NgayXuatKho)
                     .IsRequired()
@@ -272,7 +269,7 @@ namespace TKS_intern_server.Data
                 entity.HasOne(e => e.Kho)
                     .WithMany()
                     .HasForeignKey(e => e.KhoId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.SetNull);
             });
             // Nhập kho raw data (chi tiết phiếu xuất)
             modelBuilder.Entity<ChiTietPhieuXuatKho>(entity =>
