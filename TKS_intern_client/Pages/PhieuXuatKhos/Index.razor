@@ -81,17 +81,17 @@ else
                 <Space Size="SpaceSize.Small">
                     <a href=@($"/phieuxuatkho/detail/{context.Id}")>
                         <Button Size="ButtonSize.Small" Type="ButtonType.Link">
-                            Xem
+                            <Icon Type="eye" Theme="IconThemeType.Outline" />
                         </Button>
                     </a>
                     <a href=@($"/phieuxuatkho/edit/{context.Id}")>
                         <Button Size="ButtonSize.Small" Type="ButtonType.Text">
-                            Sửa
+                            <Icon Type="edit" Theme="IconThemeType.Outline" />
                         </Button>
                     </a>
                     <Button Size="ButtonSize.Small" Type="ButtonType.Text" Danger
                             OnClick="()=>DeletePhieuXuatKho(context.Id)">
-                        Xóa
+                        <Icon Type="delete" Theme="IconThemeType.Outline" />
                     </Button>
                 </Space>
             </Template>

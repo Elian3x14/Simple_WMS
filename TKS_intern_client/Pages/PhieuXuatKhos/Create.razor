@@ -10,13 +10,27 @@
 @inject NavigationManager Navigation
 @inject IJSRuntime JS
 
-<Breadcrumb>
-    <BreadcrumbItem>Home</BreadcrumbItem>
-    <BreadcrumbItem Href="/phieuxuatkho">Phiếu xuất kho</BreadcrumbItem>
-    <BreadcrumbItem>Tạo mới</BreadcrumbItem>
-</Breadcrumb>
+<PageTitle>Thêm mới Phiếu Xuất Kho</PageTitle>
 
-<h3>Thêm mới Phiếu Xuất Kho</h3>
+<PageHeader Title="Thêm mới Phiếu Xuất Kho"
+            SubTitle="Quản lý phiếu xuất kho hàng hóa"
+            Class="px-0">
+    <PageHeaderBreadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem Href="/phieuxuatkho">Phiếu xuất kho</BreadcrumbItem>
+            <BreadcrumbItem>Tạo mới</BreadcrumbItem>
+        </Breadcrumb>
+    </PageHeaderBreadcrumb>         
+    <PageHeaderExtra>
+        <a href="/phieuxuatkho">
+            <Button Type="ButtonType.Primary">
+                <Icon Type="left" Theme="IconThemeType.Outline" /> Quay lại
+            </Button>
+        </a>
+    </PageHeaderExtra>
+</PageHeader>
+
 
 @if (khos == null)
 {
