@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using TKS_intern_shared.ViewModels.SanPhams;
 
 namespace TKS_intern_shared.ViewModels.ChiTietPhieuNhapKhos
@@ -11,6 +12,7 @@ namespace TKS_intern_shared.ViewModels.ChiTietPhieuNhapKhos
 
         [Required(ErrorMessage = "SanPhamId là bắt buộc.")]
         public int SanPhamId { get; set; }
+        [JsonIgnore]
         public SanPhamVM? SanPham { get; set; }
 
         [Required(ErrorMessage = "Số lượng nhập là bắt buộc.")]
