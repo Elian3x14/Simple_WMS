@@ -55,7 +55,9 @@ else
     <Table TItem="BaoCaoXuatNhapTonVM" DataSource="Data" Bordered="true" Size="TableSize.Small">
         <Column TData="BaoCaoXuatNhapTonVM" Title="Mã SP">@context.MaSanPham</Column>
         <Column TData="BaoCaoXuatNhapTonVM" Title="Tên SP">@context.TenSanPham</Column>
-        <Column TData="BaoCaoXuatNhapTonVM" Title="SL Đầu kỳ">@context.SoLuongDauKy</Column>
+        <Column TData="BaoCaoXuatNhapTonVM" Title="SL Đầu kỳ">
+                @context.SoLuongDauKy
+        </Column>
         <Column TData="BaoCaoXuatNhapTonVM" Title="SL Nhập">@context.SoLuongNhap</Column>
         <Column TData="BaoCaoXuatNhapTonVM" Title="SL Xuất">@context.SoLuongXuat</Column>
         <Column TData="BaoCaoXuatNhapTonVM" Title="SL Cuối kỳ">@context.SoLuongCuoiKy</Column>

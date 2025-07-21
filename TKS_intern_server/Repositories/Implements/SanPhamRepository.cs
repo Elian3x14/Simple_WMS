@@ -86,12 +86,15 @@ namespace TKS_intern_shared.Repositories.Implements
         {
             var sanPhams = await _context.SanPhams.Include(x => x.DonViTinh).ToListAsync();
 
+            var tuNgay = filter.TuNgay.Date;
+            var denNgay = filter.DenNgay.Date.AddDays(1).AddTicks(-1); // tới cuối ngày
+
             var nhaps = await _context.ChiTietPhieuNhapKhos
-                .Where(c => c.PhieuNhapKho.NgayNhapKho >= filter.TuNgay && c.PhieuNhapKho.NgayNhapKho <= filter.DenNgay)
+                .Where(c => c.PhieuNhapKho.NgayNhapKho >= tuNgay && c.PhieuNhapKho.NgayNhapKho <= denNgay)
                 .ToListAsync();
 
             var xuats = await _context.ChiTietPhieuXuatKhos
-                .Where(c => c.PhieuXuatKho.NgayXuatKho >= filter.TuNgay && c.PhieuXuatKho.NgayXuatKho <= filter.DenNgay)
+                .Where(c => c.PhieuXuatKho.NgayXuatKho >= tuNgay && c.PhieuXuatKho.NgayXuatKho <= denNgay)
                 .ToListAsync();
 
             var result = new List<BaoCaoXuatNhapTonVM>();
