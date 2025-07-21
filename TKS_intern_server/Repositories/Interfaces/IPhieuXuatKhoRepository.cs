@@ -16,6 +16,6 @@ namespace TKS_intern_server.Repositories.Interfaces
         Task<bool> ExistsBySoPhieuAsync(string soPhieuXuat, int excludeId);
 
         Task<List<BaoCaoXuatHangVM>> GetBaoCaoXuatHangAsync(DateTime tuNgay, DateTime denNgay);
-
+        Task UpdateAsync(PhieuXuatKho existing);
     }
 }

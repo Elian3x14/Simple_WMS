@@ -35,25 +35,44 @@ namespace TKS_intern_server.Controllers
             return Ok(_mapper.Map<IEnumerable<ChiTietPhieuXuatKhoVM>>(list));
         }
 
-        // POST: api/ChiTietPhieuXuatKhos
-        [HttpPost]
-        public async Task<IActionResult> PostListChiTietPhieuXuatKho([FromBody] List<ChiTietPhieuXuatKhoSaveVM> items)
+        [HttpPost("{phieuXuatId}")]
+        public async Task<IActionResult> PostListChiTietPhieuXuatKho(
+            [FromBody] List<ChiTietPhieuXuatKhoSaveVM> items,
+            int phieuXuatId)
         {
             if (items == null || !items.Any())
                 return BadRequest(new { message = "Danh sách chi tiết phiếu xuất không được rỗng." });
 
-            var firstItem = items.First();
-
-            if (await _sanPhamRepository.GetByIdAsync(firstItem.SanPhamId) == null)
-                return BadRequest(new { message = "Sản phẩm không tồn tại." });
-
-            if (await _phieuXuatKhoRepository.GetByIdAsync(firstItem.PhieuXuatKhoId) == null)
+            // Kiểm tra tồn tại của phiếu xuất kho
+            var phieuXuat = await _phieuXuatKhoRepository.GetByIdAsync(phieuXuatId);
+            if (phieuXuat == null)
                 return BadRequest(new { message = "Phiếu xuất kho không tồn tại." });
 
-            var mapped = _mapper.Map<List<ChiTietPhieuXuatKho>>(items);
-            await _repository.AddRangeAsync(mapped);
+            // Kiểm tra tồn tại sản phẩm (có thể kiểm tra từng sản phẩm nếu cần)
+            List<ChiTietPhieuXuatKho> model2Saves = new();
+            SanPham? temp = default!;
+            foreach (var item in items)
+            {
+                temp = await _sanPhamRepository.GetByIdAsync(item.SanPhamId);
+                if (temp == null)
+                    return BadRequest(new { message = $"Sản phẩm ID {item.SanPhamId} không tồn tại." });
+                model2Saves.Add(new ChiTietPhieuXuatKho
+                {
+                    PhieuXuatKhoId = phieuXuatId,
+                    SanPhamId = item.SanPhamId,
+                    SoLuongXuat = item.SoLuongXuat,
+                    DonGiaXuat = item.DonGiaXuat,
+                    SanPham = temp,
+                    PhieuXuatKho = phieuXuat
+                });
+            }
 
-            return Ok(new { message = "Thêm chi tiết phiếu xuất thành công." });
+            // Xóa các bản ghi chi tiết phiếu xuất cũ
+            await _repository.DeleteByPhieuXuatKhoIdAsync(phieuXuatId);
+            // Thêm mới danh sách chi tiết
+            await _repository.AddRangeAsync(model2Saves);
+
+            return Ok(new { message = "Cập nhật chi tiết phiếu xuất thành công." });
         }
 
         // DELETE: api/ChiTietPhieuXuatKhos/phieuXuatKho/5

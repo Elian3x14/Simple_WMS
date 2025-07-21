@@ -77,5 +77,11 @@ namespace TKS_intern_server.Repositories.Implements
                 .ToListAsync();
         }
 
+        public async Task UpdateAsync(PhieuXuatKho existing)
+        {
+            _context.PhieuXuatKhos.Update(existing);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

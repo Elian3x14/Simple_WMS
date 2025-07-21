@@ -65,6 +65,30 @@ namespace TKS_intern_server.Controllers
             return CreatedAtAction(nameof(GetById), new { id = createdVm.Id }, createdVm);
         }
 
+        // PUT: api/PhieuXuatKhos/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, PhieuXuatKhoUpdateVM vm)
+        {
+            if (id != vm.Id)
+                return BadRequest(new { message = "ID không khớp." });
+
+            var existing = await _repository.GetByIdAsync(id);
+            if (existing == null)
+                return NotFound(new { message = "Phiếu xuất kho không tồn tại." });
+
+            if (await _khoRepository.GetByIdAsync(vm.KhoId) == null)
+                return BadRequest(new { message = "Kho không tồn tại." });
+
+            // Kiểm tra số phiếu có bị trùng không (ngoại trừ bản ghi hiện tại)
+            if (await _repository.ExistsBySoPhieuAsync(vm.SoPhieuXuatKho, excludeId: id))
+                return BadRequest(new { message = "Số phiếu xuất kho đã tồn tại." });
+
+            _mapper.Map(vm, existing);
+            await _repository.UpdateAsync(existing);
+
+            return Ok(new { message = "Cập nhật phiếu xuất kho thành công." });
+        }
+
         // DELETE: api/PhieuXuatKhos/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

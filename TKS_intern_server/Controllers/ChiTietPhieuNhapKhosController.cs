@@ -66,12 +66,8 @@ namespace TKS_intern_shared.Controllers
             }
 
             // Xóa toàn bộ chi tiết phiếu nhập kho cũ
-            var existingDetails = await _repository.GetByPhieuNhapKhoIdAsync(phieuNhapKhoId);
-            if (existingDetails.Any())
-            {
-                await _repository.DeleteByPhieuNhapKhoIdAsync(phieuNhapKhoId);
-            }
-
+            await _repository.DeleteByPhieuNhapKhoIdAsync(phieuNhapKhoId);
+            // thêm bản ghi mới
             await _repository.AddRangeAsync(model2Saves);
 
             return Ok(new { message = "Lưu danh sách chi tiết phiếu nhập thành công." });

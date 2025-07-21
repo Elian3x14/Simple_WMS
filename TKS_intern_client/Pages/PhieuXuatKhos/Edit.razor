@@ -1,0 +1,147 @@
+﻿@page "/phieuxuatkho/edit/{id:int}"
+@using System.Text.Json
+@using TKS_intern_client.Services
+@using TKS_intern_client.Shared.Forms
+@using TKS_intern_client.Shared.Tables
+@using TKS_intern_shared.ViewModels.PhieuXuatKhos
+@using TKS_intern_shared.ViewModels.Khos
+@using TKS_intern_shared.ViewModels.ChiTietPhieuXuatKhos
+@inject ApiClient Api
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>Chỉnh sửa Phiếu Xuất Kho</PageTitle>
+
+<PageHeader Title="Chỉnh sửa Phiếu Xuất Kho"
+            SubTitle="Cập nhật thông tin phiếu xuất kho"
+            Class="px-0">
+    <PageHeaderBreadcrumb>
+        <Breadcrumb>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem Href="/phieuxuatkho">Phiếu xuất kho</BreadcrumbItem>
+            <BreadcrumbItem>Chỉnh sửa</BreadcrumbItem>
+        </Breadcrumb>
+    </PageHeaderBreadcrumb>
+    <PageHeaderExtra>
+        <a href="/phieuxuatkho">
+            <Button Type="ButtonType.Default">
+                <Icon Type="left" Theme="IconThemeType.Outline" /> Quay lại
+            </Button>
+        </a>
+    </PageHeaderExtra>
+</PageHeader>
+
+@if (model == null || khos == null)
+{
+    <p><em>Đang tải dữ liệu...</em></p>
+}
+else
+{
+    <AntDesign.Steps Current="@currentStep" Class="mb-4">
+        <AntDesign.Step Title="Thông tin phiếu xuất kho" />
+        <AntDesign.Step Title="Chi tiết phiếu xuất kho" />
+        <AntDesign.Step Title="Xem lại & Xác nhận" />
+    </AntDesign.Steps>
+
+    @if (currentStep == 0)
+    {
+        <PhieuXuatKhoForm Model="model"
+                          Khos="khos"
+                          OnValidSubmitCallback="NextStep"
+                          OnCancel="Cancel" />
+    }
+    else if (currentStep == 1)
+    {
+        <ChiTietPhieuXuatKhoForm Items="chiTietList"
+                                 OnValidSubmitCallback="NextStep"
+                                 OnCancel="BackStep" />
+    }
+    else if (currentStep == 2)
+    {
+        <Card Class="p-4" Bordered="true">
+            <Title Level="5">Thông tin phiếu xuất kho</Title>
+
+            <Descriptions Column="1" Bordered="true" Size="DescriptionsSize.Small">
+                <DescriptionsItem Title="Kho">
+                    <Tag Color="TagColor.Blue">
+                        @khos?.FirstOrDefault(k => k.Id == model.KhoId)?.TenKho
+                    </Tag>
+                </DescriptionsItem>
+
+                <DescriptionsItem Title="Ngày xuất kho">
+                    <Tag Color="TagColor.Orange">
+                        @model.NgayXuatKho.ToString("dd/MM/yyyy")
+                    </Tag>
+                </DescriptionsItem>
+            </Descriptions>
+
+            <Divider Orientation="DividerOrientation.Left">
+                <Title Level="5">Chi tiết sản phẩm</Title>
+            </Divider>
+
+            <ChiTietPhieuXuatKhoSaveTable Items="chiTietList" />
+
+            <Divider />
+
+            <Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
+                <Button Type="default" Icon="left" OnClick="BackStep">Quay lại</Button>
+                <Button Type="ButtonType.Primary" Icon="save" OnClick="SubmitAll">Cập nhật</Button>
+            </Flex>
+        </Card>
+    }
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private int currentStep = 0;
+    private PhieuXuatKhoUpdateVM? model;
+    private List<KhoVM>? khos;
+    private List<ChiTietPhieuXuatKhoSaveVM> chiTietList = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        khos = await Api.GetAsync<List<KhoVM>>("api/Khos");
+
+        model = await Api.GetAsync<PhieuXuatKhoUpdateVM>($"api/PhieuXuatKhos/{id}");
+        if (model == null)
+        {
+            await JS.InvokeVoidAsync("alert", "Không tìm thấy phiếu xuất kho.");
+            Navigation.NavigateTo("/phieuxuatkho");
+            return;
+        }
+
+        var chiTiet = await Api.GetAsync<List<ChiTietPhieuXuatKhoVM>>($"api/ChiTietPhieuXuatKhos/phieuXuatKho/{id}") ?? new ();
+        chiTietList = chiTiet.Select(ct => new ChiTietPhieuXuatKhoSaveVM
+        {
+            PhieuXuatKhoId = ct.PhieuXuatKhoId,
+            SanPhamId = ct.SanPhamId,
+            SoLuongXuat = ct.SoLuongXuat,
+            DonGiaXuat = ct.DonGiaXuat
+        }).ToList();
+    }
+
+    private void NextStep() => currentStep++;
+    private void BackStep() => currentStep--;
+    private void Cancel() => Navigation.NavigateTo("/phieuxuatkho");
+
+    private async Task SubmitAll()
+    {
+        var response = await Api.PutAsync($"api/PhieuXuatKhos/{id}", model!);
+        if (!response.IsSuccessStatusCode)
+        {
+            await JS.InvokeVoidAsync("alert", $"Lỗi cập nhật phiếu: {response.StatusCode}");
+            return;
+        }
+
+        var responseChiTiet = await Api.PostAsync($"api/ChiTietPhieuXuatKhos/{id}", chiTietList);
+        if (!responseChiTiet.IsSuccessStatusCode)
+        {
+            await JS.InvokeVoidAsync("alert", $"Lỗi cập nhật chi tiết: {responseChiTiet.StatusCode}");
+            return;
+        }
+
+        Navigation.NavigateTo("/phieuxuatkho");
+    }
+}
