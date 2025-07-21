@@ -5,9 +5,14 @@
 @using Microsoft.AspNetCore.Components
 
 <div>
-    <ChiTietPhieuXuatKhoInlineForm SanPhams="SanPhams" OnAdd="HandleAddRow" />
+    <ChiTietPhieuXuatKhoInlineForm SanPhams="SanPhams"
+                                   Item="CurrentItem"
+                                   IsEdit="IsEdit"
+                                   OnAdd="HandleAddRow" />
 
-    <ChiTietPhieuXuatKhoSaveTable Items="Items" OnEditClicked="EditRow" OnDeleteClicked="DeleteRow" /> 
+    <ChiTietPhieuXuatKhoSaveTable Items="Items"
+                                  OnEditClicked="EditRow"
+                                  OnDeleteClicked="DeleteRow" />
 
     <div class="mt-4">
         <AntDesign.Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
@@ -26,6 +31,12 @@
     [Parameter] public EventCallback OnCancel { get; set; }
 
     private List<SanPhamVM> SanPhams { get; set; } = new();
+    private ChiTietPhieuXuatKhoSaveVM CurrentItem { get; set; } = new()
+    {
+        SoLuongXuat = 1,
+        DonGiaXuat = 0
+    };
+    private bool IsEdit { get; set; } = false;
 
     [Inject] public ApiClient Api { get; set; } = default!;
 
@@ -48,18 +59,45 @@
 
     private Task HandleAddRow(ChiTietPhieuXuatKhoSaveVM item)
     {
-        Items.Add(item);
+        if (IsEdit)
+        {
+            Items.Remove(CurrentItem); // Remove old version
+            Items.Add(item);           // Add updated version
+        }
+        else
+        {
+            Items.Add(item);           // Add new
+        }
+
+        // Reset form
+        CurrentItem = new ChiTietPhieuXuatKhoSaveVM
+        {
+            SoLuongXuat = 1,
+            DonGiaXuat = 0
+        };
+        IsEdit = false;
+
         return Task.CompletedTask;
     }
 
     private void EditRow(ChiTietPhieuXuatKhoSaveVM item)
     {
-        Console.WriteLine($"Editing item: {item.SanPham?.TenSanPham}");
-        // TODO: implement modal edit if needed
+        IsEdit = true;
+        CurrentItem = item;
     }
 
     private void DeleteRow(ChiTietPhieuXuatKhoSaveVM item)
     {
         Items.Remove(item);
+        // Nếu đang sửa chính item đó thì cũng reset form
+        if (item == CurrentItem)
+        {
+            CurrentItem = new ChiTietPhieuXuatKhoSaveVM
+            {
+                SoLuongXuat = 1,
+                DonGiaXuat = 0
+            };
+            IsEdit = false;
+        }
     }
 }

@@ -132,13 +132,15 @@ else
             return;
         }
 
-        var responseChiTiet = await Api.PostAsync("api/ChiTietPhieuXuatKhos", chiTietList.Select(ct => new ChiTietPhieuXuatKhoSaveVM
-        {
-            PhieuXuatKhoId = createdPhieu.Id,
-            SanPhamId = ct.SanPhamId,
-            SoLuongXuat = ct.SoLuongXuat,
-            DonGiaXuat = ct.DonGiaXuat
-        }).ToList());
+        var responseChiTiet = await Api.PostAsync($"api/ChiTietPhieuXuatKhos/{createdPhieu.Id}",
+            chiTietList.Select(ct => new ChiTietPhieuXuatKhoSaveVM
+            {
+                PhieuXuatKhoId = createdPhieu.Id,
+                SanPhamId = ct.SanPhamId,
+                SoLuongXuat = ct.SoLuongXuat,
+                DonGiaXuat = ct.DonGiaXuat
+            }).ToList()
+        );
 
         if (!responseChiTiet.IsSuccessStatusCode)
         {

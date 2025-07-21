@@ -2,7 +2,7 @@
 @using TKS_intern_shared.ViewModels.SanPhams
 @using Microsoft.AspNetCore.Components
 
-<AntDesign.Form TModel="ChiTietPhieuXuatKhoSaveVM" Model="NewItem" OnFinish="OnSubmit" Layout="FormLayout.Vertical">
+<AntDesign.Form TModel="ChiTietPhieuXuatKhoSaveVM" Model="Item" OnFinish="OnSubmit" Layout="FormLayout.Vertical">
     <DataAnnotationsValidator />
     <GridRow Gutter="16" Align="RowAlign.Bottom">
         <GridCol Span="8">
@@ -10,25 +10,34 @@
                 <AntDesign.Select DataSource="SanPhams"
                                   ItemValue="sp => sp.Id"
                                   ItemLabel="sp => sp.TenSanPham"
-                                  @bind-Value="NewItem.SanPhamId"
+                                  @bind-Value="Item.SanPhamId"
                                   Placeholder="Chọn sản phẩm"
+                                  Disabled="IsEdit"
                                   Style="width: 100%;" />
             </AntDesign.FormItem>
         </GridCol>
 
         <GridCol Span="4">
             <AntDesign.FormItem Label="Số lượng xuất" Required>
-                <AntDesign.InputNumber @bind-Value="NewItem.SoLuongXuat" Min="1" Style="width: 100%;" />
+                <AntDesign.InputNumber @bind-Value="Item.SoLuongXuat" Min="1" Style="width: 100%;" />
             </AntDesign.FormItem>
         </GridCol>
 
         <GridCol Span="8">
             <AntDesign.FormItem Label="Đơn giá xuất" Required>
                 <Flex Gap="FlexGap.Small" Direction="FlexDirection.Horizontal">
-                    <AntDesign.InputNumber @bind-Value="NewItem.DonGiaXuat" Min="0" Style="width: 100%;" />
+                    <AntDesign.InputNumber @bind-Value="Item.DonGiaXuat" Min="0" Style="width: 100%;" />
+
                     <AntDesign.Button Type="ButtonType.Primary" HtmlType="ButtonHtmlType.Submit">
-                        Thêm
+                        @(IsEdit ? "Cập nhật" : "Thêm")
                     </AntDesign.Button>
+
+                    @if (IsEdit)
+                    {
+                        <AntDesign.Button Type="ButtonType.Default" OnClick="OnCancel">
+                            Hủy
+                        </AntDesign.Button>
+                    }
                 </Flex>
             </AntDesign.FormItem>
         </GridCol>
@@ -38,27 +47,38 @@
 @code {
     [Parameter] public List<SanPhamVM> SanPhams { get; set; } = new();
     [Parameter] public EventCallback<ChiTietPhieuXuatKhoSaveVM> OnAdd { get; set; }
+    [Parameter] public bool IsEdit { get; set; }
+    [Parameter] public EventCallback OnCancelEdit { get; set; }
 
-    public ChiTietPhieuXuatKhoSaveVM NewItem = new()
-    {
-        SoLuongXuat = 1,
-        DonGiaXuat = 0
-    };
+    // Item được binding từ bên ngoài (khi sửa) hoặc khởi tạo mới (khi thêm)
+    [Parameter]
+    public ChiTietPhieuXuatKhoSaveVM Item { get; set; } = new();
 
     private async Task OnSubmit()
     {
-        NewItem.SanPham = SanPhams.FirstOrDefault(sp => sp.Id == NewItem.SanPhamId);
+        Item.SanPham = SanPhams.FirstOrDefault(sp => sp.Id == Item.SanPhamId);
 
         if (OnAdd.HasDelegate)
         {
-            await OnAdd.InvokeAsync(NewItem);
+            await OnAdd.InvokeAsync(Item);
         }
 
-        // Reset lại form
-        NewItem = new ChiTietPhieuXuatKhoSaveVM
+        // Nếu đang thêm mới thì reset, còn sửa thì không
+        if (!IsEdit)
         {
-            SoLuongXuat = 1,
-            DonGiaXuat = 0
-        };
+            Item = new ChiTietPhieuXuatKhoSaveVM
+            {
+                SoLuongXuat = 1,
+                DonGiaXuat = 0
+            };
+        }
+    }
+
+    private async Task OnCancel()
+    {
+        if (OnCancelEdit.HasDelegate)
+        {
+            await OnCancelEdit.InvokeAsync();
+        }
     }
 }
