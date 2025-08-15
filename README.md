@@ -12,4 +12,8 @@ Các tính năng chính của ứng dụng bao gồm:
 - Quản lý sản phẩm (thêm, sửa, xóa)
 - Quản lý nhà cung cấp (thêm, sửa, xóa)
 - Quản lý kho hàng (thêm, sửa, xóa)
-- 
+- Quản lý phiếu nhập kho (thêm, sửa, xóa)
+- Thống kê hàng nhập.
+- Quản lý phiếu xuất kho. (thêm, sửa, xóa)
+- Thống kê hàng xuất.
+- Thống kê tồn kho theo sản phẩm.
