@@ -46,7 +46,7 @@ Các tính năng chính của ứng dụng bao gồm:
 
 #### Hero section
 
-![hero-section](previews/hero-section.png)
+![hero-section](./previews/hero-section.png)
 
 #### Section tính năng nổi bật
 
