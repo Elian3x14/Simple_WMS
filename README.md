@@ -1,6 +1,7 @@
 # Simple WMS web application using Blazor WebAssembly
 
-> Chào bro nha :3, đây là dự án thực tập của mình tại Tiên Khanh Solutions, dự án này được xây dựng bằng blazorwebassembly, sử dụng các công nghệ mới nhất của .NET 8, bao gồm cả Blazor WebAssembly và ASP.NET Core.
+> Chào các bạn, đây là dự án thực tập của mình tại Tiên Khanh Solutions, dự án này được xây dựng bằng blazorwebassembly, sử dụng các công nghệ mới nhất của .NET 8, bao gồm cả Blazor WebAssembly và ASP.NET Core.
+
 
 ## Giới thiệu
 
@@ -93,6 +94,10 @@ Các tính năng chính của ứng dụng bao gồm:
 
 ![product-update](previews/product-update.png)
 
+#### Báo cáo xuất nhập tồn từng SP
+
+![product-report](previews/product-report.png)
+
 ### Nhà cung cấp
 
 #### Danh sách nhà cung cấp
@@ -168,6 +173,19 @@ Các tính năng chính của ứng dụng bao gồm:
 ##### Review trước khi xác nhận lưu
 
 ![goods-issue-note-update-3](previews/goods-issue-note-update-3.png)
+
+#### Chi tiết phiếu xuất kho
+
+![goods-issue-note-detail](previews/goods-issue-note-detail.png)
+
+
+#### In phiếu xuất kho
+
+![goods-issue-note-print](previews/goods-issue-note-print.png)
+
+#### Báo cáo chi tiết hàng xuất theo kỳ
+
+![goods-issue-note-report](previews/goods-issue-note-report.png)
 
 ## Hướng dẫn chạy code
 
