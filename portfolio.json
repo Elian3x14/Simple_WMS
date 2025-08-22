@@ -1,11 +1,11 @@
 {
-  previews: {
-    baseUrl: null,
-    images: [
+  "previews": {
+    "baseUrl": null,
+    "images": [
       {
-        order: 1,
-        url: 'hero-section.png',
-        alt: 'Hero section'
+        "order": 1,
+        "url": "hero-section.png",
+        "alt": "Hero section"
       }
     ]
   }
