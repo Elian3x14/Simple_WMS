@@ -25,9 +25,18 @@ Các tính năng chính của ứng dụng bao gồm:
 
 ### Database
 
+![data-base-design](previews/database-design.png)
+
 ### Usecase
 
+![usecases](previews/usecases.png)
+
 ## Previews
+
+### Phần trang chủ
+
+#### Hero section
+![hero-section](previews/hero-section.png)
 
 ## Hướng dẫn chạy code
 
