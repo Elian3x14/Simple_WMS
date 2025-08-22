@@ -36,7 +36,28 @@ Các tính năng chính của ứng dụng bao gồm:
 ### Phần trang chủ
 
 #### Hero section
+
 ![hero-section](previews/hero-section.png)
+
+#### Section tính năng nổi bật
+
+![notable-feature](previews/notable-feature.png)
+
+#### Section lợi ích sử dụng
+
+![benefits](previews/benefits.png)
+
+#### Section bảng giá
+
+![pricing](previews/pricing.png)
+
+#### Section phản hồi của khách hàng
+
+![testimonials](previews/testimonials.png)
+
+#### Section contact
+
+![contact](previews/contact.png)
 
 ## Hướng dẫn chạy code
 
