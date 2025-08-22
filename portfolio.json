@@ -1,6 +1,6 @@
 {
   "previews": {
-    "baseUrl": null,
+    "baseUrl": "/previews/",
     "images": [
       {
         "order": 1,
