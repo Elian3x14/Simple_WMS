@@ -1,7 +1,15 @@
-# Simple WMS web application using Blazor WebAssembly
+# Simple WMS web application
 
+<!-- bagde -->
+![C#](https://img.shields.io/badge/c%23-%23239120.svg?style=for-the-badge&logo=csharp&logoColor=white)
+![.Net](https://img.shields.io/badge/.NET-5C2D91?style=for-the-badge&logo=.net&logoColor=white)
+![WEBASSEMBLY](https://img.shields.io/badge/WebAssembly-654FF0.svg?style=for-the-badge&logo=WebAssembly&logoColor=white)
+![MicrosoftSQLServer](https://img.shields.io/badge/Microsoft%20SQL%20Server-CC2927?style=for-the-badge&logo=microsoft%20sql%20server&logoColor=white)
+<!--! bagde -->
+
+<!-- short_description -->
 > Chào các bạn, đây là dự án thực tập của mình tại Tiên Khanh Solutions, dự án này được xây dựng bằng blazorwebassembly, sử dụng các công nghệ mới nhất của .NET 8, bao gồm cả Blazor WebAssembly và ASP.NET Core.
-
+<!--! short_description -->
 
 ## Giới thiệu
 
